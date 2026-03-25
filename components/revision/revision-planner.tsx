@@ -266,7 +266,7 @@ export function RevisionPlanner({ userId }: { userId: string }) {
           {plan.length === 0 ? (
             <div className="py-12 text-center text-gray-400">
               <CalendarIcon className="mx-auto mb-4 h-16 w-16" />
-              <p>Click "Generate Revision Plan" to see your daily schedule</p>
+              <p>Click &quot;Generate Revision Plan&quot; to see your daily schedule</p>
             </div>
           ) : (
             <div className="space-y-4">
