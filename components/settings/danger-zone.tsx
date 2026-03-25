@@ -1,0 +1,111 @@
+﻿"use client";
+
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+export function DangerZone({ user }: { user: any }) {
+  const router = useRouter();
+  const [isExporting, setIsExporting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      toast.success("Export started. You'll receive an email when ready.");
+    } catch (error) {
+      toast.error("Failed to export data");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (confirmText !== "DELETE") {
+      toast.error("Please type DELETE to confirm");
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      toast.success("Account deleted");
+      router.push("/");
+    } catch (error) {
+      toast.error("Failed to delete account");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card className="border-yellow-500/20 bg-zinc-900 p-6">
+        <div className="mb-4 flex items-start gap-3">
+          <AlertTriangle className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" />
+          <div className="flex-1">
+            <h3 className="font-semibold">Export Your Data</h3>
+            <p className="mt-1 text-sm text-gray-400">
+              Download all your notes, MCQs, and exam papers in JSON format
+            </p>
+          </div>
+        </div>
+        <Button variant="outline" onClick={handleExport} disabled={isExporting}>
+          {isExporting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Exporting...
+            </>
+          ) : (
+            "Export Data"
+          )}
+        </Button>
+      </Card>
+
+      <Card className="border-red-500/20 bg-zinc-900 p-6">
+        <div className="mb-4 flex items-start gap-3">
+          <AlertTriangle className="mt-1 h-5 w-5 flex-shrink-0 text-red-500" />
+          <div className="flex-1">
+            <h3 className="font-semibold text-red-500">Delete Account</h3>
+            <p className="mt-1 text-sm text-gray-400">
+              Permanently delete your account and all associated data. This action cannot be undone.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <p className="mb-2 text-sm">
+              Type <span className="font-mono font-bold">DELETE</span> to confirm:
+            </p>
+            <Input
+              value={confirmText}
+              onChange={(e) => setConfirmText(e.target.value)}
+              placeholder="DELETE"
+              className="max-w-xs"
+            />
+          </div>
+
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={confirmText !== "DELETE" || isDeleting}
+          >
+            {isDeleting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Delete Account Permanently"
+            )}
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+}

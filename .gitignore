@@ -1,0 +1,41 @@
+# dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# env files
+.env
+.env.*
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Misc
+*.log
+
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+
+# Coverage / tests
+coverage/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Local cache
+.cache/
+
+# Uploads / temp (if any)
+tmp/

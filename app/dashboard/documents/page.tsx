@@ -1,0 +1,29 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { DocumentsList } from "@/components/documents/documents-list";
+
+export default async function DocumentsPage() {
+  const session = await auth();
+
+  const documents = await prisma.document.findMany({
+    where: { userId: session!.user.id },
+    orderBy: { uploadedAt: "desc" },
+    include: {
+      notes: true,
+      mcqSets: true,
+    },
+  });
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">My Documents</h1>
+          <p className="mt-2 text-gray-400">Manage all your uploaded files and generated content</p>
+        </div>
+      </div>
+
+      <DocumentsList documents={documents} />
+    </div>
+  );
+}
