@@ -10,17 +10,9 @@ export async function middleware(req: NextRequest) {
   const isLoggedIn = !!token;
 
   const isAuthRoute = nextUrl.pathname.startsWith("/auth");
-  const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard");
 
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL("/dashboard", nextUrl));
-    }
-    return NextResponse.next();
-  }
-
-  if (isProtectedRoute && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/auth/login", nextUrl));
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL("/dashboard", nextUrl));
   }
 
   return NextResponse.next();
