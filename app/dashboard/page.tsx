@@ -8,12 +8,10 @@ import { UsageChart } from "@/components/dashboard/usage-chart";
 export default async function DashboardPage() {
   const session = await auth();
 
-  const [documentsCount, notesCount, mcqCount, examPapersCount] = await Promise.all([
-    prisma.document.count({ where: { userId: session!.user.id } }),
-    prisma.note.count({ where: { userId: session!.user.id } }),
-    prisma.mcqSet.count({ where: { userId: session!.user.id } }),
-    prisma.examPaper.count({ where: { userId: session!.user.id } }),
-  ]);
+  const documentsCount = await prisma.document.count({ where: { userId: session!.user.id } });
+  const notesCount = await prisma.note.count({ where: { userId: session!.user.id } });
+  const mcqCount = await prisma.mcqSet.count({ where: { userId: session!.user.id } });
+  const examPapersCount = await prisma.examPaper.count({ where: { userId: session!.user.id } });
 
   const recentDocuments = await prisma.document.findMany({
     where: { userId: session!.user.id },
@@ -31,25 +29,22 @@ export default async function DashboardPage() {
     return { start, end };
   });
 
-  const weeklyTotals = await Promise.all(
-    weekRanges.map(async (range) => {
-      const [docs, notes, mcqs, exams] = await Promise.all([
-        prisma.document.count({
-          where: { userId: session!.user.id, uploadedAt: { gte: range.start, lt: range.end } },
-        }),
-        prisma.note.count({
-          where: { userId: session!.user.id, createdAt: { gte: range.start, lt: range.end } },
-        }),
-        prisma.mcqSet.count({
-          where: { userId: session!.user.id, createdAt: { gte: range.start, lt: range.end } },
-        }),
-        prisma.examPaper.count({
-          where: { userId: session!.user.id, createdAt: { gte: range.start, lt: range.end } },
-        }),
-      ]);
-      return docs + notes + mcqs + exams;
-    })
-  );
+  const weeklyTotals: number[] = [];
+  for (const range of weekRanges) {
+    const docs = await prisma.document.count({
+      where: { userId: session!.user.id, uploadedAt: { gte: range.start, lt: range.end } },
+    });
+    const notes = await prisma.note.count({
+      where: { userId: session!.user.id, createdAt: { gte: range.start, lt: range.end } },
+    });
+    const mcqs = await prisma.mcqSet.count({
+      where: { userId: session!.user.id, createdAt: { gte: range.start, lt: range.end } },
+    });
+    const exams = await prisma.examPaper.count({
+      where: { userId: session!.user.id, createdAt: { gte: range.start, lt: range.end } },
+    });
+    weeklyTotals.push(docs + notes + mcqs + exams);
+  }
 
   const maxWeekly = Math.max(1, ...weeklyTotals);
   const usageData = weekRanges.map((range, index) => {
