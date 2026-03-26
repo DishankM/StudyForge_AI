@@ -7,6 +7,8 @@ import bcrypt from "bcryptjs";
 import { loginSchema } from "@/lib/validations/auth";
 
 export const authConfig: NextAuthConfig = {
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  trustHost: true,
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
