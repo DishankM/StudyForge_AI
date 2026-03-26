@@ -34,6 +34,9 @@ export async function POST(request: Request) {
       });
       fileUrl = blob.url;
     } else {
+      if (process.env.NODE_ENV === "production") {
+        return new NextResponse("Upload storage not configured", { status: 500 });
+      }
       // Local dev fallback when Vercel Blob token is not configured
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
