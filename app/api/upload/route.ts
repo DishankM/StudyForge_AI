@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     let fileUrl = "";
     if (blobToken) {
       const blob = await put(file.name, file, {
-        access: "private" as any,
+        access: "public",
       });
       fileUrl = blob.url;
     } else {
