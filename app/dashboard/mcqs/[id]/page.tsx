@@ -26,12 +26,16 @@ export default async function MCQSetDetailPage({
     notFound();
   }
 
+  const questionsCount = Array.isArray(mcqSet.questions)
+    ? mcqSet.questions.length
+    : 0;
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold">{mcqSet.title}</h1>
         <p className="mt-2 text-gray-400">
-          {(mcqSet.questions ?? []).length} questions - {mcqSet.difficulty}
+          {questionsCount} questions - {mcqSet.difficulty}
         </p>
         {mcqSet.document?.fileName && (
           <p className="mt-1 text-sm text-gray-500">From {mcqSet.document.fileName}</p>
