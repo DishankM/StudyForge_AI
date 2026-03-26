@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { loginSchema } from "@/lib/validations/auth";
-import { login } from "@/lib/actions/auth";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -13,10 +12,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/icons";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -28,16 +29,27 @@ export default function LoginPage() {
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
-    const result = await login(data.email, data.password);
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
 
     if (result?.error) {
-      toast.error(result.error);
+      if (result.error === "CredentialsSignin") {
+        toast.error("Invalid credentials");
+      } else if (result.error === "AccessDenied") {
+        toast.error("Please verify your email before logging in.");
+      } else {
+        toast.error(result.error);
+      }
       setIsLoading(false);
       return;
     }
 
     toast.success("Welcome back!");
-    window.location.href = "/dashboard";
+    router.push("/dashboard");
+    router.refresh();
   };
 
   const handleGoogleSignIn = async () => {
