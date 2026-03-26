@@ -27,8 +27,8 @@ export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { data: session } = useSession();
-  const isLoggedIn = !!session?.user;
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
   const userName = session?.user?.name || "User";
   const initials = userName
     .split(" ")

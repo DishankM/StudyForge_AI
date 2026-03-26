@@ -29,27 +29,30 @@ export default function LoginPage() {
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
-    const result = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      if (result.error === "CredentialsSignin") {
-        toast.error("Invalid credentials");
-      } else if (result.error === "AccessDenied") {
-        toast.error("Please verify your email before logging in.");
-      } else {
-        toast.error(result.error);
+      if (result?.error) {
+        if (result.error === "CredentialsSignin") {
+          toast.error("Invalid credentials");
+        } else if (result.error === "AccessDenied") {
+          toast.error("Please verify your email before logging in.");
+        } else {
+          toast.error(result.error);
+        }
+        return;
       }
-      setIsLoading(false);
-      return;
-    }
 
-    toast.success("Welcome back!");
-    router.push("/dashboard");
-    router.refresh();
+      toast.success("Welcome back!");
+      // Force navigation in case the router doesn't transition in production.
+      window.location.href = "/dashboard";
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleSignIn = async () => {
