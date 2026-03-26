@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/icons";
 import { toast } from "sonner";
 
-export default function NewPasswordPage() {
+function NewPasswordContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -174,5 +174,21 @@ export default function NewPasswordPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function NewPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center p-8 bg-background">
+          <div className="text-center space-y-4">
+            <p className="text-text-secondary">Loading reset form...</p>
+          </div>
+        </div>
+      }
+    >
+      <NewPasswordContent />
+    </Suspense>
   );
 }
