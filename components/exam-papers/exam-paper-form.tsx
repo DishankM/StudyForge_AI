@@ -28,6 +28,7 @@ const examPaperSchema = z.object({
   totalMarks: z.number().min(10, "Minimum 10 marks"),
   template: z.string().min(1, "Template is required"),
 });
+type ExamPaperFormValues = z.infer<typeof examPaperSchema>;
 
 const UNIVERSITY_TEMPLATES = [
   { id: "mumbai", name: "Mumbai University" },
@@ -81,9 +82,13 @@ export function ExamPaperForm({
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm({
+  } = useForm<ExamPaperFormValues>({
     resolver: zodResolver(examPaperSchema),
     defaultValues: {
+      title: "",
+      university: "",
+      subject: "",
+      template: "",
       duration: 180,
       totalMarks: 100,
     },

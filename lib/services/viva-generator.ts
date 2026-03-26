@@ -1,5 +1,6 @@
 import { callGroq } from "@/lib/groq";
 import { extractDocumentText } from "@/lib/extractors";
+import { Prisma } from "@prisma/client";
 
 interface VivaQuestion {
   id: string;
@@ -80,7 +81,7 @@ Return ONLY a JSON array (no markdown, no backticks):
     await prisma.document.update({
       where: { id: documentId },
       data: {
-        vivaQuestions: questions,
+        vivaQuestions: questions as unknown as Prisma.InputJsonValue,
         vivaGeneratedAt: new Date(),
       },
     });

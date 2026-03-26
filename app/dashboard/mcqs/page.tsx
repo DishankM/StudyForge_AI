@@ -35,7 +35,8 @@ export default async function MCQSetsPage() {
                 <div>
                   <h2 className="text-lg font-semibold">{set.title}</h2>
                   <p className="mt-1 text-sm text-gray-400">
-                    {set.questions.length} questions • {set.difficulty}
+                    {(Array.isArray(set.questions) ? set.questions.length : 0)} questions •{" "}
+                    {set.difficulty}
                   </p>
                   {set.document?.fileName && (
                     <p className="mt-2 text-sm text-gray-500">From {set.document.fileName}</p>

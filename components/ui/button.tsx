@@ -12,6 +12,8 @@ const buttonVariants = cva(
           "bg-gradient-to-r from-primary-pink to-primary-purple text-white shadow-glow hover:scale-105 hover:shadow-glow",
         outline:
           "border border-white/20 bg-transparent hover:bg-white/5 hover:border-primary-pink/50",
+        destructive:
+          "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500",
         ghost: "hover:bg-white/5",
         link: "text-primary-pink underline-offset-4 hover:underline",
       },

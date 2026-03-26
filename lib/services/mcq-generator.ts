@@ -1,5 +1,6 @@
 import { callGroq } from "@/lib/groq";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { extractDocumentText } from "@/lib/extractors";
 
 interface MCQQuestion {
@@ -126,7 +127,7 @@ Generate ${count} questions following this structure.`;
         userId,
         documentId,
         title: `${document.fileName} - MCQ Practice`,
-        questions: validQuestions,
+        questions: validQuestions as unknown as Prisma.InputJsonValue,
         difficulty,
       },
     });
