@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
@@ -27,6 +27,10 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
+  useEffect(() => {
+    router.prefetch("/dashboard");
+  }, [router]);
+
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
@@ -48,8 +52,8 @@ export default function LoginPage() {
       }
 
       toast.success("Welcome back!");
-      // Force navigation in case the router doesn't transition in production.
-      window.location.href = "/dashboard";
+      router.replace("/dashboard");
+      router.refresh();
     } finally {
       setIsLoading(false);
     }

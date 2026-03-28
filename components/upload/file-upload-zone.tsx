@@ -5,17 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { Upload, FileText, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
-const ACCEPTED_FILE_TYPES = {
-  "application/pdf": [".pdf"],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"],
-  "text/plain": [".txt"],
-  "image/png": [".png"],
-  "image/jpeg": [".jpg", ".jpeg"],
-};
-
-const MAX_FILE_SIZE = 50 * 1024 * 1024;
+import { ACCEPTED_UPLOAD_TYPES, MAX_DOCUMENT_UPLOAD_SIZE } from "@/lib/uploads";
 
 export function FileUploadZone({
   onFilesAdded,
@@ -33,8 +23,8 @@ export function FileUploadZone({
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,
-    accept: ACCEPTED_FILE_TYPES,
-    maxSize: MAX_FILE_SIZE,
+    accept: ACCEPTED_UPLOAD_TYPES,
+    maxSize: MAX_DOCUMENT_UPLOAD_SIZE,
     multiple: true,
   });
 

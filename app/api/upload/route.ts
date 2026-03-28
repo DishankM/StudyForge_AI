@@ -1,72 +1,44 @@
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { put } from "@vercel/blob";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
-import crypto from "crypto";
+import { ACCEPTED_UPLOAD_MIME_TYPES, MAX_DOCUMENT_UPLOAD_SIZE, sanitizeUploadFileName } from "@/lib/uploads";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const session = await auth();
+
+  if (!session) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+
+  if (!blobToken) {
+    return new NextResponse("Blob storage is not configured", { status: 500 });
+  }
+
   try {
-    const session = await auth();
+    const body = (await request.json()) as HandleUploadBody;
 
-    if (!session) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const formData = await request.formData();
-    const file = formData.get("file") as File;
-    const subject = formData.get("subject") as string;
-    const documentType = formData.get("documentType") as string;
-
-    if (!file) {
-      return new NextResponse("No file provided", { status: 400 });
-    }
-
-    const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
-
-    let fileUrl = "";
-    if (blobToken) {
-      const blob = await put(file.name, file, {
-        access: "public",
-      });
-      fileUrl = blob.url;
-    } else {
-      if (process.env.NODE_ENV === "production") {
-        return new NextResponse("Upload storage not configured", { status: 500 });
-      }
-      // Local dev fallback when Vercel Blob token is not configured
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const uploadsDir = path.join(process.cwd(), "public", "uploads");
-      await mkdir(uploadsDir, { recursive: true });
-      const safeName = `${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-      const filePath = path.join(uploadsDir, safeName);
-      await writeFile(filePath, buffer);
-      fileUrl = `/uploads/${safeName}`;
-    }
-
-    const document = await prisma.document.create({
-      data: {
-        userId: session.user.id,
-        fileName: file.name,
-        fileUrl,
-        fileSize: file.size,
-        mimeType: file.type,
-        subject,
-        documentType,
-      },
+    const jsonResponse = await handleUpload({
+      token: blobToken,
+      request,
+      body,
+      onBeforeGenerateToken: async (pathname) => ({
+        allowedContentTypes: ACCEPTED_UPLOAD_MIME_TYPES,
+        maximumSizeInBytes: MAX_DOCUMENT_UPLOAD_SIZE,
+        addRandomSuffix: true,
+        tokenPayload: JSON.stringify({
+          userId: session.user.id,
+          pathname: `documents/${session.user.id}/${sanitizeUploadFileName(pathname)}`,
+        }),
+      }),
     });
 
-    return NextResponse.json({
-      success: true,
-      document,
-      message: "File uploaded successfully",
-    });
+    return NextResponse.json(jsonResponse);
   } catch (error) {
-    console.error("Upload error:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.error("Upload token error:", error);
+    return new NextResponse("Unable to initialize upload", { status: 400 });
   }
 }
