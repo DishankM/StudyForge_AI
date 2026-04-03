@@ -17,6 +17,7 @@ type HeaderUser = {
   name?: string | null;
   email?: string | null;
   image?: string | null;
+  role?: "USER" | "ADMIN" | "SUPER_ADMIN";
 };
 
 export function DashboardHeader({
@@ -90,6 +91,11 @@ export function DashboardHeader({
               <DropdownMenuItem asChild>
                 <Link href="/dashboard/settings">Billing</Link>
               </DropdownMenuItem>
+              {(user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
+                <DropdownMenuItem asChild>
+                  <Link href="/admin">Admin Panel</Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={() => signOut({ callbackUrl: "/auth/login" })}
                 className="text-red-400 focus:text-red-300"

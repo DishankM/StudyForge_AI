@@ -16,6 +16,8 @@ model User {
   image         String?
   password      String?   // Null for OAuth users
 
+  role        Role      @default(USER)
+  isActive    Boolean   @default(true)
   plan        Plan      @default(FREE)
   trialEndsAt  DateTime?
 
@@ -178,4 +180,10 @@ enum Plan {
   FREE
   STUDENT_PRO
   INSTITUTE
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
 }

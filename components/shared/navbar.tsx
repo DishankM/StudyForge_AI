@@ -44,7 +44,9 @@ export function Navbar() {
   }, []);
 
   const hideOnRoute =
-    pathname?.startsWith("/auth") || pathname?.startsWith("/dashboard");
+    pathname?.startsWith("/auth") ||
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/admin");
 
   if (hideOnRoute) return null;
 

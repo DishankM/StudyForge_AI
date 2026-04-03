@@ -59,7 +59,7 @@ export default async function DashboardPage() {
     noteDates,
     mcqDates,
     examDates,
-  ] = await Promise.all([
+  ] = await prisma.$transaction([
     prisma.document.count({ where: { userId } }),
     prisma.note.count({ where: { userId } }),
     prisma.mcqSet.count({ where: { userId } }),

@@ -59,6 +59,7 @@ export const authConfig: NextAuthConfig = {
           email: user.email,
           name: user.name,
           image: user.image,
+          role: user.role,
         };
       },
     }),
@@ -111,6 +112,7 @@ export const authConfig: NextAuthConfig = {
         session.user.name = token.name ?? null;
         session.user.email = typeof token.email === "string" ? token.email : session.user.email;
         session.user.image = token.picture ?? null;
+        session.user.role = token.role === "ADMIN" || token.role === "SUPER_ADMIN" ? token.role : "USER";
       }
 
       return session;
@@ -122,6 +124,7 @@ export const authConfig: NextAuthConfig = {
         token.name = user.name;
         token.email = user.email;
         token.picture = user.image;
+        token.role = "role" in user && typeof user.role === "string" ? user.role : token.role ?? "USER";
       }
       if (trigger === "update" && session) {
         if (typeof session.name === "string") {
@@ -130,7 +133,11 @@ export const authConfig: NextAuthConfig = {
         if (typeof session.image === "string") {
           token.picture = session.image;
         }
+        if (typeof session.role === "string") {
+          token.role = session.role;
+        }
       }
+
       return token;
     },
   },

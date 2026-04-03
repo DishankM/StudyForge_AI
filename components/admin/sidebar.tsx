@@ -5,79 +5,62 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Home,
-  Upload,
-  FileText,
-  HelpCircle,
-  FileEdit,
-  Calendar,
-  Settings,
-  LogOut,
-  Sparkles,
-  GraduationCap,
+  LayoutDashboard,
+  Users,
+  FolderKanban,
+  Activity,
   ShieldCheck,
+  ArrowLeft,
+  LogOut,
 } from "lucide-react";
 import { logout } from "@/lib/actions/auth";
 
-type SidebarUser = {
+type AdminUser = {
   name?: string | null;
   email?: string | null;
   image?: string | null;
-  role?: "USER" | "ADMIN" | "SUPER_ADMIN";
+  role: "ADMIN" | "SUPER_ADMIN";
 };
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: Home },
-  { name: "Upload", href: "/dashboard/upload", icon: Upload },
-  { name: "Documents", href: "/dashboard/documents", icon: FileText },
-  { name: "Notes", href: "/dashboard/notes", icon: FileEdit },
-  { name: "MCQs", href: "/dashboard/mcqs", icon: HelpCircle },
-  { name: "Exam Papers", href: "/dashboard/exam-papers", icon: GraduationCap },
-  { name: "Viva Questions", href: "/dashboard/viva", icon: Sparkles },
-  { name: "Revision Plans", href: "/dashboard/revision", icon: Calendar },
+  { name: "Overview", href: "/admin", icon: LayoutDashboard },
+  { name: "Users", href: "/admin/users", icon: Users },
+  { name: "Content", href: "/admin/content", icon: FolderKanban },
+  { name: "System", href: "/admin/system", icon: Activity },
 ];
 
-export function DashboardSidebar({
+export function AdminSidebar({
   user,
   mobileOpen = false,
   onClose,
 }: {
-  user: SidebarUser;
+  user: AdminUser;
   mobileOpen?: boolean;
   onClose?: () => void;
 }) {
   const pathname = usePathname();
 
-  const handleNavClick = () => {
-    if (onClose) onClose();
-  };
-
   const sidebarContent = (
     <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-white/10 bg-[#1a1a1a] px-6 pb-4">
-      <div className="flex h-16 shrink-0 items-center">
-        <Link href="/" className="flex items-center" onClick={handleNavClick}>
+      <div className="flex h-16 shrink-0 items-center justify-between">
+        <Link href="/admin" className="flex items-center">
           <h1 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
             StudyForge
           </h1>
         </Link>
+        <ShieldCheck className="h-5 w-5 text-pink-400" />
       </div>
 
       <div className="rounded-xl border border-white/10 bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-4">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-sm text-gray-400">Your Plan</span>
-          <span className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-2 py-1 text-xs font-semibold">
-            PRO
+          <span className="text-sm text-gray-400">Admin Access</span>
+          <span className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-2 py-1 text-xs font-semibold text-white">
+            {user.role === "SUPER_ADMIN" ? "SUPER" : "ADMIN"}
           </span>
         </div>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-400">Uploads</span>
-            <span className="font-semibold">15 / Unlimited</span>
-          </div>
-          <div className="h-2 w-full rounded-full bg-zinc-800">
-            <div className="h-2 w-1/3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600" />
-          </div>
-        </div>
+        <p className="text-sm text-gray-300">
+          Manage users, monitor content, and keep the platform healthy.
+        </p>
       </div>
 
       <nav className="flex flex-1 flex-col">
@@ -85,12 +68,12 @@ export function DashboardSidebar({
           <li>
             <ul role="list" className="-mx-2 space-y-1">
               {navigation.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
                 return (
                   <li key={item.name}>
                     <Link
                       href={item.href}
-                      onClick={handleNavClick}
+                      onClick={onClose}
                       className={cn(
                         isActive
                           ? "border-l-2 border-pink-500 bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-white"
@@ -112,24 +95,14 @@ export function DashboardSidebar({
             </ul>
           </li>
 
-          <li className="mt-auto">
-            {(user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
-              <Link
-                href="/admin"
-                onClick={handleNavClick}
-                className="group mb-1 flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6 text-gray-400 transition-all hover:bg-white/5 hover:text-white"
-              >
-                <ShieldCheck className="h-5 w-5 shrink-0" />
-                Admin Panel
-              </Link>
-            )}
+          <li className="mt-auto space-y-2">
             <Link
-              href="/dashboard/settings"
-              onClick={handleNavClick}
+              href="/dashboard"
+              onClick={onClose}
               className="group flex gap-x-3 rounded-md p-3 text-sm font-semibold leading-6 text-gray-400 transition-all hover:bg-white/5 hover:text-white"
             >
-              <Settings className="h-5 w-5 shrink-0" />
-              Settings
+              <ArrowLeft className="h-5 w-5 shrink-0" />
+              Back to App
             </Link>
           </li>
         </ul>
@@ -139,11 +112,11 @@ export function DashboardSidebar({
         <Avatar className="h-10 w-10">
           <AvatarImage src={user.image || ""} />
           <AvatarFallback className="bg-gradient-to-r from-pink-500 to-purple-600">
-            {user.name?.[0] || user.email?.[0] || "U"}
+            {user.name?.[0] || user.email?.[0] || "A"}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-white">{user.name || "User"}</p>
+          <p className="truncate text-sm font-semibold text-white">{user.name || "Admin"}</p>
           <p className="truncate text-xs text-gray-400">{user.email}</p>
         </div>
         <button
