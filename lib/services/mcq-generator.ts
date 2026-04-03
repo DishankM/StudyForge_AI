@@ -2,6 +2,7 @@ import { callGroq } from "@/lib/groq";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { extractDocumentText } from "@/lib/extractors";
+import { chunkDocumentText, normalizePromptText } from "./document-chunking";
 
 interface MCQQuestion {
   id: string;
@@ -19,6 +20,91 @@ interface GenerateMCQOptions {
   count?: number;
   difficulty?: "easy" | "medium" | "hard" | "mixed";
   includeExplanations?: boolean;
+  mode?: "fast" | "full";
+}
+
+const MCQ_SYSTEM_PROMPT = `You are an expert exam question creator. You generate high-quality multiple-choice questions that:
+- Test genuine understanding, not just memory
+- Have one definitively correct answer
+- Include plausible but clearly wrong distractors
+- Cover different concepts from the material
+- Are clearly worded and unambiguous`;
+
+function parseQuestions(response: string) {
+  const cleanedResponse = response.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  return JSON.parse(cleanedResponse) as MCQQuestion[];
+}
+
+function validateQuestions(questions: MCQQuestion[]) {
+  return questions.filter((q) => {
+    return (
+      q.question &&
+      Array.isArray(q.options) &&
+      q.options.length === 4 &&
+      typeof q.correctAnswer === "number" &&
+      q.correctAnswer >= 0 &&
+      q.correctAnswer < 4
+    );
+  });
+}
+
+function dedupeQuestions(questions: MCQQuestion[]) {
+  const seen = new Set<string>();
+  const unique: MCQQuestion[] = [];
+
+  for (const question of questions) {
+    const key = normalizePromptText(question.question);
+    if (!key || seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    unique.push(question);
+  }
+
+  return unique;
+}
+
+function selectBestQuestions(
+  questions: MCQQuestion[],
+  count: number,
+  difficulty: NonNullable<GenerateMCQOptions["difficulty"]>
+) {
+  if (questions.length <= count) {
+    return questions;
+  }
+
+  if (difficulty !== "mixed") {
+    const exactDifficulty = questions.filter((q) => q.difficulty === difficulty);
+    const fallback = questions.filter((q) => q.difficulty !== difficulty);
+    return [...exactDifficulty, ...fallback].slice(0, count);
+  }
+
+  const buckets: Record<MCQQuestion["difficulty"], MCQQuestion[]> = {
+    easy: [],
+    medium: [],
+    hard: [],
+  };
+
+  for (const question of questions) {
+    buckets[question.difficulty]?.push(question);
+  }
+
+  const ordered: MCQQuestion[] = [];
+  const cycle: Array<MCQQuestion["difficulty"]> = ["easy", "medium", "hard"];
+
+  while (ordered.length < count && cycle.some((level) => buckets[level].length > 0)) {
+    for (const level of cycle) {
+      const next = buckets[level].shift();
+      if (next) {
+        ordered.push(next);
+      }
+      if (ordered.length >= count) {
+        break;
+      }
+    }
+  }
+
+  return ordered.slice(0, count);
 }
 
 export async function generateMCQs({
@@ -27,9 +113,9 @@ export async function generateMCQs({
   count = 20,
   difficulty = "mixed",
   includeExplanations = true,
+  mode = "fast",
 }: GenerateMCQOptions) {
   try {
-    // 1. Get document
     const document = await prisma.document.findFirst({
       where: { id: documentId, userId },
     });
@@ -38,39 +124,38 @@ export async function generateMCQs({
       throw new Error("Document not found");
     }
 
-    // 2. Extract text
-    const extractedText = await extractDocumentText(
-      document.fileUrl,
-      document.mimeType
-    );
+    const extractedText = await extractDocumentText(document.fileUrl, document.mimeType);
+    const allTextChunks = chunkDocumentText(extractedText, {
+      targetChunkChars: 4000,
+      maxChunkChars: 5000,
+    });
 
-    // 3. Chunk text if too long (The model has token limits)
-    const maxChunkLength = 6000; // characters
-    const textChunk = extractedText.slice(0, maxChunkLength);
+    if (allTextChunks.length === 0) {
+      throw new Error("No readable document content found");
+    }
 
-    // 4. Prepare prompt
-    const systemPrompt = `You are an expert exam question creator. You generate high-quality multiple-choice questions that:
-- Test genuine understanding, not just memory
-- Have one definitively correct answer
-- Include plausible but clearly wrong distractors
-- Cover different concepts from the material
-- Are clearly worded and unambiguous`;
+    const textChunks =
+      mode === "fast" ? allTextChunks.slice(0, Math.min(3, allTextChunks.length)) : allTextChunks;
 
-    const userPrompt = `Generate ${count} multiple-choice questions from this educational content.
+    const targetQuestionPool = Math.max(count * 2, count + textChunks.length * 2);
+    const perChunkCount = Math.max(3, Math.ceil(targetQuestionPool / textChunks.length));
+    const generatedQuestions: MCQQuestion[] = [];
+
+    for (const [index, chunk] of textChunks.entries()) {
+      const userPrompt = `Generate ${perChunkCount} multiple-choice questions from chunk ${index + 1} of ${textChunks.length}.
 
 CONTENT:
-${textChunk}
+${chunk}
 
 REQUIREMENTS:
 - Difficulty: ${difficulty}
 - ${includeExplanations ? "Include detailed explanations (3-4 sentences)" : "No explanations needed"}
-- Each question must have exactly 4 options (A, B, C, D)
+- Each question must have exactly 4 options
 - Only ONE correct answer per question
-- Make distractors plausible but clearly incorrect
-- Cover different topics/concepts (don't repeat)
+- Cover different ideas from this chunk
 - Questions should test understanding and application, not just recall
+- Avoid repeating questions from the same chunk
 - Avoid "all of the above" or "none of the above"
-- Don't use negative phrasing unless necessary
 
 Return ONLY a JSON array with this exact structure (no markdown, no backticks, no preamble):
 [
@@ -79,55 +164,39 @@ Return ONLY a JSON array with this exact structure (no markdown, no backticks, n
     "question": "What is the time complexity of binary search?",
     "options": ["O(n)", "O(log n)", "O(n^2)", "O(1)"],
     "correctAnswer": 1,
-    "explanation": "Binary search has O(log n) time complexity because it divides the search space in half with each iteration, making it very efficient for sorted arrays.",
+    "explanation": "Binary search has O(log n) time complexity because it divides the search space in half with each iteration.",
     "difficulty": "medium",
     "topic": "Algorithms"
   }
-]
+]`;
 
-Generate ${count} questions following this structure.`;
-
-    // 5. Call Groq
-    const response = await callGroq(userPrompt, systemPrompt, 16000);
-
-    // 6. Parse JSON response
-    let questions: MCQQuestion[];
-    try {
-      // Remove markdown code blocks if present
-      const cleanedResponse = response
-        .replace(/```json\n?/g, "")
-        .replace(/```\n?/g, "")
-        .trim();
-
-      questions = JSON.parse(cleanedResponse);
-    } catch (parseError) {
-      console.error("JSON parse error:", parseError);
-      throw new Error("Failed to parse MCQ response from AI");
+      try {
+        const response = await callGroq(userPrompt, MCQ_SYSTEM_PROMPT, 5000);
+        const parsed = parseQuestions(response);
+        generatedQuestions.push(...validateQuestions(parsed));
+      } catch (error) {
+        console.warn(`MCQ generation failed for chunk ${index + 1}:`, error);
+      }
     }
 
-    // 7. Validate questions
-    const validQuestions = questions.filter((q) => {
-      return (
-        q.question &&
-        q.options &&
-        q.options.length === 4 &&
-        typeof q.correctAnswer === "number" &&
-        q.correctAnswer >= 0 &&
-        q.correctAnswer < 4
-      );
-    });
+    const uniqueQuestions = dedupeQuestions(generatedQuestions);
+    const selectedQuestions = selectBestQuestions(uniqueQuestions, count, difficulty).map(
+      (question, index) => ({
+        ...question,
+        id: `q${index + 1}`,
+      })
+    );
 
-    if (validQuestions.length === 0) {
+    if (selectedQuestions.length === 0) {
       throw new Error("No valid questions generated");
     }
 
-    // 8. Save to database
     const mcqSet = await prisma.mcqSet.create({
       data: {
         userId,
         documentId,
         title: `${document.fileName} - MCQ Practice`,
-        questions: validQuestions as unknown as Prisma.InputJsonValue,
+        questions: selectedQuestions as unknown as Prisma.InputJsonValue,
         difficulty,
       },
     });
@@ -135,7 +204,9 @@ Generate ${count} questions following this structure.`;
     return {
       success: true,
       mcqSet,
-      questionCount: validQuestions.length,
+      questionCount: selectedQuestions.length,
+      chunkCount: textChunks.length,
+      mode,
     };
   } catch (error) {
     console.error("MCQ generation error:", error);

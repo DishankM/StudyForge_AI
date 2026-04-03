@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { documentId, format, includeExamples } = body;
+    const { documentId, format, includeExamples, mode } = body;
 
     if (!documentId) {
       return new NextResponse("Document ID required", { status: 400 });
@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       userId: session.user.id,
       format: format || "concise",
       includeExamples: includeExamples ?? true,
+      mode: mode === "fast" ? "fast" : "full",
     });
 
     return NextResponse.json(result);

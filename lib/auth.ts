@@ -24,6 +24,11 @@ export const authConfig: NextAuthConfig = {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       allowDangerousEmailAccountLinking: true,
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      },
     }),
     Credentials({
       async authorize(credentials) {
@@ -60,6 +65,31 @@ export const authConfig: NextAuthConfig = {
   ],
   callbacks: {
     async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+          select: {
+            id: true,
+            emailVerified: true,
+            trialEndsAt: true,
+          },
+        });
+
+        if (existingUser) {
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              emailVerified: existingUser.emailVerified ?? new Date(),
+              trialEndsAt:
+                existingUser.trialEndsAt ??
+                new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            },
+          });
+        }
+
+        return true;
+      }
+
       if (account?.provider !== "credentials") return true;
 
       const existingUser = await prisma.user.findUnique({

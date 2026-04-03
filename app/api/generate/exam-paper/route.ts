@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, university, subject, template, duration, totalMarks, sections, documentIds } =
+    const { title, university, subject, template, duration, totalMarks, sections, documentIds, mode } =
       body;
 
     const result = await generateExamPaper({
@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       totalMarks,
       sections,
       documentIds,
+      mode: mode === "fast" ? "fast" : "full",
     });
 
     return NextResponse.json(result);

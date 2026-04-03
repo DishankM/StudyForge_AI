@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { documentId, count, difficulty, includeExplanations } = body;
+    const { documentId, count, difficulty, includeExplanations, mode } = body;
 
     if (!documentId) {
       return new NextResponse("Document ID required", { status: 400 });
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       count: count || 20,
       difficulty: difficulty || "mixed",
       includeExplanations: includeExplanations ?? true,
+      mode: mode === "full" ? "full" : "fast",
     });
 
     return NextResponse.json(result);
