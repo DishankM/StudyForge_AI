@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { McqDeleteButton } from "@/components/mcqs/mcq-delete-button";
+import { HelpCircle, Sparkles } from "lucide-react";
 
 export default async function MCQSetDetailPage({
   params,
@@ -32,17 +33,42 @@ export default async function MCQSetDetailPage({
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">{mcqSet.title}</h1>
-        <p className="mt-2 text-gray-400">
-          {questionsCount} questions - {mcqSet.difficulty}
-        </p>
-        {mcqSet.document?.fileName && (
-          <p className="mt-1 text-sm text-gray-500">From {mcqSet.document.fileName}</p>
-        )}
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(168,85,247,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.14),_transparent_32%)]" />
+        <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-gray-300">
+              <HelpCircle className="h-4 w-4 text-purple-300" />
+              MCQ set
+            </div>
+            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-4xl">{mcqSet.title}</h1>
+            <p className="mt-3 text-base text-gray-300">
+              {questionsCount} questions in {mcqSet.difficulty} mode, ready for timed practice and answer review.
+            </p>
+            {mcqSet.document?.fileName && (
+              <p className="mt-2 text-sm text-gray-400">Built from {mcqSet.document.fileName}</p>
+            )}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+              <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Question count</p>
+              <p className="mt-2 text-3xl font-semibold text-white">{questionsCount}</p>
+              <p className="mt-1 text-sm text-gray-400">Generated for focused practice</p>
+            </div>
+            <div className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4 backdrop-blur-sm">
+              <div className="flex items-center gap-2 text-orange-200">
+                <Sparkles className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.24em]">Practice ready</span>
+              </div>
+              <p className="mt-2 text-sm text-orange-100/90">
+                Attempt the full set with a timer, instant explanations, and final review.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
+      <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
         <h2 className="text-xl font-semibold">Start Practice</h2>
         <p className="mt-2 text-gray-400">
           Attempt the full quiz with timer, explanations, and results.

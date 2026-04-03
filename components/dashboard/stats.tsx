@@ -47,22 +47,25 @@ export function DashboardStats({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="relative flex h-full min-h-[150px] flex-col justify-between overflow-hidden rounded-xl border border-white/10 bg-zinc-900 p-6 transition-all hover:border-white/20"
+          className="relative flex h-full min-h-[170px] flex-col justify-between overflow-hidden rounded-[24px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.24)] transition-all hover:-translate-y-1 hover:border-white/20"
         >
-          <div className={`absolute right-0 top-0 h-20 w-20 bg-gradient-to-br ${stat.color} opacity-10 blur-2xl`} />
+          <div className={`absolute right-0 top-0 h-24 w-24 bg-gradient-to-br ${stat.color} opacity-15 blur-3xl`} />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),transparent_55%)]" />
 
-          <div className="relative">
-            <div className="flex items-center justify-between">
-              <div className={`rounded-lg bg-gradient-to-br ${stat.color} bg-opacity-10 p-2`}>
+          <div className="relative flex h-full flex-col justify-between">
+            <div className="flex items-start justify-between">
+              <div className={`rounded-2xl bg-gradient-to-br ${stat.color} p-3 shadow-lg shadow-black/20`}>
                 <stat.icon className="h-6 w-6 text-white" />
               </div>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] text-gray-400">
+                Live
+              </span>
             </div>
 
             <div className="mt-4">
-              <p className="text-3xl font-bold">
-                {values[index]}
-              </p>
-              <p className="mt-1 text-sm text-gray-400">{stat.name}</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-gray-400">{stat.name}</p>
+              <p className="mt-3 text-4xl font-semibold tracking-tight text-white">{values[index]}</p>
+              <p className="mt-2 text-sm text-gray-500">Available in your workspace right now</p>
             </div>
           </div>
         </motion.div>

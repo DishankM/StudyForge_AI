@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { McqDeleteButton } from "@/components/mcqs/mcq-delete-button";
+import { HelpCircle } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function MCQSetsPage() {
   const session = await auth();
@@ -21,12 +23,13 @@ export default async function MCQSetsPage() {
       </div>
 
       {mcqSets.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-zinc-900 p-8 text-center">
-          <p className="text-gray-400">No MCQ sets yet.</p>
-          <Link href="/dashboard/documents">
-            <Button className="mt-4">Generate from documents</Button>
-          </Link>
-        </div>
+        <EmptyState
+          icon={HelpCircle}
+          title="No MCQ sets yet"
+          description="Generate multiple-choice question sets from your uploaded documents and start practicing with explanations."
+          actionLabel="Generate from documents"
+          actionHref="/dashboard/documents"
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {mcqSets.map((set) => (

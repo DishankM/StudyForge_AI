@@ -47,30 +47,31 @@ export function FileUploadZone({
       <div
         {...getRootProps()}
         className={cn(
-          "relative cursor-pointer rounded-xl border-2 border-dashed p-12 text-center transition-all",
+          "relative overflow-hidden cursor-pointer rounded-[28px] border-2 border-dashed p-12 text-center transition-all",
           isDragActive
             ? "border-pink-500 bg-pink-500/5"
-            : "border-white/20 hover:border-pink-500/50 hover:bg-white/5"
+            : "border-white/20 bg-zinc-950/70 hover:border-pink-500/50 hover:bg-white/5"
         )}
       >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.12),_transparent_36%)]" />
         <input {...getInputProps()} />
 
-        <div className="mx-auto max-w-md space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-purple-600">
+        <div className="relative mx-auto max-w-md space-y-5">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-gradient-to-br from-pink-500 to-purple-600 shadow-[0_20px_40px_rgba(168,85,247,0.35)]">
             <Upload className="h-8 w-8 text-white" />
           </div>
 
           <div>
-            <p className="text-lg font-semibold">{isDragActive ? "Drop files here..." : "Drag & drop your files here"}</p>
+            <p className="text-lg font-semibold text-white">{isDragActive ? "Drop files here..." : "Drag and drop your files here"}</p>
             <p className="mt-2 text-sm text-gray-400">or click to browse from your computer</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-500">
-            <span className="rounded bg-zinc-800 px-2 py-1">PDF</span>
-            <span className="rounded bg-zinc-800 px-2 py-1">DOCX</span>
-            <span className="rounded bg-zinc-800 px-2 py-1">PPTX</span>
-            <span className="rounded bg-zinc-800 px-2 py-1">TXT</span>
-            <span className="rounded bg-zinc-800 px-2 py-1">Images</span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">PDF</span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">DOCX</span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">PPTX</span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">TXT</span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">Images</span>
           </div>
 
           <p className="text-xs text-gray-500">Maximum file size: 50MB</p>
@@ -91,17 +92,22 @@ export function FileUploadZone({
       )}
 
       {files.length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
-          <h3 className="mb-4 font-semibold">Selected Files ({files.length})</h3>
+        <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <h3 className="font-semibold text-white">Selected Files ({files.length})</h3>
+              <p className="mt-1 text-sm text-gray-400">Review the files queued for upload before processing.</p>
+            </div>
+          </div>
           <div className="space-y-3">
             {files.map((file, index) => (
-              <div key={`${file.name}-${index}`} className="group flex items-center gap-3 rounded-lg bg-zinc-800/50 p-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-purple-600">
+              <div key={`${file.name}-${index}`} className="group flex items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.03] p-4">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600">
                   <FileText className="h-5 w-5 text-white" />
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium">{file.name}</p>
+                  <p className="truncate font-medium text-white">{file.name}</p>
                   <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
                 </div>
 

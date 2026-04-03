@@ -4,6 +4,7 @@ import { DashboardStats } from "@/components/dashboard/stats";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { UsageChart } from "@/components/dashboard/usage-chart";
+import { Sparkles, TrendingUp } from "lucide-react";
 
 function getWeekRanges() {
   const now = new Date();
@@ -115,11 +116,48 @@ export default async function DashboardPage() {
     };
   });
 
+  const totalStudyAssets = documentsCount + notesCount + mcqCount + examPapersCount;
+  const mostActiveLabel = usageData.reduce((best, current) =>
+    current.total > best.total ? current : best
+  ).label;
+
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Welcome back, {session!.user.name || "Student"}!</h1>
-        <p className="mt-2 text-gray-400">Here&apos;s what&apos;s happening with your studies today.</p>
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.16),_transparent_32%)]" />
+        <div className="absolute -right-16 top-0 h-44 w-44 rounded-full bg-pink-500/10 blur-3xl" />
+        <div className="absolute bottom-0 left-20 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl" />
+
+        <div className="relative flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-1.5 text-sm font-medium text-pink-200">
+              <Sparkles className="h-4 w-4" />
+              StudyForge workspace
+            </div>
+            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-4xl">
+              Welcome back, {session!.user.name || "Student"}.
+            </h1>
+            <p className="mt-3 max-w-2xl text-base text-gray-300">
+              Keep your preparation moving with one place for documents, notes, MCQs, and exam-ready material.
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+              <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Study Assets</p>
+              <p className="mt-2 text-3xl font-semibold text-white">{totalStudyAssets}</p>
+              <p className="mt-1 text-sm text-gray-400">Across uploads, notes, MCQs, and exam papers</p>
+            </div>
+            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 backdrop-blur-sm">
+              <div className="flex items-center gap-2 text-emerald-200">
+                <TrendingUp className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-[0.24em]">Momentum</span>
+              </div>
+              <p className="mt-2 text-3xl font-semibold text-white">{usageData.reduce((sum, point) => sum + point.total, 0)}</p>
+              <p className="mt-1 text-sm text-emerald-100/80">Items created in the last 4 weeks, strongest week starting {mostActiveLabel}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <DashboardStats

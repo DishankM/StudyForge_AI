@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { VivaSetsList } from "@/components/viva/viva-sets-list";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function VivaPage() {
   const session = await auth();
@@ -51,7 +52,17 @@ export default async function VivaPage() {
         </div>
       </div>
 
-      <VivaSetsList documents={vivaDocuments} />
+      {vivaDocuments.length === 0 ? (
+        <EmptyState
+          icon={Sparkles}
+          title="No viva sets yet"
+          description="Generate viva questions from any uploaded document to build oral-exam practice with model answers."
+          actionLabel="Generate from Document"
+          actionHref="/dashboard/documents"
+        />
+      ) : (
+        <VivaSetsList documents={vivaDocuments} />
+      )}
     </div>
   );
 }

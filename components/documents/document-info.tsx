@@ -11,47 +11,55 @@ function formatFileSize(bytes: number) {
 }
 
 export function DocumentInfo({ document }: { document: any }) {
+  const items = [
+    {
+      label: "File name",
+      value: document.fileName,
+      icon: FileText,
+    },
+    {
+      label: "Size",
+      value: formatFileSize(document.fileSize),
+      icon: HardDrive,
+    },
+    {
+      label: "Subject",
+      value: document.subject || "Not set",
+      icon: Tag,
+    },
+    {
+      label: "Type",
+      value: document.documentType || "Not set",
+      icon: FolderOpen,
+    },
+    {
+      label: "Uploaded",
+      value: new Date(document.uploadedAt).toLocaleDateString(),
+      icon: CalendarDays,
+    },
+  ];
+
   return (
-    <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
-      <h2 className="mb-4 text-xl font-semibold">Document Info</h2>
-      <div className="space-y-3 text-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-400">
-            <FileText className="h-4 w-4" />
-            File name
+    <div className="overflow-hidden rounded-[26px] border border-white/10 bg-zinc-950/80 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_35%)] p-6">
+        <h2 className="text-xl font-semibold text-white">Document Info</h2>
+        <p className="mt-1 text-sm text-gray-400">Reference details for the source file powering generation.</p>
+      </div>
+      <div className="space-y-3 p-6 text-sm">
+        {items.map((item) => (
+          <div
+            key={item.label}
+            className="flex items-center justify-between gap-4 rounded-2xl border border-white/5 bg-white/[0.03] p-4"
+          >
+            <div className="flex items-center gap-3 text-gray-400">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-2">
+                <item.icon className="h-4 w-4" />
+              </div>
+              <span>{item.label}</span>
+            </div>
+            <span className="max-w-[55%] truncate text-right font-medium text-white">{item.value}</span>
           </div>
-          <span className="font-medium text-white">{document.fileName}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-400">
-            <HardDrive className="h-4 w-4" />
-            Size
-          </div>
-          <span className="font-medium text-white">{formatFileSize(document.fileSize)}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Tag className="h-4 w-4" />
-            Subject
-          </div>
-          <span className="font-medium text-white">{document.subject || "-"}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-400">
-            <FolderOpen className="h-4 w-4" />
-            Type
-          </div>
-          <span className="font-medium text-white">{document.documentType || "-"}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-400">
-            <CalendarDays className="h-4 w-4" />
-            Uploaded
-          </div>
-          <span className="font-medium text-white">
-            {new Date(document.uploadedAt).toLocaleDateString()}
-          </span>
-        </div>
+        ))}
       </div>
     </div>
   );

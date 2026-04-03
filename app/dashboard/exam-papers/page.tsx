@@ -2,6 +2,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { GraduationCap } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export default async function ExamPapersPage() {
   const session = await auth();
@@ -24,12 +26,13 @@ export default async function ExamPapersPage() {
       </div>
 
       {examPapers.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-zinc-900 p-8 text-center">
-          <p className="text-gray-400">No exam papers yet.</p>
-          <Link href="/dashboard/exam-papers/create">
-            <Button className="mt-4">Create your first exam paper</Button>
-          </Link>
-        </div>
+        <EmptyState
+          icon={GraduationCap}
+          title="No exam papers yet"
+          description="Turn your subjects or uploaded source material into structured university-style exam papers."
+          actionLabel="Create your first exam paper"
+          actionHref="/dashboard/exam-papers/create"
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {examPapers.map((paper) => (

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { EmptyState } from "@/components/shared/empty-state";
 
 type DocumentItem = {
   id: string;
@@ -48,13 +49,13 @@ export function DocumentsList({ documents }: { documents: DocumentItem[] }) {
 
   if (documents.length === 0) {
     return (
-      <div className="rounded-xl border border-white/10 bg-zinc-900 p-8 text-center">
-        <FileText className="mx-auto mb-4 h-12 w-12 text-gray-600" />
-        <p className="text-gray-400">No documents yet.</p>
-        <Link href="/dashboard/upload">
-          <Button className="mt-4">Upload your first file</Button>
-        </Link>
-      </div>
+      <EmptyState
+        icon={FileText}
+        title="No documents yet"
+        description="Upload your first PDF, DOCX, or notes file to start generating notes, MCQs, viva questions, and exam papers."
+        actionLabel="Upload your first file"
+        actionHref="/dashboard/upload"
+      />
     );
   }
 

@@ -1,12 +1,12 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { AlertTriangle, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { AlertTriangle, Download, Loader2, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export function DangerZone({ user }: { user: any }) {
   const router = useRouter();
@@ -44,13 +44,13 @@ export function DangerZone({ user }: { user: any }) {
 
   return (
     <div className="space-y-6">
-      <Card className="border-yellow-500/20 bg-zinc-900 p-6">
+      <Card className="rounded-[26px] border-yellow-500/20 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
         <div className="mb-4 flex items-start gap-3">
           <AlertTriangle className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" />
           <div className="flex-1">
-            <h3 className="font-semibold">Export Your Data</h3>
+            <h3 className="font-semibold text-white">Export Your Data</h3>
             <p className="mt-1 text-sm text-gray-400">
-              Download all your notes, MCQs, and exam papers in JSON format
+              Download all your notes, MCQs, viva content, and exam papers in JSON format.
             </p>
           </div>
         </div>
@@ -61,16 +61,19 @@ export function DangerZone({ user }: { user: any }) {
               Exporting...
             </>
           ) : (
-            "Export Data"
+            <>
+              <Download className="mr-2 h-4 w-4" />
+              Export Data
+            </>
           )}
         </Button>
       </Card>
 
-      <Card className="border-red-500/20 bg-zinc-900 p-6">
+      <Card className="rounded-[26px] border-red-500/20 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
         <div className="mb-4 flex items-start gap-3">
-          <AlertTriangle className="mt-1 h-5 w-5 flex-shrink-0 text-red-500" />
+          <Trash2 className="mt-1 h-5 w-5 flex-shrink-0 text-red-500" />
           <div className="flex-1">
-            <h3 className="font-semibold text-red-500">Delete Account</h3>
+            <h3 className="font-semibold text-red-400">Delete Account</h3>
             <p className="mt-1 text-sm text-gray-400">
               Permanently delete your account and all associated data. This action cannot be undone.
             </p>
@@ -78,9 +81,9 @@ export function DangerZone({ user }: { user: any }) {
         </div>
 
         <div className="space-y-4">
-          <div>
-            <p className="mb-2 text-sm">
-              Type <span className="font-mono font-bold">DELETE</span> to confirm:
+          <div className="rounded-2xl border border-red-500/15 bg-red-500/5 p-4">
+            <p className="mb-2 text-sm text-red-100">
+              Type <span className="font-mono font-bold">DELETE</span> to confirm this action.
             </p>
             <Input
               value={confirmText}

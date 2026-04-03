@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, BookOpen, Sparkles } from "lucide-react";
 import { format } from "date-fns";
 
 const metadataSchema = z.object({
@@ -66,10 +66,20 @@ export function UploadMetadata({
   };
 
   return (
-    <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
-      <h2 className="mb-6 text-xl font-semibold">Document Details (Optional)</h2>
+    <div className="overflow-hidden rounded-[26px] border border-white/10 bg-zinc-950/80 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_35%)] p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-semibold text-white">Document Details</h2>
+            <p className="mt-1 text-sm text-gray-400">Add a little context so your generated content feels more targeted.</p>
+          </div>
+          <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.24em] text-gray-400">
+            Optional
+          </div>
+        </div>
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <Label htmlFor="subject">Subject / Topic</Label>
@@ -100,7 +110,8 @@ export function UploadMetadata({
           </div>
         </div>
 
-        <div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
           <Label>Target Exam Date (Optional)</Label>
           <Popover>
             <PopoverTrigger asChild>
@@ -113,6 +124,21 @@ export function UploadMetadata({
               <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
             </PopoverContent>
           </Popover>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center gap-2 text-pink-200">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-xs uppercase tracking-[0.24em]">Generation context</span>
+            </div>
+            <p className="mt-3 text-sm text-gray-300">
+              Subject and type help StudyForge shape notes, questions, and exam-focused output more accurately.
+            </p>
+            <div className="mt-4 flex items-center gap-2 text-sm text-gray-400">
+              <BookOpen className="h-4 w-4" />
+              {files.length} file{files.length === 1 ? "" : "s"} ready to process
+            </div>
+          </div>
         </div>
 
         <div>
@@ -126,7 +152,7 @@ export function UploadMetadata({
           />
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Button type="submit" disabled={isLoading} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90">
             {isLoading ? "Uploading..." : "Upload & Process"}
           </Button>

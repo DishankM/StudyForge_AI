@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { ShieldCheck, Sparkles, CalendarClock, UserCog } from "lucide-react";
 
 type Role = "USER" | "ADMIN" | "SUPER_ADMIN";
 type Plan = "FREE" | "STUDENT_PRO" | "INSTITUTE";
@@ -70,13 +71,23 @@ export function AdminUserManagementForm({
   };
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900 p-6">
-      <h2 className="text-xl font-semibold text-white">Manage User</h2>
-      <p className="mt-1 text-sm text-gray-400">Update role, access, plan, and trial window.</p>
+    <div className="rounded-3xl border border-white/10 bg-zinc-900 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+      <div className="flex items-start gap-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-2.5">
+          <UserCog className="h-5 w-5 text-pink-300" />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-white">Manage User</h2>
+          <p className="mt-1 text-sm text-gray-400">Update role, access, plan, and trial window.</p>
+        </div>
+      </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <Label>Role</Label>
+          <Label className="inline-flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-pink-300" />
+            Role
+          </Label>
           <Select value={role} onValueChange={(value) => canEditRole && setRole(value as Role)}>
             <SelectTrigger className="mt-2" disabled={!canEditRole}>
               <SelectValue />
@@ -95,7 +106,10 @@ export function AdminUserManagementForm({
         </div>
 
         <div>
-          <Label>Plan</Label>
+          <Label className="inline-flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-pink-300" />
+            Plan
+          </Label>
           <Select value={plan} onValueChange={(value) => setPlan(value as Plan)}>
             <SelectTrigger className="mt-2">
               <SelectValue />
@@ -109,7 +123,10 @@ export function AdminUserManagementForm({
         </div>
 
         <div>
-          <Label>Trial Ends</Label>
+          <Label className="inline-flex items-center gap-2">
+            <CalendarClock className="h-4 w-4 text-pink-300" />
+            Trial Ends
+          </Label>
           <Input
             type="date"
             value={trialEndsAt}

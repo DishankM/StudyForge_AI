@@ -22,6 +22,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { EmptyState } from "@/components/shared/empty-state";
 
 export function NotesGrid({ notes }: { notes: any[] }) {
   const router = useRouter();
@@ -65,18 +66,13 @@ export function NotesGrid({ notes }: { notes: any[] }) {
 
   if (notes.length === 0) {
     return (
-      <Card className="border-white/10 bg-zinc-900 p-12 text-center">
-        <FileText className="mx-auto mb-4 h-16 w-16 text-gray-600" />
-        <h3 className="mb-2 text-xl font-semibold">No notes yet</h3>
-        <p className="mb-6 text-gray-400">
-          Upload a document and generate notes to get started
-        </p>
-        <Link href="/dashboard/upload">
-          <Button className="bg-gradient-to-r from-pink-500 to-purple-600">
-            Upload Document
-          </Button>
-        </Link>
-      </Card>
+      <EmptyState
+        icon={FileText}
+        title="No notes yet"
+        description="Generate your first set of study notes from an uploaded document to start building your revision library."
+        actionLabel="Upload Document"
+        actionHref="/dashboard/upload"
+      />
     );
   }
 

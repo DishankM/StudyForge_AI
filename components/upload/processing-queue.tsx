@@ -16,12 +16,20 @@ type ProcessingItem = {
 
 export function ProcessingQueue({ items }: { items: ProcessingItem[] }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
-      <h2 className="mb-6 text-xl font-semibold">Processing Queue</h2>
+    <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-semibold text-white">Processing Queue</h2>
+          <p className="mt-1 text-sm text-gray-400">Track each upload from transfer to ready-for-generation status.</p>
+        </div>
+        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.24em] text-gray-400">
+          {items.length} item{items.length === 1 ? "" : "s"}
+        </div>
+      </div>
 
       <div className="space-y-4">
         {items.map((item) => (
-          <div key={item.id} className="rounded-lg border border-white/5 bg-zinc-800/50 p-4">
+          <div key={item.id} className="rounded-2xl border border-white/5 bg-white/[0.03] p-4">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {(item.status === "uploading" || item.status === "processing") && (
@@ -30,7 +38,7 @@ export function ProcessingQueue({ items }: { items: ProcessingItem[] }) {
                 {item.status === "completed" && <CheckCircle2 className="h-5 w-5 text-green-500" />}
                 {item.status === "failed" && <XCircle className="h-5 w-5 text-red-500" />}
                 <div>
-                  <p className="font-medium">{item.fileName}</p>
+                  <p className="font-medium text-white">{item.fileName}</p>
                   <p className="text-xs text-gray-500">
                     {item.message || item.status}
                   </p>

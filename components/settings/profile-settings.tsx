@@ -1,15 +1,15 @@
-﻿"use client";
+"use client";
 
 import { useRef, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Upload, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Camera, Crown, Loader2, Mail, Upload, User2 } from "lucide-react";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function ProfileSettings({ user }: { user: any }) {
   const router = useRouter();
@@ -81,15 +81,31 @@ export function ProfileSettings({ user }: { user: any }) {
   };
 
   return (
-    <Card className="border-white/10 bg-zinc-900 p-6">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="flex items-center gap-6">
-          <Avatar className="h-24 w-24">
-            <AvatarImage src={avatarUrl || ""} />
-            <AvatarFallback className="bg-gradient-to-r from-pink-500 to-purple-600 text-2xl">
-              {user.name?.[0] || user.email?.[0]}
-            </AvatarFallback>
-          </Avatar>
+    <Card className="overflow-hidden rounded-[26px] border-white/10 bg-zinc-950/80 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_35%)] p-6">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-5">
+            <Avatar className="h-24 w-24 border border-white/10">
+              <AvatarImage src={avatarUrl || ""} />
+              <AvatarFallback className="bg-gradient-to-r from-pink-500 to-purple-600 text-2xl">
+                {user.name?.[0] || user.email?.[0]}
+              </AvatarFallback>
+            </Avatar>
+
+            <div>
+              <h2 className="text-2xl font-semibold text-white">{user.name || "Your profile"}</h2>
+              <p className="mt-1 text-sm text-gray-400">{user.email}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-300">
+                  Profile
+                </span>
+                <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs text-amber-200">
+                  {user.plan || "FREE"} Plan
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div>
             <input
               ref={fileInputRef}
@@ -111,43 +127,75 @@ export function ProfileSettings({ user }: { user: any }) {
             <p className="mt-2 text-xs text-gray-500">JPG, PNG or GIF. Max size 2MB.</p>
           </div>
         </div>
+      </div>
 
-        <div>
-          <Label htmlFor="name">Full Name</Label>
-          <Input
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="mt-2"
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-6 p-6">
+        <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+          <div className="space-y-6">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <div className="mb-4 flex items-center gap-2 text-white">
+                <User2 className="h-4 w-4 text-pink-300" />
+                <h3 className="font-semibold">Personal Details</h3>
+              </div>
 
-        <div>
-          <Label htmlFor="email">Email Address</Label>
-          <Input
-            id="email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="mt-2"
-            disabled
-          />
-          <p className="mt-2 text-xs text-gray-500">Email cannot be changed</p>
-        </div>
+              <div className="space-y-5">
+                <div>
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="mt-2"
+                  />
+                </div>
 
-        <div className="border-t border-white/10 pt-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-semibold">Current Plan</p>
-              <p className="mt-1 text-sm text-gray-400">{user.plan || "FREE"} Plan</p>
+                <div>
+                  <Label htmlFor="email">Email Address</Label>
+                  <div className="relative mt-2">
+                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="pl-10"
+                      disabled
+                    />
+                  </div>
+                  <p className="mt-2 text-xs text-gray-500">Email cannot be changed from settings.</p>
+                </div>
+              </div>
             </div>
-            <Button type="button" variant="outline">
-              Upgrade Plan
-            </Button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <div className="flex items-center gap-2 text-white">
+                <Crown className="h-4 w-4 text-amber-300" />
+                <h3 className="font-semibold">Plan Snapshot</h3>
+              </div>
+              <p className="mt-4 text-3xl font-semibold text-white">{user.plan || "FREE"}</p>
+              <p className="mt-2 text-sm text-gray-400">
+                Upgrade to unlock more generation capacity and premium study workflows.
+              </p>
+              <Button type="button" variant="outline" className="mt-4 w-full">
+                Upgrade Plan
+              </Button>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <div className="flex items-center gap-2 text-white">
+                <Camera className="h-4 w-4 text-cyan-300" />
+                <h3 className="font-semibold">Profile Photo</h3>
+              </div>
+              <p className="mt-3 text-sm text-gray-400">
+                A clear profile image helps keep your workspace and account area feeling personal.
+              </p>
+            </div>
           </div>
         </div>
 
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading} className="bg-gradient-to-r from-pink-500 to-purple-600">
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

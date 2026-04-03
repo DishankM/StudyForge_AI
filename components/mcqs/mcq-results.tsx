@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { useState } from "react";
 import {
   CheckCircle2,
-  XCircle,
-  Clock,
-  TrendingUp,
-  RotateCcw,
-  Home,
   ChevronDown,
   ChevronUp,
+  Clock,
+  Home,
+  RotateCcw,
+  TrendingUp,
+  XCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export function MCQResults({
@@ -43,13 +43,13 @@ export function MCQResults({
   };
 
   const toggleQuestion = (index: number) => {
-    const newExpanded = new Set(expandedQuestions);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
+    const nextExpanded = new Set(expandedQuestions);
+    if (nextExpanded.has(index)) {
+      nextExpanded.delete(index);
     } else {
-      newExpanded.add(index);
+      nextExpanded.add(index);
     }
-    setExpandedQuestions(newExpanded);
+    setExpandedQuestions(nextExpanded);
   };
 
   const getScoreColor = (percentage: number) => {
@@ -59,68 +59,67 @@ export function MCQResults({
   };
 
   const getScoreMessage = (percentage: number) => {
-    if (percentage >= 90) return "Outstanding!";
-    if (percentage >= 80) return "Great job!";
-    if (percentage >= 70) return "Good work!";
-    if (percentage >= 60) return "Not bad, but you can do better!";
-    return "Keep practicing!";
+    if (percentage >= 90) return "Outstanding";
+    if (percentage >= 80) return "Great job";
+    if (percentage >= 70) return "Good work";
+    if (percentage >= 60) return "Solid attempt";
+    return "Keep practicing";
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] py-8">
+    <div className="min-h-screen bg-[#0a0a0a] py-6 sm:py-8">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 text-4xl font-bold">Quiz Completed!</h1>
-          <p className="text-gray-400">Here is how you performed</p>
-        </div>
+        <div className="relative mb-6 overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:mb-8 sm:p-8">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.14),_transparent_32%)]" />
+          <div className="relative text-center">
+            <h1 className="text-3xl font-bold text-white sm:text-4xl">Quiz Completed</h1>
+            <p className="mt-2 text-sm text-gray-400 sm:text-base">Here is how you performed</p>
 
-        <Card className="mb-8 border-pink-500/20 bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-8">
-          <div className="text-center">
-            <div className={cn("mb-2 text-7xl font-bold", getScoreColor(scorePercentage))}>
+            <div className={cn("mt-6 text-6xl font-bold sm:text-7xl", getScoreColor(scorePercentage))}>
               {scorePercentage}%
             </div>
-            <p className="mb-4 text-2xl font-semibold">{getScoreMessage(scorePercentage)}</p>
-            <p className="text-gray-400">
+            <p className="mt-3 text-xl font-semibold text-white sm:text-2xl">{getScoreMessage(scorePercentage)}</p>
+            <p className="mt-2 text-sm text-gray-400 sm:text-base">
               {correctCount} out of {totalQuestions} questions correct
             </p>
           </div>
-        </Card>
+        </div>
 
-        <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card className="border-white/10 bg-zinc-900 p-6">
+        <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 md:grid-cols-4">
+          <Card className="rounded-2xl border-white/10 bg-zinc-950/80 p-4 sm:p-6">
             <div className="mb-2 flex items-center gap-3">
               <CheckCircle2 className="h-5 w-5 text-green-500" />
               <span className="text-sm text-gray-400">Correct</span>
             </div>
-            <p className="text-3xl font-bold text-green-500">{correctCount}</p>
+            <p className="text-2xl font-bold text-green-500 sm:text-3xl">{correctCount}</p>
           </Card>
 
-          <Card className="border-white/10 bg-zinc-900 p-6">
+          <Card className="rounded-2xl border-white/10 bg-zinc-950/80 p-4 sm:p-6">
             <div className="mb-2 flex items-center gap-3">
               <XCircle className="h-5 w-5 text-red-500" />
               <span className="text-sm text-gray-400">Incorrect</span>
             </div>
-            <p className="text-3xl font-bold text-red-500">{incorrectCount}</p>
+            <p className="text-2xl font-bold text-red-500 sm:text-3xl">{incorrectCount}</p>
           </Card>
 
-          <Card className="border-white/10 bg-zinc-900 p-6">
+          <Card className="rounded-2xl border-white/10 bg-zinc-950/80 p-4 sm:p-6">
             <div className="mb-2 flex items-center gap-3">
               <TrendingUp className="h-5 w-5 text-yellow-500" />
               <span className="text-sm text-gray-400">Skipped</span>
             </div>
-            <p className="text-3xl font-bold text-yellow-500">{skippedCount}</p>
+            <p className="text-2xl font-bold text-yellow-500 sm:text-3xl">{skippedCount}</p>
           </Card>
 
-          <Card className="border-white/10 bg-zinc-900 p-6">
+          <Card className="rounded-2xl border-white/10 bg-zinc-950/80 p-4 sm:p-6">
             <div className="mb-2 flex items-center gap-3">
               <Clock className="h-5 w-5 text-blue-500" />
               <span className="text-sm text-gray-400">Time</span>
             </div>
-            <p className="text-3xl font-bold text-blue-500">{formatTime(timeElapsed)}</p>
+            <p className="text-2xl font-bold text-blue-500 sm:text-3xl">{formatTime(timeElapsed)}</p>
           </Card>
         </div>
 
-        <div className="mb-8 flex justify-center gap-4">
+        <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:justify-center">
           <Button onClick={onRetry} className="bg-gradient-to-r from-pink-500 to-purple-600">
             <RotateCcw className="mr-2 h-4 w-4" />
             Retry Quiz
@@ -131,8 +130,8 @@ export function MCQResults({
           </Button>
         </div>
 
-        <Card className="border-white/10 bg-zinc-900 p-6">
-          <h2 className="mb-6 text-2xl font-bold">Review Answers</h2>
+        <Card className="rounded-[26px] border-white/10 bg-zinc-950/80 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-6">
+          <h2 className="mb-6 text-2xl font-bold text-white">Review Answers</h2>
           <div className="space-y-4">
             {questions.map((question, index) => {
               const answer = answers[index];
@@ -144,7 +143,7 @@ export function MCQResults({
                 <div
                   key={question.id}
                   className={cn(
-                    "rounded-lg border p-4 transition-all",
+                    "rounded-2xl border p-4 transition-all sm:p-5",
                     isCorrect && "border-green-500/30 bg-green-500/5",
                     !isCorrect && !wasSkipped && "border-red-500/30 bg-red-500/5",
                     wasSkipped && "border-yellow-500/30 bg-yellow-500/5"
@@ -152,7 +151,7 @@ export function MCQResults({
                 >
                   <button
                     onClick={() => toggleQuestion(index)}
-                    className="flex w-full items-start justify-between text-left"
+                    className="flex w-full items-start justify-between gap-3 text-left"
                   >
                     <div className="flex flex-1 items-start gap-3">
                       {isCorrect ? (
@@ -162,11 +161,11 @@ export function MCQResults({
                       ) : (
                         <XCircle className="mt-1 h-5 w-5 flex-shrink-0 text-red-500" />
                       )}
-                      <div className="flex-1">
-                        <p className="font-semibold">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-white">
                           Question {index + 1}: {question.question}
                         </p>
-                        {wasSkipped && <p className="mt-1 text-sm text-yellow-500">Not answered</p>}
+                        {wasSkipped && <p className="mt-1 text-sm text-yellow-400">Not answered</p>}
                       </div>
                     </div>
                     {isExpanded ? (
@@ -177,7 +176,7 @@ export function MCQResults({
                   </button>
 
                   {isExpanded && (
-                    <div className="mt-4 space-y-3 pl-8">
+                    <div className="mt-4 space-y-3 sm:pl-8">
                       <div className="space-y-2">
                         {question.options.map((option: string, optionIndex: number) => {
                           const isCorrectAnswer = optionIndex === question.correctAnswer;
@@ -187,22 +186,22 @@ export function MCQResults({
                             <div
                               key={optionIndex}
                               className={cn(
-                                "rounded border p-3",
+                                "rounded-xl border p-3",
                                 isCorrectAnswer && "border-green-500 bg-green-500/10",
                                 wasSelected && !isCorrectAnswer && "border-red-500 bg-red-500/10",
-                                !wasSelected && !isCorrectAnswer && "border-white/10"
+                                !wasSelected && !isCorrectAnswer && "border-white/10 bg-white/[0.02]"
                               )}
                             >
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold">
+                              <div className="flex items-start gap-2">
+                                <span className="font-semibold text-white">
                                   {String.fromCharCode(65 + optionIndex)}.
                                 </span>
-                                <span>{option}</span>
+                                <span className="flex-1 text-sm text-gray-200 sm:text-base">{option}</span>
                                 {isCorrectAnswer && (
-                                  <CheckCircle2 className="ml-auto h-4 w-4 text-green-500" />
+                                  <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-green-500" />
                                 )}
                                 {wasSelected && !isCorrectAnswer && (
-                                  <XCircle className="ml-auto h-4 w-4 text-red-500" />
+                                  <XCircle className="h-4 w-4 flex-shrink-0 text-red-500" />
                                 )}
                               </div>
                             </div>
@@ -210,9 +209,9 @@ export function MCQResults({
                         })}
                       </div>
 
-                      <div className="rounded border border-blue-500/20 bg-blue-500/10 p-4">
-                        <p className="mb-1 text-sm font-semibold text-blue-400">Explanation:</p>
-                        <p className="text-sm text-gray-300">{question.explanation}</p>
+                      <div className="rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4">
+                        <p className="mb-1 text-sm font-semibold text-blue-400">Explanation</p>
+                        <p className="text-sm leading-7 text-gray-300">{question.explanation}</p>
                       </div>
                     </div>
                   )}

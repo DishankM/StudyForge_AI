@@ -14,9 +14,12 @@ type RecentDocument = {
 
 export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
   return (
-    <div className="h-full rounded-xl border border-white/10 bg-zinc-900 p-6">
+    <div className="h-full rounded-[26px] border border-white/10 bg-zinc-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Recent Uploads</h2>
+        <div>
+          <h2 className="text-xl font-semibold text-white">Recent Uploads</h2>
+          <p className="mt-1 text-sm text-gray-400">Your newest source materials and where to jump back in.</p>
+        </div>
         <Link href="/dashboard/documents">
           <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
             View all
@@ -39,14 +42,14 @@ export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
           documents.map((doc) => (
             <div
               key={doc.id}
-              className="group flex items-center gap-4 rounded-lg bg-zinc-800/50 p-4 transition-colors hover:bg-zinc-800"
+              className="group flex items-center gap-4 rounded-2xl border border-white/5 bg-zinc-900/80 p-4 transition hover:border-white/10 hover:bg-zinc-900"
             >
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-purple-500">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 shadow-lg shadow-black/20">
                 <FileText className="h-5 w-5 text-white" />
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{doc.fileName}</p>
+                <p className="truncate font-medium text-white">{doc.fileName}</p>
                 <div className="mt-1 flex items-center gap-2">
                   <Clock className="h-3 w-3 text-gray-500" />
                   <p className="text-xs text-gray-500">
@@ -55,7 +58,9 @@ export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
                   {doc.subject && (
                     <>
                       <span className="text-gray-600">-</span>
-                      <span className="text-xs text-gray-500">{doc.subject}</span>
+                      <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-medium text-gray-300">
+                        {doc.subject}
+                      </span>
                     </>
                   )}
                 </div>
