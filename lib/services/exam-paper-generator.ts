@@ -114,7 +114,8 @@ async function buildDocumentExamBrief({
   }
 
   const chunkSummaries: string[] = [];
-  for (const [index, chunk] of chunks.entries()) {
+  for (let index = 0; index < chunks.length; index += 1) {
+    const chunk = chunks[index];
     chunkSummaries.push(
       await summarizeExamChunk({
         chunk,

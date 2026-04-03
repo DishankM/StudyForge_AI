@@ -140,7 +140,8 @@ export async function generateNotes({
       mode === "fast" ? allTextChunks.slice(0, Math.min(2, allTextChunks.length)) : allTextChunks;
 
     const chunkSummaries: string[] = [];
-    for (const [index, chunk] of textChunks.entries()) {
+    for (let index = 0; index < textChunks.length; index += 1) {
+      const chunk = textChunks[index];
       chunkSummaries.push(
         await summarizeChunk({
           chunk,

@@ -128,7 +128,8 @@ export async function generateVivaQuestions({
     const perChunkCount = Math.max(3, Math.ceil(targetQuestionPool / textChunks.length));
     const generatedQuestions: VivaQuestion[] = [];
 
-    for (const [index, chunk] of textChunks.entries()) {
+    for (let index = 0; index < textChunks.length; index += 1) {
+      const chunk = textChunks[index];
       const userPrompt = `Generate ${perChunkCount} viva (oral examination) questions from chunk ${index + 1} of ${textChunks.length}.
 
 CONTENT:
