@@ -1,39 +1,13 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { del } from "@vercel/blob";
+import { deleteStoredFile } from "@/lib/storage";
 import { NextResponse } from "next/server";
-import { unlink } from "fs/promises";
-import path from "path";
 
 export const runtime = "nodejs";
 
 type RouteParams = {
   params: { id: string };
 };
-
-async function deleteLocalUpload(fileUrl: string) {
-  if (!fileUrl) return;
-  if (!fileUrl.startsWith("/uploads/") && !fileUrl.startsWith("uploads/")) return;
-
-  const relativePath = fileUrl.startsWith("/") ? fileUrl.slice(1) : fileUrl;
-  const filePath = path.join(process.cwd(), "public", relativePath);
-
-  try {
-    await unlink(filePath);
-  } catch (error: any) {
-    if (error?.code !== "ENOENT") {
-      throw error;
-    }
-  }
-}
-
-async function deleteRemoteBlob(fileUrl: string) {
-  if (!fileUrl) return;
-  if (!fileUrl.startsWith("http://") && !fileUrl.startsWith("https://")) return;
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return;
-
-  await del(fileUrl);
-}
 
 export async function DELETE(_request: Request, { params }: RouteParams) {
   try {
@@ -64,8 +38,7 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
     }
 
     try {
-      await deleteRemoteBlob(document.fileUrl);
-      await deleteLocalUpload(document.fileUrl);
+      await deleteStoredFile(document.fileUrl);
     } catch (error) {
       console.warn("Failed to delete document file:", error);
     }

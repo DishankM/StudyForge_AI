@@ -1,10 +1,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { deleteStoredFile } from "@/lib/storage";
 import { NextResponse } from "next/server";
-import { del, put } from "@vercel/blob";
+import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import path from "path";
-import { unlink } from "fs/promises";
 
 export const runtime = "nodejs";
 
@@ -19,28 +19,6 @@ function getSafeExtension(fileName: string, mimeType: string) {
   if (mimeType === "image/gif") return ".gif";
   if (mimeType === "image/webp") return ".webp";
   return ".png";
-}
-
-async function deleteAvatar(fileUrl: string | null) {
-  if (!fileUrl) return;
-
-  if (fileUrl.startsWith("/uploads/avatars/")) {
-    const localPath = path.join(process.cwd(), "public", fileUrl);
-    try {
-      await unlink(localPath);
-    } catch {
-      // ignore missing file
-    }
-    return;
-  }
-
-  if (fileUrl.includes(".public.blob.vercel-storage.com")) {
-    try {
-      await del(fileUrl);
-    } catch {
-      // ignore blob cleanup failures
-    }
-  }
 }
 
 export async function POST(request: Request) {
@@ -91,7 +69,11 @@ export async function POST(request: Request) {
       data: { image: imageUrl },
     });
 
-    await deleteAvatar(existingUser?.image ?? null);
+    try {
+      await deleteStoredFile(existingUser?.image ?? null);
+    } catch {
+      // ignore cleanup failures for replaced avatars
+    }
 
     return NextResponse.json({ imageUrl, user });
   } catch (error) {
