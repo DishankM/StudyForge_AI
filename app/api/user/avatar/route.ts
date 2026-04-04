@@ -1,9 +1,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { del, put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import path from "path";
-import { mkdir, unlink, writeFile } from "fs/promises";
+import { unlink } from "fs/promises";
 
 export const runtime = "nodejs";
 
@@ -20,14 +21,25 @@ function getSafeExtension(fileName: string, mimeType: string) {
   return ".png";
 }
 
-async function deleteLocalAvatar(fileUrl: string | null) {
+async function deleteAvatar(fileUrl: string | null) {
   if (!fileUrl) return;
-  if (!fileUrl.startsWith("/uploads/avatars/")) return;
-  const localPath = path.join(process.cwd(), "public", fileUrl);
-  try {
-    await unlink(localPath);
-  } catch {
-    // ignore missing file
+
+  if (fileUrl.startsWith("/uploads/avatars/")) {
+    const localPath = path.join(process.cwd(), "public", fileUrl);
+    try {
+      await unlink(localPath);
+    } catch {
+      // ignore missing file
+    }
+    return;
+  }
+
+  if (fileUrl.includes(".public.blob.vercel-storage.com")) {
+    try {
+      await del(fileUrl);
+    } catch {
+      // ignore blob cleanup failures
+    }
   }
 }
 
@@ -55,13 +67,19 @@ export async function POST(request: Request) {
 
     const ext = getSafeExtension(file.name, file.type);
     const fileName = `${randomUUID()}${ext}`;
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "avatars");
-    await mkdir(uploadsDir, { recursive: true });
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(uploadsDir, fileName), buffer);
+    if (!blobToken) {
+      return new NextResponse("Blob storage is not configured", { status: 500 });
+    }
 
-    const imageUrl = `/uploads/avatars/${fileName}`;
+    const blob = await put(`avatars/${session.user.id}/${fileName}`, file, {
+      access: "public",
+      token: blobToken,
+      addRandomSuffix: false,
+    });
+
+    const imageUrl = blob.url;
 
     const existingUser = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -73,7 +91,7 @@ export async function POST(request: Request) {
       data: { image: imageUrl },
     });
 
-    await deleteLocalAvatar(existingUser?.image ?? null);
+    await deleteAvatar(existingUser?.image ?? null);
 
     return NextResponse.json({ imageUrl, user });
   } catch (error) {
