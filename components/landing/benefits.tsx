@@ -1,131 +1,119 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Clock, Brain, Zap, Building2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { Brain, Building2, Clock, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const benefits = [
   {
-    title: "Save 15+ Hours Every Week",
+    title: "Spend Less Time Rewriting Material",
     icon: Clock,
     side: "left",
     description:
-      "Stop wasting time manually summarizing notes. StudyForge processes 100-page documents in under 2 minutes.",
-    quote: "I used to spend entire weekends making notes. Now I'm done in 30 minutes!",
-    author: "Priya, Engineering Student",
-    stat: "Traditional vs StudyForge",
+      "Instead of manually restructuring long documents, you can turn them into study-ready formats that are easier to revise and revisit.",
+    quote: "It helped me move from scattered notes to something I could actually revise from.",
+    author: "Student workflow focus",
+    stat: "Better structure for revision sessions",
   },
   {
-    title: "Learn Smarter, Not Harder",
+    title: "Study in Multiple Formats",
     icon: Brain,
     side: "right",
     description:
-      "AI identifies exactly what you need to study. Focus on weak areas with intelligent practice questions.",
-    pills: ["Adaptive Learning", "Progress Tracking", "Weak Area Detection"],
-    stats: ["85% better retention", "2x faster prep"],
+      "Different exams need different preparation styles. StudyForge helps you switch between notes, MCQs, viva practice, and exam-style output from the same source.",
+    pills: ["Notes", "MCQs", "Viva", "Exam Papers"],
+    stats: ["One source, multiple outputs", "Useful before tests and finals"],
   },
   {
-    title: "Exam-Ready in Record Time",
+    title: "Useful for Last-Minute Revision",
     icon: Zap,
     side: "left",
     description:
-      "Last-minute preparation made easy. Generate complete study materials from your syllabus 24 hours before exams.",
-    timeline: "24hr before exam → Complete study kit ready",
+      "When you are short on time, condensed notes and quick practice sets make revision more manageable than working directly from raw material.",
+    timeline: "Upload source -> generate outputs -> start revising",
   },
   {
-    title: "University-Specific Formatting",
+    title: "Flexible for Different Study Contexts",
     icon: Building2,
     side: "right",
     description:
-      "Practice with papers that look exactly like your university's format. Mumbai University, Delhi University, and 20+ more.",
-    cta: "Request your university",
+      "Whether you are revising a chapter, preparing for viva, or building question practice from class material, the workflow stays consistent.",
+    cta: "Explore the workflow",
   },
 ];
 
 export function Benefits() {
   return (
-    <section className="py-24 bg-surface/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-surface/30 py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-text-primary mb-4">
-            Why Students Love StudyForge
+          <h2 className="mb-4 font-heading text-3xl font-bold text-text-primary sm:text-4xl lg:text-5xl">
+            Why the Workflow Is Useful for Students
           </h2>
         </motion.div>
 
         <div className="space-y-24">
-          {benefits.map((benefit, i) => (
+          {benefits.map((benefit) => (
             <motion.div
               key={benefit.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className={`grid lg:grid-cols-2 gap-12 items-center ${
-                benefit.side === "right" ? "lg:flex-row-reverse" : ""
-              }`}
+              className="grid items-center gap-12 lg:grid-cols-2"
             >
-              <div
-                className={
-                  benefit.side === "right" ? "lg:order-2" : "lg:order-1"
-                }
-              >
-                <div className="glass-card p-8 lg:p-12 aspect-video flex items-center justify-center">
-                  <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary-pink/20 to-primary-purple/20 flex items-center justify-center">
-                    <benefit.icon className="w-12 h-12 text-primary-purple" />
+              <div className={benefit.side === "right" ? "lg:order-2" : "lg:order-1"}>
+                <div className="glass-card flex aspect-video items-center justify-center p-8 lg:p-12">
+                  <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-pink/20 to-primary-purple/20">
+                    <benefit.icon className="h-12 w-12 text-primary-purple" />
                   </div>
                 </div>
               </div>
-              <div
-                className={
-                  benefit.side === "right" ? "lg:order-1" : "lg:order-2"
-                }
-              >
-                <h3 className="font-heading font-bold text-2xl lg:text-3xl text-text-primary mb-4">
+              <div className={benefit.side === "right" ? "lg:order-1" : "lg:order-2"}>
+                <h3 className="mb-4 font-heading text-2xl font-bold text-text-primary lg:text-3xl">
                   {benefit.title}
                 </h3>
-                <p className="text-text-secondary mb-6">{benefit.description}</p>
+                <p className="mb-6 text-text-secondary">{benefit.description}</p>
                 {"quote" in benefit && benefit.quote && (
-                  <blockquote className="border-l-4 border-primary-pink pl-4 py-2 mb-6 text-text-secondary italic">
-                    &ldquo;{benefit.quote}&rdquo; — {benefit.author}
+                  <blockquote className="mb-6 border-l-4 border-primary-pink py-2 pl-4 italic text-text-secondary">
+                    &ldquo;{benefit.quote}&rdquo; - {benefit.author}
                   </blockquote>
                 )}
                 {"pills" in benefit && benefit.pills && (
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {(benefit.pills as string[]).map((p) => (
+                  <div className="mb-6 flex flex-wrap gap-2">
+                    {(benefit.pills as string[]).map((pill) => (
                       <span
-                        key={p}
-                        className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm"
+                        key={pill}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm"
                       >
-                        {p}
+                        {pill}
                       </span>
                     ))}
                   </div>
                 )}
                 {"stats" in benefit && benefit.stats && (
-                  <div className="flex gap-4 mb-6">
-                    {(benefit.stats as string[]).map((s) => (
+                  <div className="mb-6 flex gap-4">
+                    {(benefit.stats as string[]).map((stat) => (
                       <span
-                        key={s}
-                        className="px-4 py-2 rounded-lg bg-primary-purple/10 text-primary-purple font-medium text-sm"
+                        key={stat}
+                        className="rounded-lg bg-primary-purple/10 px-4 py-2 text-sm font-medium text-primary-purple"
                       >
-                        {s}
+                        {stat}
                       </span>
                     ))}
                   </div>
                 )}
                 {"timeline" in benefit && benefit.timeline && (
-                  <p className="text-primary-pink font-medium mb-6">
-                    {benefit.timeline}
-                  </p>
+                  <p className="mb-6 font-medium text-primary-pink">{benefit.timeline}</p>
                 )}
                 {"cta" in benefit && benefit.cta && (
                   <Button variant="outline" asChild>
-                    <Link href="#contact">{benefit.cta}</Link>
+                    <Link href="#how-it-works">{benefit.cta}</Link>
                   </Button>
                 )}
               </div>

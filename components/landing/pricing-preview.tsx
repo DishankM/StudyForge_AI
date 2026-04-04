@@ -1,25 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const plans = [
   {
     name: "Free",
-    price: "₹0",
+    price: "Rs 0",
     period: "/month",
-    badge: "Perfect to start",
+    badge: "Good for getting started",
     popular: false,
     features: [
-      "3 document uploads/month",
-      "Basic notes generation",
-      "50 MCQs/month",
-      "Standard format",
-      "Email support",
+      "Upload documents and explore the workflow",
+      "Generate study notes",
+      "Create MCQ practice sets",
+      "Access dashboard and revision tools",
     ],
     cta: "Start Free",
     variant: "outline" as const,
@@ -27,19 +26,15 @@ const plans = [
   },
   {
     name: "Student Pro",
-    price: "₹149",
+    price: "Rs 149",
     period: "/month",
-    badge: "Most popular",
+    badge: "Most practical for regular use",
     popular: true,
     features: [
-      "Unlimited uploads",
-      "Advanced AI notes",
-      "Unlimited MCQs",
-      "All exam paper formats",
-      "Viva questions",
-      "Revision planner",
-      "Priority support",
-      "Download as PDF/DOCX",
+      "Higher usage for uploads and generation",
+      "Notes, MCQs, viva, and exam paper workflows",
+      "Faster day-to-day revision support",
+      "Priority access to growing features",
     ],
     cta: "Start Free Trial",
     variant: "default" as const,
@@ -50,16 +45,13 @@ const plans = [
     name: "Institute",
     price: "Custom",
     period: " pricing",
-    badge: "For colleges & coaching",
+    badge: "For teams and institutions",
     popular: false,
     features: [
       "Everything in Pro",
-      "Multi-user access",
-      "White-label option",
-      "Custom templates",
-      "Bulk processing",
-      "API access",
-      "Dedicated support",
+      "Shared access for multiple users",
+      "Custom templates and workflows",
+      "Operational support for larger usage",
     ],
     cta: "Contact Sales",
     variant: "outline" as const,
@@ -70,20 +62,21 @@ const plans = [
 export function PricingPreview() {
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user;
+
   return (
-    <section id="pricing" className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="pricing" className="py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-12 text-center sm:mb-16"
         >
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-text-primary mb-4">
-            Choose Your Plan
+          <h2 className="mb-4 font-heading text-3xl font-bold text-text-primary sm:text-4xl lg:text-5xl">
+            Choose a Plan That Fits Your Study Routine
           </h2>
-          <p className="text-text-secondary text-lg max-w-xl mx-auto">
-            Start free, upgrade anytime. No credit card required.
+          <p className="mx-auto max-w-xl text-lg text-text-secondary">
+            Start free, explore the workflow, and upgrade when you need more daily usage.
           </p>
         </motion.div>
 
@@ -91,69 +84,46 @@ export function PricingPreview() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-6 lg:gap-8"
+          className="grid gap-5 md:grid-cols-3 lg:gap-8"
         >
           {plans.map((plan) => (
             <motion.div
               key={plan.name}
               whileHover={{ y: -4 }}
               className={cn(
-                "glass-card p-6 lg:p-8 flex flex-col relative",
+                "glass-card relative flex flex-col p-5 sm:p-6 lg:p-8",
                 plan.popular && "border-2 border-primary-purple shadow-glow-purple"
               )}
             >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-primary-pink to-primary-purple text-white text-xs font-medium">
+              {plan.popular ? (
+                <div className="absolute -top-3 left-1/2 max-w-[90%] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-pink to-primary-purple px-3 py-1 text-center text-[11px] font-medium text-white sm:text-xs">
                   {plan.badge}
                 </div>
+              ) : (
+                <span className="mb-2 block text-sm font-medium text-text-muted">{plan.badge}</span>
               )}
-              {!plan.popular && (
-                <span className="text-text-muted text-sm font-medium mb-2 block">
-                  {plan.badge}
-                </span>
-              )}
-              <h3 className="font-heading font-bold text-xl text-text-primary mb-1">
-                {plan.name}
-              </h3>
-              <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-3xl font-bold text-text-primary">
-                  {plan.price}
-                </span>
+              <h3 className="mb-1 font-heading text-xl font-bold text-text-primary">{plan.name}</h3>
+              <div className="mb-6 flex items-baseline gap-1">
+                <span className="text-3xl font-bold text-text-primary">{plan.price}</span>
                 <span className="text-text-muted">{plan.period}</span>
               </div>
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-center gap-2 text-text-secondary text-sm"
-                  >
-                    <Check className="w-5 h-5 text-primary-pink shrink-0" />
-                    {f}
+              <ul className="mb-6 flex-1 space-y-3">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2 text-sm leading-6 text-text-secondary">
+                    <Check className="h-5 w-5 shrink-0 text-primary-pink" />
+                    {feature}
                   </li>
                 ))}
               </ul>
-              {plan.note && (
-                <p className="text-text-muted text-xs mb-4">{plan.note}</p>
-              )}
+              {plan.note && <p className="mb-4 text-xs text-text-muted">{plan.note}</p>}
               {!isLoggedIn || !plan.href.startsWith("/auth") ? (
-                <Button
-                  variant={plan.variant}
-                  size="lg"
-                  className="w-full"
-                  asChild
-                >
+                <Button variant={plan.variant} size="lg" className="w-full" asChild>
                   <Link href={plan.href}>{plan.cta}</Link>
                 </Button>
               ) : null}
             </motion.div>
           ))}
         </motion.div>
-
-        <p className="text-center text-text-muted text-sm mt-8">
-          <Link href="#compare" className="text-primary-pink hover:underline">
-            Compare all features →
-          </Link>
-        </p>
       </div>
     </section>
   );

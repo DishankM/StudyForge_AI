@@ -73,18 +73,18 @@ const item = {
 
 export function Features() {
   return (
-    <section id="features" className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="features" className="py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-12 text-center sm:mb-16"
         >
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-text-primary mb-4">
+          <h2 className="mb-4 font-heading text-3xl font-bold text-text-primary sm:text-4xl lg:text-5xl">
             Everything You Need to Ace Your Exams
           </h2>
-          <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-base text-text-secondary sm:text-lg">
             Comprehensive tools designed for student success
           </p>
         </motion.div>
@@ -94,24 +94,24 @@ export function Features() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8"
         >
           {features.map((feature) => (
             <motion.div
               key={feature.title}
               variants={item}
-              className="glass-card p-6 lg:p-8 group hover:border-primary-purple/30 transition-all duration-300 hover:-translate-y-1"
+              className="glass-card group p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary-purple/30 sm:p-6 lg:p-8"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-pink to-primary-purple flex items-center justify-center mb-6">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-pink to-primary-purple sm:h-14 sm:w-14">
                 <feature.icon className="w-7 h-7 text-white" />
               </div>
-              <h3 className="font-heading font-semibold text-xl text-text-primary mb-3">
+              <h3 className="mb-3 font-heading text-lg font-semibold text-text-primary sm:text-xl">
                 {feature.title}
               </h3>
-              <p className="text-text-secondary text-sm mb-4">
+              <p className="mb-4 text-sm leading-6 text-text-secondary">
                 {feature.description}
               </p>
-              <ul className="space-y-1 mb-6">
+              <ul className="mb-5 space-y-1">
                 {feature.benefits.map((b) => (
                   <li key={b} className="text-text-muted text-sm flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary-pink" />
@@ -121,7 +121,7 @@ export function Features() {
               </ul>
               <Link
                 href="#"
-                className="inline-flex items-center gap-2 text-primary-pink text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary-pink transition-opacity opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 Learn More <ArrowRight className="w-4 h-4" />
               </Link>

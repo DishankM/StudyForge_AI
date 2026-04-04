@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Twitter,
-  Instagram,
-  Linkedin,
-  Youtube,
-  MessageCircle,
-} from "lucide-react";
+import { Instagram, Linkedin, MessageCircle, Twitter, Youtube } from "lucide-react";
 import { useState } from "react";
 
 const footerLinks = {
@@ -15,34 +9,22 @@ const footerLinks = {
     { label: "How it Works", href: "#how-it-works" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },
-    { label: "Universities Supported", href: "#" },
-    { label: "API Documentation", href: "#" },
-    { label: "Roadmap", href: "#" },
-    { label: "Changelog", href: "#" },
+    { label: "Sample Outputs", href: "#demo" },
   ],
   resources: [
-    { label: "Blog", href: "#" },
-    { label: "Student Success Stories", href: "#" },
     { label: "Help Center", href: "#" },
-    { label: "Video Tutorials", href: "#" },
-    { label: "Sample Outputs", href: "#" },
     { label: "Study Tips", href: "#" },
-    { label: "Exam Prep Guides", href: "#" },
+    { label: "Revision Guides", href: "#" },
+    { label: "FAQ", href: "#" },
   ],
   company: [
-    { label: "About Us", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Contact Us", href: "#" },
-    { label: "Partnership", href: "#" },
-    { label: "Affiliate Program", href: "#" },
-    { label: "Press Kit", href: "#" },
+    { label: "About", href: "#" },
+    { label: "Contact", href: "#" },
+    { label: "Roadmap", href: "#" },
   ],
   legal: [
     { label: "Terms of Service", href: "/terms" },
     { label: "Privacy Policy", href: "/privacy" },
-    { label: "Cookie Policy", href: "#" },
-    { label: "Refund Policy", href: "#" },
-    { label: "Academic Integrity", href: "#" },
   ],
 };
 
@@ -58,143 +40,76 @@ export function Footer() {
   const [email, setEmail] = useState("");
 
   return (
-    <footer className="bg-background border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <Link href="/" className="font-heading font-bold text-xl gradient-text">
+    <footer className="border-t border-white/10 bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 lg:gap-12">
+          <div className="col-span-2 md:col-span-3 lg:col-span-2">
+            <Link href="/" className="font-heading text-xl font-bold gradient-text">
               StudyForge
             </Link>
-            <p className="text-text-muted text-sm mt-2">
-              Transform studying into success
+            <p className="mt-2 text-sm text-text-muted">Turn study material into usable revision assets</p>
+            <p className="mt-2 max-w-xs text-sm text-text-secondary">
+              A study workspace for students who want notes, practice, and exam preparation built from their own source material.
             </p>
-            <p className="text-text-secondary text-sm mt-2 max-w-xs">
-              AI-powered platform trusted by thousands of students to ace their
-              exams with smart study materials.
-            </p>
-            <div className="flex gap-3 mt-4">
-              {socials.map((s) => (
+            <div className="mt-4 flex flex-wrap gap-3">
+              {socials.map((social) => (
                 <a
-                  key={s.label}
-                  href={s.href}
-                  aria-label={s.label}
-                  className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-primary-pink hover:border-primary-pink/30 transition-colors"
+                  key={social.label}
+                  href={social.href}
+                  aria-label={social.label}
+                  className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-text-muted transition-colors hover:border-primary-pink/30 hover:text-primary-pink"
                 >
-                  <s.icon className="w-5 h-5" />
+                  <social.icon className="h-5 w-5" />
                 </a>
               ))}
             </div>
           </div>
 
-          <div>
-            <h4 className="font-heading font-semibold text-text-primary mb-4">
-              Product
-            </h4>
-            <ul className="space-y-2">
-              {footerLinks.product.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-text-secondary hover:text-primary-pink transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div id="resources">
-            <h4 className="font-heading font-semibold text-text-primary mb-4">
-              Resources
-            </h4>
-            <ul className="space-y-2">
-              {footerLinks.resources.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-text-secondary hover:text-primary-pink transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-heading font-semibold text-text-primary mb-4">
-              Company
-            </h4>
-            <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-text-secondary hover:text-primary-pink transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-heading font-semibold text-text-primary mb-4">
-              Legal
-            </h4>
-            <ul className="space-y-2">
-              {footerLinks.legal.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-text-secondary hover:text-primary-pink transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {Object.entries(footerLinks).map(([section, links]) => (
+            <div key={section}>
+              <h4 className="mb-4 font-heading font-semibold capitalize text-text-primary">{section}</h4>
+              <ul className="space-y-2">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-text-secondary transition-colors hover:text-primary-pink"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* Newsletter */}
-        <div className="mt-16 pt-8 border-t border-white/10">
-          <div className="glass-card p-6 max-w-xl">
-            <p className="font-medium text-text-primary mb-1">
-              Get study tips & platform updates
-            </p>
-            <div className="flex gap-2 mt-3">
+        <div className="mt-12 border-t border-white/10 pt-8 sm:mt-16">
+          <div className="glass-card max-w-xl p-5 sm:p-6">
+            <p className="mb-1 font-medium text-text-primary">Get study tips and platform updates</p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
               <input
                 type="email"
                 placeholder="Your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 h-11 px-4 rounded-lg bg-white/5 border border-white/10 text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-purple text-sm"
+                className="h-11 flex-1 rounded-lg border border-white/10 bg-white/5 px-4 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-purple"
               />
               <button
                 type="button"
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary-pink to-primary-purple text-white text-sm font-medium hover:opacity-90 transition-opacity"
+                className="rounded-lg bg-gradient-to-r from-primary-pink to-primary-purple px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
               >
                 Subscribe
               </button>
             </div>
-            <p className="text-text-muted text-xs mt-2">
-              Join 5,000+ subscribers
-            </p>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-text-muted text-sm">
-            © 2024 StudyForge. All rights reserved.
-          </p>
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
+          <p className="text-center text-sm text-text-muted sm:text-left">© 2026 StudyForge. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <span className="text-text-muted text-xs">EN</span>
-            <span className="text-text-muted text-xs cursor-pointer">HI</span>
+            <span className="text-xs text-text-muted">EN</span>
+            <span className="cursor-pointer text-xs text-text-muted">HI</span>
           </div>
         </div>
       </div>

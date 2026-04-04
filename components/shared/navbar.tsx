@@ -62,10 +62,10 @@ export function Navbar() {
           : "bg-transparent"
       )}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between lg:h-20">
           <Link href="/" className="flex items-center gap-2">
-            <span className="font-heading font-bold text-xl gradient-text">
+            <span className="font-heading text-lg font-bold gradient-text sm:text-xl">
               StudyForge
             </span>
           </Link>
@@ -119,7 +119,7 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+            className="rounded-lg p-2 transition-colors hover:bg-white/10 md:hidden"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -136,15 +136,15 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-surface/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
+            className="overflow-hidden border-b border-white/10 bg-surface/95 backdrop-blur-xl md:hidden"
           >
-            <div className="px-4 py-6 space-y-4">
+            <div className="space-y-4 px-4 py-5">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="block py-2 text-text-secondary hover:text-text-primary font-medium"
+                  className="block rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 font-medium text-text-secondary hover:text-text-primary"
                 >
                   {link.label}
                 </Link>

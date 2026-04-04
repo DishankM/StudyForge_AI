@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, ListChecks, FileCheck, ArrowRight } from "lucide-react";
+import { ArrowRight, FileCheck, FileText, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -15,54 +15,52 @@ const tabs = [
 
 const samples = {
   notes: {
-    input: "Chapter 3: Cell Biology – 15 pages",
+    input: "Biology chapter on cell structure",
     output: (
-      <div className="text-left space-y-3 text-sm">
-        <h4 className="font-semibold text-primary-pink">3.1 Cell Structure</h4>
-        <ul className="list-disc list-inside text-text-secondary space-y-1">
-          <li>Cell membrane: phospholipid bilayer</li>
-          <li>Nucleus: contains genetic material</li>
-          <li>Mitochondria: energy production (ATP)</li>
+      <div className="space-y-3 text-left text-sm">
+        <h4 className="font-semibold text-primary-pink">1. Cell Structure Overview</h4>
+        <ul className="list-inside list-disc space-y-1 text-text-secondary">
+          <li>Cell membrane acts as the protective boundary of the cell.</li>
+          <li>Nucleus stores genetic material and controls major cell functions.</li>
+          <li>Mitochondria are linked to energy production and ATP generation.</li>
         </ul>
-        <h4 className="font-semibold text-primary-pink">3.2 Key Concepts</h4>
+        <h4 className="font-semibold text-primary-pink">2. Revision Focus</h4>
         <p className="text-text-secondary">
-          Prokaryotic vs eukaryotic cells; organelle functions...
+          Compare organelle roles, structural differences, and the core function of each part.
         </p>
       </div>
     ),
   },
   mcq: {
-    input: "Topic: Thermodynamics",
+    input: "Thermodynamics topic for practice revision",
     output: (
-      <div className="text-left space-y-3 text-sm">
-        <p className="text-text-primary font-medium">
-          Q. First law of thermodynamics states:
-        </p>
+      <div className="space-y-3 text-left text-sm">
+        <p className="font-medium text-text-primary">Q. What does the first law of thermodynamics describe?</p>
         <div className="space-y-2">
-          {["Energy cannot be created or destroyed", "Entropy always increases", "Heat flows from cold to hot", "None of the above"].map((opt, i) => (
-            <div
-              key={i}
-              className="px-3 py-2 rounded-lg border border-white/10 bg-white/5"
-            >
-              {String.fromCharCode(65 + i)}. {opt}
+          {[
+            "Conservation of energy",
+            "Increase in entropy",
+            "Heat transfer from cold to hot",
+            "Equilibrium of matter",
+          ].map((option, index) => (
+            <div key={option} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+              {String.fromCharCode(65 + index)}. {option}
             </div>
           ))}
         </div>
-        <p className="text-primary-purple text-xs">✓ Detailed explanation included</p>
+        <p className="text-xs text-primary-purple">Includes answer explanation and topic context</p>
       </div>
     ),
   },
   exam: {
-    input: "Format: Mumbai University B.Sc.",
+    input: "University-style paper from uploaded source material",
     output: (
-      <div className="text-left space-y-2 text-sm border border-white/10 rounded-lg p-4">
-        <p className="text-center font-heading font-semibold text-text-primary">
-          Semester IV — Subject Name
-        </p>
-        <p className="text-center text-text-muted text-xs">Marks: 60 | Time: 2 hrs</p>
-        <p className="text-text-secondary">Section A: 10 × 2 = 20 marks</p>
-        <p className="text-text-secondary">Section B: 5 × 5 = 25 marks</p>
-        <p className="text-text-secondary">Section C: 3 × 5 = 15 marks</p>
+      <div className="space-y-2 rounded-lg border border-white/10 p-4 text-left text-sm">
+        <p className="text-center font-heading font-semibold text-text-primary">Semester IV - Subject Name</p>
+        <p className="text-center text-xs text-text-muted">Time: 2 hours | Marks: 60</p>
+        <p className="text-text-secondary">Section A: Short answer questions</p>
+        <p className="text-text-secondary">Section B: Medium length questions</p>
+        <p className="text-text-secondary">Section C: Long-form answer questions</p>
       </div>
     ),
   },
@@ -73,18 +71,18 @@ export function DemoShowcase() {
 
   return (
     <section id="demo" className="py-24">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-12 text-center"
         >
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-text-primary mb-4">
-            See the Quality Yourself
+          <h2 className="mb-4 font-heading text-3xl font-bold text-text-primary sm:text-4xl lg:text-5xl">
+            Preview the Output Style
           </h2>
-          <p className="text-text-secondary text-lg">
-            Real outputs from StudyForge AI
+          <p className="text-lg text-text-secondary">
+            A quick look at the kind of structured material StudyForge can generate from study sources.
           </p>
         </motion.div>
 
@@ -92,20 +90,20 @@ export function DemoShowcase() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-2 mb-8"
+          className="mb-8 flex flex-wrap justify-center gap-2"
         >
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all",
+                "flex items-center gap-2 rounded-xl border px-5 py-2.5 transition-all",
                 activeTab === tab.id
                   ? "border-primary-purple bg-primary-purple/10 text-text-primary"
-                  : "border-white/10 hover:border-white/20 text-text-secondary"
+                  : "border-white/10 text-text-secondary hover:border-white/20"
               )}
             >
-              <tab.icon className="w-5 h-5" />
+              <tab.icon className="h-5 w-5" />
               {tab.label}
             </button>
           ))}
@@ -117,21 +115,19 @@ export function DemoShowcase() {
           viewport={{ once: true }}
           className="glass-card p-6 lg:p-8"
         >
-          <div className="grid md:grid-cols-3 gap-6 items-center">
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10 opacity-80">
-              <p className="text-text-muted text-xs mb-2">Input</p>
-              <p className="text-text-secondary text-sm">
+          <div className="grid items-center gap-6 md:grid-cols-3">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4 opacity-80">
+              <p className="mb-2 text-xs text-text-muted">Input</p>
+              <p className="text-sm text-text-secondary">
                 {samples[activeTab as keyof typeof samples].input}
               </p>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <ArrowRight className="w-8 h-8 text-primary-purple" />
-              <span className="text-xs text-primary-purple font-medium">
-                AI Processing
-              </span>
+              <ArrowRight className="h-8 w-8 text-primary-purple" />
+              <span className="text-xs font-medium text-primary-purple">Document to study output</span>
             </div>
-            <div className="p-4 rounded-xl bg-white/5 border border-primary-purple/20 min-h-[160px]">
-              <p className="text-text-muted text-xs mb-2">Output</p>
+            <div className="min-h-[160px] rounded-xl border border-primary-purple/20 bg-white/5 p-4">
+              <p className="mb-2 text-xs text-text-muted">Output</p>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -150,7 +146,7 @@ export function DemoShowcase() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-10"
+          className="mt-10 text-center"
         >
           <Button size="xl" asChild>
             <Link href="/auth/signup">Try it Free</Link>

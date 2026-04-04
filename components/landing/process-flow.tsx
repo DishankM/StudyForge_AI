@@ -25,15 +25,15 @@ export function ProcessFlow() {
   const [activeInput, setActiveInput] = useState("pdf");
 
   return (
-    <section className="py-24 bg-surface/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-surface/30 py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-12 text-center sm:mb-16"
         >
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-text-primary mb-4">
+          <h2 className="mb-4 font-heading text-3xl font-bold text-text-primary sm:text-4xl lg:text-5xl">
             See StudyForge in Action
           </h2>
         </motion.div>
@@ -42,20 +42,20 @@ export function ProcessFlow() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="grid lg:grid-cols-3 gap-8 lg:gap-12 items-center"
+          className="grid items-start gap-8 lg:grid-cols-3 lg:gap-12"
         >
           {/* Input */}
           <div className="space-y-4">
             <p className="text-text-muted text-sm font-medium uppercase tracking-wider">
               Input
             </p>
-            <div className="flex lg:flex-col gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:flex lg:flex-col">
               {inputTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveInput(tab.id)}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-3 rounded-xl border transition-all",
+                    "flex min-h-[52px] items-center gap-2 rounded-xl border px-4 py-3 text-left transition-all",
                     activeInput === tab.id
                       ? "border-primary-purple bg-primary-purple/10 text-text-primary"
                       : "border-white/10 hover:border-white/20 text-text-secondary"
@@ -66,7 +66,7 @@ export function ProcessFlow() {
                 </button>
               ))}
             </div>
-            <div className="glass-card p-6 min-h-[120px] flex items-center justify-center">
+            <div className="glass-card flex min-h-[120px] items-center justify-center p-5 sm:p-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeInput}
@@ -86,7 +86,7 @@ export function ProcessFlow() {
           </div>
 
           {/* Center - AI Processing */}
-          <div className="flex flex-col items-center justify-center py-8">
+          <div className="flex flex-col items-center justify-center py-2 sm:py-8">
             <motion.div
               animate={{
                 scale: [1, 1.05, 1],
@@ -119,7 +119,7 @@ export function ProcessFlow() {
             <p className="text-text-muted text-sm font-medium uppercase tracking-wider">
               Output
             </p>
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
               {outputs.map((out, i) => (
                 <motion.div
                   key={out.id}
@@ -127,7 +127,7 @@ export function ProcessFlow() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="glass-card p-3 flex items-center gap-3 hover:border-primary-pink/30 transition-colors cursor-default"
+                  className="glass-card flex items-center gap-3 p-3 transition-colors hover:border-primary-pink/30 cursor-default"
                 >
                   <div className="w-10 h-10 rounded-lg bg-primary-violet/20 flex items-center justify-center shrink-0">
                     <out.icon className="w-5 h-5 text-primary-purple" />
@@ -145,7 +145,7 @@ export function ProcessFlow() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="mt-10 text-center sm:mt-12"
         >
           <Button size="lg" asChild>
             <Link href="/auth/signup">Try it yourself</Link>
