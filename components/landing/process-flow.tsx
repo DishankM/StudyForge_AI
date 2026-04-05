@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FileText, StickyNote, BookOpen, Brain, FileCheck, ListChecks, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 const inputTabs = [
@@ -23,6 +24,8 @@ const outputs = [
 
 export function ProcessFlow() {
   const [activeInput, setActiveInput] = useState("pdf");
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
 
   return (
     <section className="bg-surface/30 py-20 sm:py-24">
@@ -148,7 +151,7 @@ export function ProcessFlow() {
           className="mt-10 text-center sm:mt-12"
         >
           <Button size="lg" asChild>
-            <Link href="/auth/signup">Try it yourself</Link>
+            <Link href={isLoggedIn ? "/dashboard" : "/auth/signup"}>Try it yourself</Link>
           </Button>
         </motion.div>
       </div>
