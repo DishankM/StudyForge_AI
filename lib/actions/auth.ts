@@ -1,11 +1,14 @@
 "use server";
 
+import { headers } from "next/headers";
 import { signIn, signOut } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { sendVerificationEmail, sendPasswordResetEmail } from "@/lib/email";
 import crypto from "crypto";
+import { consumeRateLimit, getClientIp, normalizeRateLimitKey } from "@/lib/rate-limit";
+import { createAuditLog } from "@/lib/audit-log";
 
 const GENERIC_AUTH_ERROR = "Invalid credentials or account access is restricted.";
 const GENERIC_EMAIL_FLOW_MESSAGE =
@@ -36,6 +39,47 @@ export async function login(email: string, password: string) {
 
 export async function signup(name: string, email: string, password: string) {
   try {
+    const requestHeaders = headers();
+    const clientIp = getClientIp(requestHeaders);
+    const normalizedEmail = normalizeRateLimitKey(email);
+    const [ipLimit, identityLimit] = await Promise.all([
+      consumeRateLimit({
+        bucket: "auth:signup:ip",
+        key: clientIp,
+        limit: 10,
+        windowMs: 60 * 60 * 1000,
+      }),
+      consumeRateLimit({
+        bucket: "auth:signup:identity",
+        key: `${clientIp}:${normalizedEmail}`,
+        limit: 5,
+        windowMs: 60 * 60 * 1000,
+      }),
+    ]);
+
+    if (!ipLimit.allowed || !identityLimit.allowed) {
+      await createAuditLog({
+        eventType: "AUTH_SIGNUP_RATE_LIMITED",
+        severity: "WARN",
+        ipAddress: clientIp,
+        email: normalizedEmail,
+        route: "/auth/signup",
+        metadata: {
+          ipRetryAfter: ipLimit.retryAfter,
+          identityRetryAfter: identityLimit.retryAfter,
+        },
+      });
+      return { error: `Too many signup attempts. Try again in ${Math.max(ipLimit.retryAfter, identityLimit.retryAfter)} seconds.` };
+    }
+
+    await createAuditLog({
+      eventType: "AUTH_SIGNUP_ATTEMPT",
+      severity: "INFO",
+      ipAddress: clientIp,
+      email: normalizedEmail,
+      route: "/auth/signup",
+    });
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -110,6 +154,47 @@ export async function verifyEmail(token: string) {
 
 export async function resetPassword(email: string) {
   try {
+    const requestHeaders = headers();
+    const clientIp = getClientIp(requestHeaders);
+    const normalizedEmail = normalizeRateLimitKey(email);
+    const [ipLimit, identityLimit] = await Promise.all([
+      consumeRateLimit({
+        bucket: "auth:reset:ip",
+        key: clientIp,
+        limit: 8,
+        windowMs: 60 * 60 * 1000,
+      }),
+      consumeRateLimit({
+        bucket: "auth:reset:identity",
+        key: `${clientIp}:${normalizedEmail}`,
+        limit: 4,
+        windowMs: 60 * 60 * 1000,
+      }),
+    ]);
+
+    if (!ipLimit.allowed || !identityLimit.allowed) {
+      await createAuditLog({
+        eventType: "AUTH_PASSWORD_RESET_RATE_LIMITED",
+        severity: "WARN",
+        ipAddress: clientIp,
+        email: normalizedEmail,
+        route: "/auth/forgot-password",
+        metadata: {
+          ipRetryAfter: ipLimit.retryAfter,
+          identityRetryAfter: identityLimit.retryAfter,
+        },
+      });
+      return { error: `Too many reset requests. Try again in ${Math.max(ipLimit.retryAfter, identityLimit.retryAfter)} seconds.` };
+    }
+
+    await createAuditLog({
+      eventType: "AUTH_PASSWORD_RESET_REQUEST",
+      severity: "INFO",
+      ipAddress: clientIp,
+      email: normalizedEmail,
+      route: "/auth/forgot-password",
+    });
+
     const user = await prisma.user.findUnique({
       where: { email },
     });

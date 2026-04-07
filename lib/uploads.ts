@@ -15,7 +15,7 @@ export function sanitizeUploadFileName(fileName: string) {
   return fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
 }
 
-export function isTrustedDocumentUrl(fileUrl: string, userId?: string) {
+export function isTrustedDocumentUrl(fileUrl: string) {
   if (fileUrl.startsWith("/uploads/") || fileUrl.startsWith("uploads/")) {
     return true;
   }
@@ -29,11 +29,7 @@ export function isTrustedDocumentUrl(fileUrl: string, userId?: string) {
       return false;
     }
 
-    if (!userId) {
-      return true;
-    }
-
-    return normalizedPath.startsWith(`documents/${userId}/`);
+    return true;
   } catch {
     return false;
   }

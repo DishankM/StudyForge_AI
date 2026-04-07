@@ -23,9 +23,15 @@ export function EmptyState({
       <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-gray-400">{description}</p>
       {actionLabel && actionHref && (
         <div className="mt-6">
-          <Link href={actionHref}>
-            <Button className="bg-gradient-to-r from-pink-500 to-purple-600">{actionLabel}</Button>
-          </Link>
+          {actionHref.startsWith("#") ? (
+            <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-600">
+              <a href={actionHref}>{actionLabel}</a>
+            </Button>
+          ) : (
+            <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-600">
+              <Link href={actionHref}>{actionLabel}</Link>
+            </Button>
+          )}
         </div>
       )}
     </div>

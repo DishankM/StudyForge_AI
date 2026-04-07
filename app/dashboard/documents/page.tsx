@@ -2,11 +2,25 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { DocumentsList } from "@/components/documents/documents-list";
 
-export default async function DocumentsPage() {
+export default async function DocumentsPage({
+  searchParams,
+}: {
+  searchParams: { search?: string };
+}) {
   const session = await auth();
 
+  const where: any = { userId: session!.user.id };
+
+  if (searchParams.search) {
+    where.OR = [
+      { fileName: { contains: searchParams.search, mode: "insensitive" } },
+      { subject: { contains: searchParams.search, mode: "insensitive" } },
+      { documentType: { contains: searchParams.search, mode: "insensitive" } },
+    ];
+  }
+
   const documents = await prisma.document.findMany({
-    where: { userId: session!.user.id },
+    where,
     orderBy: { uploadedAt: "desc" },
     include: {
       notes: true,

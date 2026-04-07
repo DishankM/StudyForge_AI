@@ -9,6 +9,7 @@ import {
   Users,
   FolderKanban,
   Activity,
+  ShieldAlert,
   ShieldCheck,
   ArrowLeft,
   LogOut,
@@ -26,6 +27,7 @@ const navigation = [
   { name: "Overview", href: "/admin", icon: LayoutDashboard },
   { name: "Users", href: "/admin/users", icon: Users },
   { name: "Content", href: "/admin/content", icon: FolderKanban },
+  { name: "Security Feed", href: "/admin/security", icon: ShieldAlert },
   { name: "System", href: "/admin/system", icon: Activity },
 ];
 

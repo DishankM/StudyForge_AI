@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       return new NextResponse("Invalid file size", { status: 400 });
     }
 
-    if (!isTrustedDocumentUrl(fileUrl, session.user.id)) {
+    if (!isTrustedDocumentUrl(fileUrl)) {
       return new NextResponse("Invalid file location", { status: 400 });
     }
 

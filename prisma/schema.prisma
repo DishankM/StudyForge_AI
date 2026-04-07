@@ -30,6 +30,7 @@ model User {
   notes      Note[]
   mcqSets    McqSet[]
   examPapers ExamPaper[]
+  auditLogs  AuditLog[]
 
   verificationTokens  VerificationToken[]
   passwordResetTokens PasswordResetToken[]
@@ -186,4 +187,24 @@ enum Role {
   USER
   ADMIN
   SUPER_ADMIN
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  eventType   String
+  severity    String
+  ipAddress   String?
+  email       String?
+  route       String?
+  searchQuery String?
+  targetId    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@index([severity, createdAt])
+  @@index([userId, createdAt])
+  @@index([ipAddress, createdAt])
 }

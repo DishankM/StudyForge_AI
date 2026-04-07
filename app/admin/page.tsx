@@ -162,6 +162,7 @@ export default async function AdminOverviewPage() {
             {[
               { href: "/admin/users", title: "User Management", description: "Review roles, plans, and trials." },
               { href: "/admin/content", title: "Content Overview", description: "Inspect uploads and generated material." },
+              { href: "/admin/security", title: "Security Feed", description: "Review logins, throttles, and suspicious activity." },
               { href: "/admin/system", title: "System Health", description: "Check service configuration and status." },
             ].map((item) => (
               <Link

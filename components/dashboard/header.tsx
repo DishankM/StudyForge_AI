@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Bell, Search, Menu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 type HeaderUser = {
@@ -27,6 +29,47 @@ export function DashboardHeader({
   user: HeaderUser;
   onMenuClick?: () => void;
 }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+
+  useEffect(() => {
+    setSearch(searchParams.get("search") || "");
+  }, [searchParams]);
+
+  const resolveSearchPath = () => {
+    if (pathname.startsWith("/dashboard/notes")) return "/dashboard/notes";
+    if (pathname.startsWith("/dashboard/documents")) return "/dashboard/documents";
+    return "/dashboard/documents";
+  };
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const params = new URLSearchParams(searchParams.toString());
+    const value = search.trim();
+    const targetPath = resolveSearchPath();
+
+    if (value) {
+      params.set("search", value);
+      void fetch("/api/audit/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: value,
+          route: targetPath,
+        }),
+      });
+    } else {
+      params.delete("search");
+    }
+
+    router.push(`${targetPath}?${params.toString()}`);
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur-sm">
       <div className="flex h-16 items-center gap-x-4 px-4 sm:gap-x-6 sm:px-6 lg:px-8">
@@ -39,15 +82,16 @@ export function DashboardHeader({
         </button>
 
         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-          <form className="flex w-full max-w-2xl items-center gap-2" action="#" method="GET">
+          <form className="flex w-full max-w-2xl items-center gap-2" onSubmit={handleSearchSubmit}>
             <div className="relative flex-1">
-              <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center gap-2">
+              <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
                 <Search className="h-4 w-4 text-gray-400" />
-                <span className="hidden text-xs text-gray-500 md:inline">Search</span>
               </div>
               <Input
                 type="search"
-                placeholder="Search documents, notes, MCQs..."
+                placeholder="Search documents or notes..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
                 className="h-11 w-full rounded-full border-white/10 bg-gradient-to-r from-zinc-900 to-zinc-950 pl-16 pr-28 text-sm text-gray-200 placeholder:text-gray-500 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] transition-all focus:border-pink-500/50 focus:shadow-[0_0_0_1px_rgba(236,72,153,0.3),0_0_30px_rgba(236,72,153,0.15)]"
               />
               <div className="pointer-events-none absolute inset-y-0 right-3 hidden items-center gap-2 text-xs text-gray-500 md:flex">

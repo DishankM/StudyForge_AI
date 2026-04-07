@@ -5,6 +5,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { loginSchema } from "@/lib/validations/auth";
+import { consumeRateLimit, getClientIp, normalizeRateLimitKey } from "@/lib/rate-limit";
+import { createAuditLog } from "@/lib/audit-log";
 
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
@@ -35,7 +37,7 @@ export const authConfig: NextAuthConfig = {
       },
     }),
     Credentials({
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         const validatedFields = loginSchema.safeParse(credentials);
 
         if (!validatedFields.success) {
@@ -43,18 +45,71 @@ export const authConfig: NextAuthConfig = {
         }
 
         const { email, password } = validatedFields.data;
+        const normalizedEmail = normalizeRateLimitKey(email);
+        const clientIp = getClientIp(request);
+
+        const [ipLimit, identityLimit] = await Promise.all([
+          consumeRateLimit({
+            bucket: "auth:login:ip",
+            key: clientIp,
+            limit: 20,
+            windowMs: 15 * 60 * 1000,
+          }),
+          consumeRateLimit({
+            bucket: "auth:login:identity",
+            key: `${clientIp}:${normalizedEmail}`,
+            limit: 8,
+            windowMs: 15 * 60 * 1000,
+          }),
+        ]);
+
+        if (!ipLimit.allowed || !identityLimit.allowed) {
+          await createAuditLog({
+            eventType: "AUTH_LOGIN_RATE_LIMITED",
+            severity: "WARN",
+            ipAddress: clientIp,
+            email: normalizedEmail,
+            route: "/auth/login",
+            metadata: {
+              ipRetryAfter: ipLimit.retryAfter,
+              identityRetryAfter: identityLimit.retryAfter,
+            },
+          });
+          return null;
+        }
 
         const user = await prisma.user.findUnique({
           where: { email },
         });
 
         if (!user || !user.password) {
+          await createAuditLog({
+            eventType: "AUTH_LOGIN_FAILURE",
+            severity: "WARN",
+            ipAddress: clientIp,
+            email: normalizedEmail,
+            route: "/auth/login",
+            metadata: {
+              reason: "user_not_found_or_password_missing",
+            },
+          });
           return null;
         }
 
         const passwordsMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordsMatch) {
+          await createAuditLog({
+            eventType: "AUTH_LOGIN_FAILURE",
+            severity: "WARN",
+            userId: user.id,
+            ipAddress: clientIp,
+            email: normalizedEmail,
+            route: "/auth/login",
+            metadata: {
+              reason: "invalid_password",
+            },
+          });
           return null;
         }
 
@@ -97,6 +152,17 @@ export const authConfig: NextAuthConfig = {
           });
         }
 
+        await createAuditLog({
+          eventType: "AUTH_LOGIN_SUCCESS",
+          severity: "INFO",
+          userId: existingUser?.id ?? user.id,
+          email: user.email,
+          route: "/auth/login",
+          metadata: {
+            provider: account.provider,
+          },
+        });
+
         return true;
       }
 
@@ -109,6 +175,17 @@ export const authConfig: NextAuthConfig = {
       if (!existingUser?.isActive || !existingUser.emailVerified) {
         return false;
       }
+
+      await createAuditLog({
+        eventType: "AUTH_LOGIN_SUCCESS",
+        severity: "INFO",
+        userId: user.id,
+        email: user.email,
+        route: "/auth/login",
+        metadata: {
+          provider: account?.provider,
+        },
+      });
 
       return true;
     },

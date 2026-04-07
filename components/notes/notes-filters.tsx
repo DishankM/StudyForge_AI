@@ -19,6 +19,16 @@ export function NotesFilters() {
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
       params.set("search", value);
+      void fetch("/api/audit/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: value,
+          route: "/dashboard/notes",
+        }),
+      });
     } else {
       params.delete("search");
     }
