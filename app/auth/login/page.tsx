@@ -41,13 +41,7 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        if (result.error === "CredentialsSignin") {
-          toast.error("Invalid credentials");
-        } else if (result.error === "AccessDenied") {
-          toast.error("Please verify your email before logging in.");
-        } else {
-          toast.error(result.error);
-        }
+        toast.error("Invalid credentials or account access is restricted.");
         return;
       }
 

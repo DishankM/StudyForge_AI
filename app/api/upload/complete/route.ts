@@ -1,6 +1,12 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import {
+  ACCEPTED_UPLOAD_MIME_TYPES,
+  MAX_DOCUMENT_UPLOAD_SIZE,
+  isTrustedDocumentUrl,
+  sanitizeUploadFileName,
+} from "@/lib/uploads";
 
 type UploadCompletionBody = {
   fileName?: string;
@@ -33,10 +39,22 @@ export async function POST(request: Request) {
       return new NextResponse("Invalid upload payload", { status: 400 });
     }
 
+    if (!ACCEPTED_UPLOAD_MIME_TYPES.includes(mimeType)) {
+      return new NextResponse("Unsupported file type", { status: 400 });
+    }
+
+    if (fileSize <= 0 || fileSize > MAX_DOCUMENT_UPLOAD_SIZE) {
+      return new NextResponse("Invalid file size", { status: 400 });
+    }
+
+    if (!isTrustedDocumentUrl(fileUrl, session.user.id)) {
+      return new NextResponse("Invalid file location", { status: 400 });
+    }
+
     const document = await prisma.document.create({
       data: {
         userId: session.user.id,
-        fileName,
+        fileName: sanitizeUploadFileName(fileName),
         fileUrl,
         fileSize,
         mimeType,

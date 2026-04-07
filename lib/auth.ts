@@ -12,6 +12,11 @@ export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
+    maxAge: 12 * 60 * 60,
+    updateAge: 60 * 60,
+  },
+  jwt: {
+    maxAge: 12 * 60 * 60,
   },
   pages: {
     signIn: "/auth/login",
@@ -23,7 +28,6 @@ export const authConfig: NextAuthConfig = {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
           prompt: "select_account",
@@ -73,10 +77,15 @@ export const authConfig: NextAuthConfig = {
             id: true,
             emailVerified: true,
             trialEndsAt: true,
+            isActive: true,
           },
         });
 
         if (existingUser) {
+          if (!existingUser.isActive) {
+            return false;
+          }
+
           await prisma.user.update({
             where: { id: existingUser.id },
             data: {
@@ -97,7 +106,7 @@ export const authConfig: NextAuthConfig = {
         where: { id: user.id },
       });
 
-      if (!existingUser?.emailVerified) {
+      if (!existingUser?.isActive || !existingUser.emailVerified) {
         return false;
       }
 
@@ -132,9 +141,6 @@ export const authConfig: NextAuthConfig = {
         }
         if (typeof session.image === "string") {
           token.picture = session.image;
-        }
-        if (typeof session.role === "string") {
-          token.role = session.role;
         }
       }
 

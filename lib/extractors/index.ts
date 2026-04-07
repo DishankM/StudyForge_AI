@@ -1,5 +1,6 @@
-﻿import { extractTextFromPDF } from "./pdf-extractor";
+import { isTrustedDocumentUrl } from "@/lib/uploads";
 import { extractTextFromDOCX } from "./docx-extractor";
+import { extractTextFromPDF } from "./pdf-extractor";
 
 function isAbsoluteHttpUrl(value: string) {
   return /^https?:\/\//i.test(value);
@@ -10,6 +11,10 @@ export async function extractDocumentText(
   mimeType: string
 ): Promise<string> {
   try {
+    if (!isTrustedDocumentUrl(fileUrl)) {
+      throw new Error("Untrusted document URL");
+    }
+
     switch (mimeType) {
       case "application/pdf":
         return await extractTextFromPDF(fileUrl);

@@ -14,3 +14,27 @@ export const MAX_DOCUMENT_UPLOAD_SIZE = 50 * 1024 * 1024;
 export function sanitizeUploadFileName(fileName: string) {
   return fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
 }
+
+export function isTrustedDocumentUrl(fileUrl: string, userId?: string) {
+  if (fileUrl.startsWith("/uploads/") || fileUrl.startsWith("uploads/")) {
+    return true;
+  }
+
+  try {
+    const parsed = new URL(fileUrl);
+    const isBlobHost = parsed.hostname.endsWith(".public.blob.vercel-storage.com");
+    const normalizedPath = parsed.pathname.replace(/^\/+/, "");
+
+    if (!isBlobHost || !normalizedPath.startsWith("documents/")) {
+      return false;
+    }
+
+    if (!userId) {
+      return true;
+    }
+
+    return normalizedPath.startsWith(`documents/${userId}/`);
+  } catch {
+    return false;
+  }
+}
