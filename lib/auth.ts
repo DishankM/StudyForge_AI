@@ -126,7 +126,7 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google" && user.email) {
-        const existingUser = await prisma.user.findUnique({
+        const googleUser = await prisma.user.findUnique({
           where: { email: user.email },
           select: {
             id: true,
@@ -136,26 +136,28 @@ export const authConfig: NextAuthConfig = {
           },
         });
 
-        if (existingUser) {
-          if (!existingUser.isActive) {
-            return false;
-          }
-
-          await prisma.user.update({
-            where: { id: existingUser.id },
-            data: {
-              emailVerified: existingUser.emailVerified ?? new Date(),
-              trialEndsAt:
-                existingUser.trialEndsAt ??
-                new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            },
-          });
+        if (!googleUser) {
+          return false;
         }
+
+        if (!googleUser.isActive) {
+          return false;
+        }
+
+        await prisma.user.update({
+          where: { id: googleUser.id },
+          data: {
+            emailVerified: googleUser.emailVerified ?? new Date(),
+            trialEndsAt:
+              googleUser.trialEndsAt ??
+              new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          },
+        });
 
         await createAuditLog({
           eventType: "AUTH_LOGIN_SUCCESS",
           severity: "INFO",
-          userId: existingUser?.id ?? user.id,
+          userId: googleUser.id,
           email: user.email,
           route: "/auth/login",
           metadata: {
