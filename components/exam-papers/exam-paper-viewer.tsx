@@ -1,7 +1,10 @@
 "use client";
 
-import { FileText, GraduationCap, Timer } from "lucide-react";
+import { Download, FileText, GraduationCap, Timer } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { downloadExamPaperPdf } from "@/lib/pdf-export";
+import { toast } from "sonner";
 
 export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
   if (!examPaper) {
@@ -9,6 +12,14 @@ export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
   }
 
   const data = examPaper.questions;
+
+  const downloadExamPaper = () => {
+    downloadExamPaperPdf({
+      filename: data?.header?.examTitle || examPaper.title || "exam-paper",
+      examPaper,
+    });
+    toast.success("Exam paper downloaded as PDF");
+  };
 
   return (
     <div className="space-y-6">
@@ -37,6 +48,12 @@ export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
               </div>
               <p className="mt-2 text-2xl font-semibold text-white">{data?.header?.totalMarks}</p>
             </div>
+          </div>
+          <div className="flex justify-center">
+            <Button variant="outline" onClick={downloadExamPaper}>
+              <Download className="mr-2 h-4 w-4" />
+              Download PDF
+            </Button>
           </div>
         </div>
       </Card>

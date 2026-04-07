@@ -4,16 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Download, Share2, FileText, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
+import { downloadStudyNotesPdf } from "@/lib/pdf-export";
 
 export function NoteViewer({ note }: { note: any }) {
-  const downloadAsText = () => {
-    const element = document.createElement("a");
-    const file = new Blob([note.content], { type: "text/plain" });
-    element.href = URL.createObjectURL(file);
-    element.download = `${note.title}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+  const downloadAsPdf = () => {
+    downloadStudyNotesPdf({
+      filename: note.title,
+      title: note.title,
+      content: note.content,
+      format: note.format,
+      wordCount: note.wordCount,
+    });
+    toast.success("Note downloaded as PDF");
   };
 
   const shareNote = async () => {
@@ -65,9 +67,9 @@ export function NoteViewer({ note }: { note: any }) {
           </div>
         </div>
         <div className="relative mt-6 flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadAsText}>
+          <Button variant="outline" size="sm" onClick={downloadAsPdf}>
             <Download className="mr-2 h-4 w-4" />
-            Download
+            Download PDF
           </Button>
           <Button variant="outline" size="sm" onClick={shareNote}>
             <Share2 className="mr-2 h-4 w-4" />

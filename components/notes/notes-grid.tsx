@@ -23,6 +23,7 @@ import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { EmptyState } from "@/components/shared/empty-state";
+import { downloadStudyNotesPdf } from "@/lib/pdf-export";
 
 export function NotesGrid({ notes }: { notes: any[] }) {
   const router = useRouter();
@@ -49,14 +50,14 @@ export function NotesGrid({ notes }: { notes: any[] }) {
   };
 
   const handleDownload = (note: any) => {
-    const element = document.createElement("a");
-    const file = new Blob([note.content], { type: "text/plain" });
-    element.href = URL.createObjectURL(file);
-    element.download = `${note.title}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    toast.success("Note downloaded");
+    downloadStudyNotesPdf({
+      filename: note.title,
+      title: note.title,
+      content: note.content,
+      format: note.format,
+      wordCount: note.wordCount,
+    });
+    toast.success("Note downloaded as PDF");
   };
 
   const handleCopy = (note: any) => {
