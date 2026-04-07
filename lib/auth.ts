@@ -136,34 +136,9 @@ export const authConfig: NextAuthConfig = {
           },
         });
 
-        if (!googleUser) {
+        if (googleUser && !googleUser.isActive) {
           return false;
         }
-
-        if (!googleUser.isActive) {
-          return false;
-        }
-
-        await prisma.user.update({
-          where: { id: googleUser.id },
-          data: {
-            emailVerified: googleUser.emailVerified ?? new Date(),
-            trialEndsAt:
-              googleUser.trialEndsAt ??
-              new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          },
-        });
-
-        await createAuditLog({
-          eventType: "AUTH_LOGIN_SUCCESS",
-          severity: "INFO",
-          userId: googleUser.id,
-          email: user.email,
-          route: "/auth/login",
-          metadata: {
-            provider: account.provider,
-          },
-        });
 
         return true;
       }
@@ -224,6 +199,43 @@ export const authConfig: NextAuthConfig = {
       }
 
       return token;
+    },
+  },
+  events: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        const googleUser = await prisma.user.findUnique({
+          where: { email: user.email },
+          select: {
+            id: true,
+            emailVerified: true,
+            trialEndsAt: true,
+          },
+        });
+
+        if (googleUser) {
+          await prisma.user.update({
+            where: { id: googleUser.id },
+            data: {
+              emailVerified: googleUser.emailVerified ?? new Date(),
+              trialEndsAt:
+                googleUser.trialEndsAt ??
+                new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            },
+          });
+        }
+      }
+
+      await createAuditLog({
+        eventType: "AUTH_LOGIN_SUCCESS",
+        severity: "INFO",
+        userId: user.id,
+        email: user.email ?? undefined,
+        route: "/auth/login",
+        metadata: {
+          provider: account?.provider,
+        },
+      });
     },
   },
 };
