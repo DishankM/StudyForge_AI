@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, Search, Menu, Sparkles } from "lucide-react";
+import { Bell, Search, Menu, PanelLeft, PanelLeftClose, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,9 +25,13 @@ type HeaderUser = {
 export function DashboardHeader({
   user,
   onMenuClick,
+  onDesktopSidebarToggle,
+  desktopSidebarOpen = true,
 }: {
   user: HeaderUser;
   onMenuClick?: () => void;
+  onDesktopSidebarToggle?: () => void;
+  desktopSidebarOpen?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -79,6 +83,19 @@ export function DashboardHeader({
           className="-m-2.5 p-2.5 text-gray-400 hover:text-white lg:hidden"
         >
           <Menu className="h-6 w-6" />
+        </button>
+
+        <button
+          type="button"
+          onClick={onDesktopSidebarToggle}
+          className="hidden rounded-full border border-white/10 bg-white/5 p-2.5 text-gray-400 transition hover:text-white lg:inline-flex"
+          aria-label={desktopSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+        >
+          {desktopSidebarOpen ? (
+            <PanelLeftClose className="h-5 w-5" />
+          ) : (
+            <PanelLeft className="h-5 w-5" />
+          )}
         </button>
 
         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">

@@ -27,6 +27,12 @@
   body {
     @apply bg-background text-text-primary antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   /* Reduce motion for users who prefer it */
@@ -56,5 +62,14 @@
 
   .glass-card {
     @apply bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
   }
 }

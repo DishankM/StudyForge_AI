@@ -43,10 +43,10 @@ export function AdminSidebar({
   const pathname = usePathname();
 
   const sidebarContent = (
-    <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-white/10 bg-[#1a1a1a] px-6 pb-4">
+    <div className="scrollbar-hidden flex grow flex-col gap-y-5 overflow-y-auto border-r border-white/10 bg-[#171717] px-5 pb-4">
       <div className="flex h-16 shrink-0 items-center justify-between">
         <Link href="/admin" className="flex items-center">
-          <h1 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
+          <h1 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-[1.35rem] font-bold tracking-tight text-transparent">
             StudyForge
           </h1>
         </Link>
@@ -134,7 +134,7 @@ export function AdminSidebar({
 
   return (
     <>
-      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
+      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-[17rem] lg:flex-col">
         {sidebarContent}
       </div>
 
@@ -146,7 +146,7 @@ export function AdminSidebar({
             className="fixed inset-0 bg-black/60"
             aria-label="Close sidebar"
           />
-          <div className="relative z-50 w-72 max-w-[85vw]">{sidebarContent}</div>
+          <div className="relative z-50 w-[17rem] max-w-[85vw]">{sidebarContent}</div>
         </div>
       </div>
     </>

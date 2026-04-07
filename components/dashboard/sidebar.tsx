@@ -16,6 +16,7 @@ import {
   Sparkles,
   GraduationCap,
   ShieldCheck,
+  PanelLeftClose,
 } from "lucide-react";
 import { logout } from "@/lib/actions/auth";
 
@@ -40,10 +41,12 @@ const navigation = [
 export function DashboardSidebar({
   user,
   mobileOpen = false,
+  desktopOpen = true,
   onClose,
 }: {
   user: SidebarUser;
   mobileOpen?: boolean;
+  desktopOpen?: boolean;
   onClose?: () => void;
 }) {
   const pathname = usePathname();
@@ -53,10 +56,10 @@ export function DashboardSidebar({
   };
 
   const sidebarContent = (
-    <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-white/10 bg-[#1a1a1a] px-6 pb-4">
+    <div className="scrollbar-hidden flex grow flex-col gap-y-5 overflow-y-auto border-r border-white/10 bg-[#171717] px-5 pb-4">
       <div className="flex h-16 shrink-0 items-center">
         <Link href="/" className="flex items-center" onClick={handleNavClick}>
-          <h1 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
+          <h1 className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-[1.35rem] font-bold tracking-tight text-transparent">
             StudyForge
           </h1>
         </Link>
@@ -159,7 +162,14 @@ export function DashboardSidebar({
 
   return (
     <>
-      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
+      <div
+        className={cn(
+          "hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-[17rem] lg:flex-col lg:transition-all lg:duration-300 lg:ease-out",
+          desktopOpen
+            ? "lg:translate-x-0 lg:opacity-100"
+            : "lg:-translate-x-[calc(100%+2px)] lg:opacity-0 lg:pointer-events-none"
+        )}
+      >
         {sidebarContent}
       </div>
 
@@ -171,7 +181,17 @@ export function DashboardSidebar({
             className="fixed inset-0 bg-black/60"
             aria-label="Close sidebar"
           />
-          <div className="relative z-50 w-72 max-w-[85vw]">{sidebarContent}</div>
+          <div className="relative z-50 w-[17rem] max-w-[85vw]">
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-4 top-4 z-10 rounded-full border border-white/10 bg-black/40 p-2 text-gray-300 transition hover:text-white"
+              aria-label="Close sidebar"
+            >
+              <PanelLeftClose className="h-4 w-4" />
+            </button>
+            {sidebarContent}
+          </div>
         </div>
       </div>
     </>
