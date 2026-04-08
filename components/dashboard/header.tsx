@@ -152,6 +152,9 @@ export function DashboardHeader({
               <DropdownMenuItem asChild>
                 <Link href="/dashboard/settings">Billing</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/plans">View Plans</Link>
+              </DropdownMenuItem>
               {(user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
                 <DropdownMenuItem asChild>
                   <Link href="/admin">Admin Panel</Link>

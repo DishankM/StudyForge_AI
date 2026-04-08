@@ -63,6 +63,16 @@ export function PricingPreview() {
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user;
 
+  const getLoggedInPlanHref = (planName: string) =>
+    `/dashboard/settings?tab=billing&plan=${encodeURIComponent(planName)}`;
+
+  const getLoggedInPlanCtaLabel = (planName: string, planCta: string) => {
+    // For logged-in users, always route to billing/settings.
+    if (planName === "Student Pro") return "Upgrade Plan";
+    if (planName === "Free") return "View Billing";
+    return planCta;
+  };
+
   return (
     <section id="pricing" className="py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -116,11 +126,19 @@ export function PricingPreview() {
                 ))}
               </ul>
               {plan.note && <p className="mb-4 text-xs text-text-muted">{plan.note}</p>}
-              {!isLoggedIn || !plan.href.startsWith("/auth") ? (
-                <Button variant={plan.variant} size="lg" className="w-full" asChild>
-                  <Link href={plan.href}>{plan.cta}</Link>
-                </Button>
-              ) : null}
+              <Button variant={plan.variant} size="lg" className="w-full" asChild>
+                <Link
+                  href={
+                    isLoggedIn && plan.href.startsWith("/auth")
+                      ? getLoggedInPlanHref(plan.name)
+                      : plan.href
+                  }
+                >
+                  {isLoggedIn && plan.href.startsWith("/auth")
+                    ? getLoggedInPlanCtaLabel(plan.name, plan.cta)
+                    : plan.cta}
+                </Link>
+              </Button>
             </motion.div>
           ))}
         </motion.div>

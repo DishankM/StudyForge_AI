@@ -10,6 +10,13 @@ export async function middleware(req: NextRequest) {
   const isLoggedIn = !!token;
 
   const isAuthRoute = nextUrl.pathname.startsWith("/auth");
+  const isRootRoute = nextUrl.pathname === "/";
+
+  // If a logged-in user hits the marketing homepage (e.g. from search),
+  // send them straight to the dashboard.
+  if (isRootRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL("/dashboard", nextUrl));
+  }
 
   if (isAuthRoute && isLoggedIn) {
     return NextResponse.redirect(new URL("/dashboard", nextUrl));

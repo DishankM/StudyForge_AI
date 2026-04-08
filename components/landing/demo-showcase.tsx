@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, FileCheck, FileText, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 const tabs = [
   { id: "notes", label: "Notes Sample", icon: FileText },
@@ -68,6 +69,8 @@ const samples = {
 
 export function DemoShowcase() {
   const [activeTab, setActiveTab] = useState("notes");
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
 
   return (
     <section id="demo" className="py-24">
@@ -149,7 +152,9 @@ export function DemoShowcase() {
           className="mt-10 text-center"
         >
           <Button size="xl" asChild>
-            <Link href="/auth/signup">Try it Free</Link>
+            <Link href={isLoggedIn ? "/dashboard/settings?tab=billing" : "/auth/signup"}>
+              {isLoggedIn ? "Manage Subscription" : "Try it Free"}
+            </Link>
           </Button>
         </motion.div>
       </div>

@@ -7,6 +7,7 @@ import { DangerZone } from "./danger-zone";
 import { NotificationSettings } from "./notification-settings";
 import { PreferencesSettings } from "./preferences-settings";
 import { ProfileSettings } from "./profile-settings";
+import { useSearchParams } from "next/navigation";
 
 export function SettingsTabs({ user }: { user: any }) {
   const tabs = [
@@ -17,8 +18,13 @@ export function SettingsTabs({ user }: { user: any }) {
     { value: "danger", label: "Danger Zone", icon: ShieldAlert },
   ];
 
+  const searchParams = useSearchParams();
+  const requestedTab = searchParams.get("tab");
+  const allowedTabs = new Set(tabs.map((t) => t.value));
+  const defaultTab = requestedTab && allowedTabs.has(requestedTab) ? requestedTab : "profile";
+
   return (
-    <Tabs defaultValue="profile" className="space-y-6">
+    <Tabs defaultValue={defaultTab} className="space-y-6">
       <TabsList className="grid h-auto grid-cols-2 gap-2 rounded-[24px] border border-white/10 bg-zinc-950/80 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.24)] md:grid-cols-5">
         {tabs.map((tab) => (
           <TabsTrigger

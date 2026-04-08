@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, FileCheck2, ListChecks, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 const quickPoints = [
   "Upload PDFs, notes, and syllabus files",
@@ -15,6 +18,11 @@ const outputs = [
 ];
 
 export function Hero() {
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  const startTrialHref = isLoggedIn ? "/dashboard/settings?tab=billing" : "/auth/signup";
+  const startTrialLabel = isLoggedIn ? "Manage Subscription" : "Start Free Trial";
+
   return (
     <section className="relative overflow-hidden border-b border-white/10">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,0.14),transparent_30%),radial-gradient(circle_at_top_right,rgba(99,102,241,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0))]" />
@@ -37,7 +45,7 @@ export function Hero() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button size="xl" className="sm:w-auto" asChild>
-              <Link href="/auth/signup">Start Free Trial</Link>
+              <Link href={startTrialHref}>{startTrialLabel}</Link>
             </Button>
             <Button variant="outline" size="xl" className="gap-2 sm:w-auto" asChild>
               <Link href="#demo">
