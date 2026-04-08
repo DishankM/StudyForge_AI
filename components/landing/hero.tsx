@@ -1,164 +1,104 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ChevronDown, Play, Sparkles } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { AnimatedBackground } from "@/components/shared/animated-background";
+import { ArrowRight, FileCheck2, ListChecks, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useWaitlist } from "@/lib/use-waitlist";
 
-const badges = [
-  "Upload notes, PDFs, and syllabus",
-  "Generate notes, MCQs, viva, and exam papers",
-  "Built for revision-focused study workflows",
+const quickPoints = [
+  "Upload PDFs, notes, and syllabus files",
+  "Generate notes, MCQs, viva questions, and exam papers",
+  "Revise from one clear dashboard instead of scattered files",
+];
+
+const outputs = [
+  { label: "Short Notes", icon: Sparkles },
+  { label: "MCQ Practice", icon: ListChecks },
+  { label: "Exam Papers", icon: FileCheck2 },
 ];
 
 export function Hero() {
-  const { email, setEmail, loading, error, submit } = useWaitlist();
-  const { data: session } = useSession();
-  const isLoggedIn = !!session?.user;
-
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
-      <AnimatedBackground />
-      <div className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-24 text-center sm:px-6 sm:pb-28 sm:pt-28 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-5 flex flex-wrap justify-center gap-2"
-        >
-          {badges.map((badge, index) => (
-            <motion.span
-              key={badge}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 + index * 0.1 }}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium leading-5 text-text-secondary sm:px-4 sm:py-2 sm:text-sm"
-            >
-              {badge}
-            </motion.span>
-          ))}
-        </motion.div>
+    <section className="relative overflow-hidden border-b border-white/10">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,0.14),transparent_30%),radial-gradient(circle_at_top_right,rgba(99,102,241,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0))]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-pink-400/40 to-transparent" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="mx-auto mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-3 py-1.5 text-xs font-medium text-pink-200 sm:px-4 sm:text-sm"
-        >
-          <Sparkles className="h-4 w-4" />
-          <span className="truncate">AI study workspace for revision and exam prep</span>
-        </motion.div>
+      <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-16 pt-28 sm:px-6 sm:pb-20 sm:pt-32 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] lg:items-center lg:px-8">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-pink-200">
+            <Sparkles className="h-3.5 w-3.5" />
+            Exam prep workspace
+          </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25 }}
-          className="mb-5 font-heading text-3xl font-bold leading-[1.08] gradient-text sm:text-5xl md:text-6xl lg:text-7xl"
-        >
-          Turn Your Study Materials Into Exam Success
-        </motion.h1>
+          <h1 className="mt-6 max-w-3xl font-heading text-4xl font-bold leading-[1.05] text-text-primary sm:text-5xl lg:text-6xl">
+            Turn study material into revision-ready outputs faster.
+          </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mx-auto mb-8 max-w-3xl text-base leading-7 text-text-secondary sm:mb-10 sm:text-xl"
-        >
-          StudyForge helps students upload source material and convert it into structured study assets that are easier to revise, practice, and reuse before exams.
-        </motion.p>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-text-secondary sm:text-lg">
+            StudyForge helps students convert raw class material into clear notes, practice questions, and university-style exam papers without dragging through long files every time.
+          </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mb-10 flex flex-col items-stretch justify-center gap-3 sm:mb-12 sm:flex-row sm:items-center"
-        >
-          {!isLoggedIn && (
-            <Button
-              variant="default"
-              size="xl"
-              className="group w-full shadow-glow hover:shadow-[0_0_50px_rgba(255,107,157,0.4)] sm:w-auto"
-              asChild
-            >
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button size="xl" className="sm:w-auto" asChild>
               <Link href="/auth/signup">Start Free Trial</Link>
             </Button>
-          )}
-          <Button variant="outline" size="xl" className="w-full gap-2 sm:w-auto" asChild>
-            <Link href="#demo">
-              <Play className="h-5 w-5" />
-              See Sample Outputs
-            </Link>
-          </Button>
-        </motion.div>
-
-        {!isLoggedIn && (
-          <motion.form
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            onSubmit={submit}
-            className="mx-auto mb-8 flex w-full max-w-md flex-col items-center justify-center gap-2 sm:mb-10 sm:flex-row"
-          >
-            <input
-              type="email"
-              placeholder="Enter your email for updates"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-              className="h-12 w-full rounded-xl border border-white/10 bg-white/5 px-4 text-sm text-text-primary placeholder:text-text-muted transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-purple disabled:opacity-60 sm:max-w-xs"
-              aria-invalid={!!error}
-            />
-            <Button type="submit" size="lg" disabled={loading} className="w-full sm:w-auto">
-              {loading ? "Joining..." : "Get Early Access"}
+            <Button variant="outline" size="xl" className="gap-2 sm:w-auto" asChild>
+              <Link href="#demo">
+                Preview Outputs
+                <ArrowRight className="h-4.5 w-4.5" />
+              </Link>
             </Button>
-            {error && (
-              <p className="w-full text-center text-sm text-red-400 sm:text-left" role="alert">
-                {error}
-              </p>
-            )}
-          </motion.form>
-        )}
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="mx-auto flex max-w-md flex-col items-center justify-center gap-3 text-sm text-text-muted sm:max-w-none sm:flex-row"
-        >
-          <div className="flex -space-x-2">
-            {[1, 2, 3, 4, 5].map((index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8 + index * 0.05 }}
-                className="h-8 w-8 rounded-full border-2 border-background bg-gradient-to-br from-primary-pink to-primary-purple"
-              />
-            ))}
           </div>
-          <span className="max-w-xs text-balance sm:max-w-none">
-            Built for students who want faster revision without losing structure
-          </span>
-        </motion.div>
-      </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 sm:block"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="rounded-full border border-white/20 p-2"
-        >
-          <ChevronDown className="h-6 w-6 text-text-secondary" />
-        </motion.div>
-      </motion.div>
+          <ul className="mt-8 grid gap-3 text-sm text-text-secondary sm:grid-cols-3 sm:text-[15px]">
+            {quickPoints.map((point) => (
+              <li key={point} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                {point}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="relative">
+          <div className="absolute -inset-5 rounded-[2rem] bg-gradient-to-br from-pink-500/10 via-transparent to-indigo-500/10 blur-2xl" />
+          <div className="relative rounded-[2rem] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-text-muted">StudyForge Flow</p>
+                <h2 className="mt-2 text-xl font-semibold text-text-primary">One upload, multiple revision formats</h2>
+              </div>
+              <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
+                Fast prep
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-text-muted">Input</p>
+              <p className="mt-2 text-sm text-text-secondary">Lecture PDF, chapter notes, or syllabus module</p>
+            </div>
+
+            <div className="my-4 flex items-center justify-center">
+              <div className="rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-2 text-xs font-medium text-pink-200">
+                AI extracts and structures the content
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              {outputs.map((output) => (
+                <div
+                  key={output.label}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-pink to-primary-purple">
+                    <output.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text-primary">{output.label}</p>
+                    <p className="text-xs text-text-muted">Ready to revise, practice, and download</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

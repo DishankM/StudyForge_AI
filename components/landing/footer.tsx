@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import { Instagram, Linkedin, MessageCircle, Twitter, Youtube } from "lucide-react";
-import { useState } from "react";
 
 const footerLinks = {
   product: [
@@ -37,8 +34,6 @@ const socials = [
 ];
 
 export function Footer() {
-  const [email, setEmail] = useState("");
-
   return (
     <footer className="border-t border-white/10 bg-background">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
@@ -86,22 +81,10 @@ export function Footer() {
 
         <div className="mt-12 border-t border-white/10 pt-8 sm:mt-16">
           <div className="glass-card max-w-xl p-5 sm:p-6">
-            <p className="mb-1 font-medium text-text-primary">Get study tips and platform updates</p>
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <input
-                type="email"
-                placeholder="Your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-11 flex-1 rounded-lg border border-white/10 bg-white/5 px-4 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-purple"
-              />
-              <button
-                type="button"
-                className="rounded-lg bg-gradient-to-r from-primary-pink to-primary-purple px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-              >
-                Subscribe
-              </button>
-            </div>
+            <p className="mb-1 font-medium text-text-primary">Built for revision-focused study workflows</p>
+            <p className="text-sm leading-6 text-text-secondary">
+              Upload your material, generate outputs that match your revision style, and continue inside the dashboard when you are ready.
+            </p>
           </div>
         </div>
 
