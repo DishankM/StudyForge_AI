@@ -1,7 +1,24 @@
 export const metadata = {
   title: "Terms of Service | StudyForge",
-  description: "StudyForge Terms of Service for use of the website, account responsibilities, and legal disclaimers.",
+  description: "StudyForge Terms of Service covering account use, acceptable use, generated content, billing expectations, and legal limitations.",
 };
+
+const effectiveDate = "April 9, 2026";
+
+function TermsSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm sm:p-10">
+      <h2 className="text-2xl font-semibold text-text-primary">{title}</h2>
+      {children}
+    </section>
+  );
+}
 
 export default function TermsPage() {
   return (
@@ -9,58 +26,106 @@ export default function TermsPage() {
       <div className="space-y-8">
         <section>
           <p className="mb-4 text-sm uppercase tracking-[0.24em] text-primary-pink">Terms of Service</p>
-          <h1 className="text-4xl font-semibold text-text-primary">Use StudyForge responsibly</h1>
+          <h1 className="text-4xl font-semibold text-text-primary">Terms for using StudyForge</h1>
           <p className="mt-4 text-base leading-8 text-text-secondary">
-            These Terms of Service govern your access to and use of StudyForge. By using our service, you agree to the terms described below.
+            These Terms of Service govern your access to and use of StudyForge, including the website, dashboard, uploads, generated outputs, and related services.
           </p>
+          <p className="mt-3 text-sm text-text-muted">Effective date: {effectiveDate}</p>
         </section>
 
-        <section className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm sm:p-10">
-          <h2 className="text-2xl font-semibold text-text-primary">Acceptance of Terms</h2>
+        <TermsSection title="Acceptance of Terms">
           <p className="text-base leading-7 text-text-secondary">
-            By creating an account or using StudyForge, you accept these Terms. If you do not agree, please do not use the service.
+            By creating an account, accessing the site, or using StudyForge, you agree to be bound by these Terms and any policies referenced within them. If you do not agree, you should not use the service.
           </p>
-        </section>
+        </TermsSection>
 
-        <section className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm sm:p-10">
-          <h2 className="text-2xl font-semibold text-text-primary">Account Responsibility</h2>
+        <TermsSection title="Eligibility and Accounts">
           <p className="text-base leading-7 text-text-secondary">
-            You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account. Notify us immediately if you suspect unauthorized access.
+            You are responsible for providing accurate account information and for maintaining the confidentiality of your login credentials. You are also responsible for activity that occurs under your account unless caused by our own failure to secure the service.
           </p>
-        </section>
+          <p className="text-base leading-7 text-text-secondary">
+            We may suspend, restrict, or terminate access if we reasonably believe an account is being used in violation of these Terms, applicable law, or platform security requirements.
+          </p>
+        </TermsSection>
 
-        <section className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm sm:p-10">
-          <h2 className="text-2xl font-semibold text-text-primary">Acceptable Use</h2>
-          <ul className="space-y-3 text-base leading-7 text-text-secondary list-disc pl-5">
-            <li>Do not use StudyForge for illegal activities or to generate harmful, abusive, or copyrighted content without permission.</li>
-            <li>Do not attempt to bypass security measures or access other users' accounts.</li>
-            <li>Do not upload content that violates third-party rights or applicable laws.</li>
+        <TermsSection title="Acceptable Use">
+          <ul className="list-disc space-y-3 pl-5 text-base leading-7 text-text-secondary">
+            <li>Do not use StudyForge for unlawful, fraudulent, abusive, or harmful activity.</li>
+            <li>Do not attempt to bypass authentication, rate limits, or other security protections.</li>
+            <li>Do not access another user&apos;s account, data, or content without authorization.</li>
+            <li>Do not upload or generate content that infringes intellectual property rights or violates applicable law.</li>
+            <li>Do not use automated tools in a way that disrupts the platform or unfairly consumes shared resources.</li>
           </ul>
-        </section>
+        </TermsSection>
 
-        <section className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm sm:p-10">
-          <h2 className="text-2xl font-semibold text-text-primary">Generated Content</h2>
+        <TermsSection title="Your Content">
           <p className="text-base leading-7 text-text-secondary">
-            AI-generated study materials are provided for educational support. StudyForge does not guarantee accuracy, completeness, or suitability for any particular purpose. You are responsible for reviewing and verifying the output.
+            You retain responsibility for the files, prompts, text, and other content you submit to StudyForge. You confirm that you have the rights or permissions needed to upload and use that content with the service.
           </p>
-        </section>
+          <p className="text-base leading-7 text-text-secondary">
+            You grant StudyForge the limited rights necessary to host, process, analyze, and transform your content for the purpose of operating the platform and providing requested outputs to you.
+          </p>
+        </TermsSection>
 
-        <section className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm sm:p-10">
-          <h2 className="text-2xl font-semibold text-text-primary">Disclaimer and Limitation of Liability</h2>
+        <TermsSection title="AI-Generated Outputs">
           <p className="text-base leading-7 text-text-secondary">
-            StudyForge is provided "as is" and "as available". To the maximum extent permitted by law, we disclaim all warranties and are not liable for indirect, incidental, or consequential damages.
+            StudyForge uses automated systems and AI tools to generate notes, MCQs, viva content, exam papers, and similar educational outputs. These outputs are provided to support study workflows and may contain inaccuracies, omissions, or formatting issues.
           </p>
-        </section>
+          <p className="text-base leading-7 text-text-secondary">
+            You are responsible for reviewing generated outputs and deciding whether they are appropriate for your intended use. StudyForge does not guarantee that generated material will be correct, complete, or acceptable for academic submission.
+          </p>
+        </TermsSection>
 
-        <section className="space-y-5 rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm sm:p-10">
-          <h2 className="text-2xl font-semibold text-text-primary">Changes to the Terms</h2>
+        <TermsSection title="Plans, Trials, and Paid Features">
           <p className="text-base leading-7 text-text-secondary">
-            We may update these Terms over time. Continued use of the service after the changes indicates your acceptance of the updated Terms.
+            Some parts of the service may be offered on a free plan, trial basis, or paid plan. Availability of features, usage limits, and access duration may vary depending on the plan tied to your account.
           </p>
           <p className="text-base leading-7 text-text-secondary">
-            If you have questions about these Terms, please contact us through the site.
+            If paid billing is introduced or expanded, additional pricing or subscription terms may apply and will be presented to you before purchase or renewal where required.
           </p>
-        </section>
+        </TermsSection>
+
+        <TermsSection title="Availability and Service Changes">
+          <p className="text-base leading-7 text-text-secondary">
+            We may modify, suspend, or discontinue parts of StudyForge at any time, including features, integrations, limits, or workflows. We may also release updates, patches, or changes required for security, compliance, or performance reasons.
+          </p>
+          <p className="text-base leading-7 text-text-secondary">
+            We do not guarantee uninterrupted availability and are not responsible for downtime caused by maintenance, third-party dependencies, infrastructure failures, or events outside our reasonable control.
+          </p>
+        </TermsSection>
+
+        <TermsSection title="Termination">
+          <p className="text-base leading-7 text-text-secondary">
+            You may stop using the service at any time. We may suspend or terminate your access if you materially breach these Terms, create security risk, misuse the platform, or if continued access would expose us or other users to harm.
+          </p>
+        </TermsSection>
+
+        <TermsSection title="Disclaimers">
+          <p className="text-base leading-7 text-text-secondary">
+            StudyForge is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, whether express or implied, to the fullest extent permitted by law. This includes implied warranties of merchantability, fitness for a particular purpose, non-infringement, and accuracy.
+          </p>
+        </TermsSection>
+
+        <TermsSection title="Limitation of Liability">
+          <p className="text-base leading-7 text-text-secondary">
+            To the maximum extent permitted by law, StudyForge and its operators will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages, or for loss of data, profits, goodwill, or business interruption arising out of or related to your use of the service.
+          </p>
+          <p className="text-base leading-7 text-text-secondary">
+            Where liability cannot be excluded, it will be limited to the amount you paid, if any, for the relevant service during the period directly preceding the claim, subject to applicable law.
+          </p>
+        </TermsSection>
+
+        <TermsSection title="Changes to These Terms">
+          <p className="text-base leading-7 text-text-secondary">
+            We may update these Terms from time to time. When material changes are made, we may revise the effective date and provide notice where appropriate. Continued use of StudyForge after updated Terms take effect means the updated Terms will apply to your use of the service.
+          </p>
+        </TermsSection>
+
+        <TermsSection title="Contact">
+          <p className="text-base leading-7 text-text-secondary">
+            If you have questions about these Terms, please contact the StudyForge team through the support or contact channel made available on the platform.
+          </p>
+        </TermsSection>
       </div>
     </main>
   );
