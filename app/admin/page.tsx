@@ -105,7 +105,7 @@ export default async function AdminOverviewPage() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2 rounded-3xl border border-white/10 bg-zinc-900 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
-          <div className="mb-5 flex items-center justify-between">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold text-white">Recent Users</h2>
               <p className="text-sm text-gray-400">Newest signups and role distribution</p>
@@ -116,7 +116,28 @@ export default async function AdminOverviewPage() {
             </Link>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-white/10">
+          <div className="space-y-4 md:hidden">
+            {recentUsers.map((user) => (
+              <article key={user.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <Link href={`/admin/users/${user.id}`} className="font-medium text-white hover:text-pink-300">
+                  {user.name || "Unnamed User"}
+                </Link>
+                <p className="mt-1 break-all text-xs text-gray-400">{user.email}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-gray-200">
+                    {user.role}
+                  </span>
+                  <span className="rounded-full border border-pink-500/15 bg-pink-500/10 px-2.5 py-1 text-xs font-medium text-pink-200">
+                    {user.plan}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs text-gray-400">{new Date(user.createdAt).toLocaleDateString()}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="hidden overflow-hidden rounded-2xl border border-white/10 md:block">
+            <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-white/10 text-sm">
               <thead className="bg-white/5 text-left text-gray-400">
                 <tr>
@@ -152,6 +173,7 @@ export default async function AdminOverviewPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 

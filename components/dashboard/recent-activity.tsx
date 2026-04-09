@@ -15,7 +15,7 @@ type RecentDocument = {
 export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
   return (
     <div className="h-full rounded-[26px] border border-white/10 bg-zinc-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-white">Recent Uploads</h2>
           <p className="mt-1 text-sm text-gray-400">Your newest source materials and where to jump back in.</p>
@@ -50,7 +50,7 @@ export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
 
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium text-white">{doc.fileName}</p>
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex flex-wrap items-center gap-2">
                   <Clock className="h-3 w-3 text-gray-500" />
                   <p className="text-xs text-gray-500">
                     {formatDistanceToNow(new Date(doc.uploadedAt), { addSuffix: true })}
@@ -66,7 +66,7 @@ export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="flex shrink-0 items-center gap-2 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                 <Link href={`/dashboard/documents/${doc.id}`}>
                   <Button variant="ghost" size="sm">
                     View

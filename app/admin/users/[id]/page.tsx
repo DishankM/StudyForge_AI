@@ -98,21 +98,21 @@ export default async function AdminUserDetailPage({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,0.18),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(147,51,234,0.16),transparent_28%),rgba(24,24,27,0.92)] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.3)]">
+      <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,0.18),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(147,51,234,0.16),transparent_28%),rgba(24,24,27,0.92)] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.3)] sm:p-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
-              <UserCircle2 className="h-14 w-14 text-pink-300" />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+            <div className="w-fit rounded-3xl border border-white/10 bg-white/5 p-4">
+              <UserCircle2 className="h-12 w-12 text-pink-300 sm:h-14 sm:w-14" />
             </div>
-            <div className="max-w-3xl">
+            <div className="min-w-0 max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-gray-300">
                 <ShieldCheck className="h-3.5 w-3.5 text-pink-300" />
                 User Profile
               </div>
               <h1 className="mt-4 text-3xl font-bold text-white sm:text-4xl">{user.name || "Unnamed User"}</h1>
-              <p className="mt-3 flex items-center gap-2 text-base text-gray-300">
-                <Mail className="h-4 w-4 text-gray-400" />
-                {user.email}
+              <p className="mt-3 flex items-start gap-2 text-base text-gray-300">
+                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gray-400" />
+                <span className="break-all">{user.email}</span>
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <ProfileBadge label={user.role} tone={user.role === "SUPER_ADMIN" ? "accent" : user.role === "ADMIN" ? "warning" : "default"} />
@@ -130,7 +130,7 @@ export default async function AdminUserDetailPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-5">
         <StatCard label="Documents" value={user._count.documents} icon={FileText} accent="bg-gradient-to-br from-sky-500 to-cyan-500" />
         <StatCard label="Notes" value={user._count.notes} icon={BadgeCheck} accent="bg-gradient-to-br from-indigo-500 to-blue-500" />
         <StatCard label="MCQ Sets" value={user._count.mcqSets} icon={HelpCircle} accent="bg-gradient-to-br from-purple-500 to-pink-500" />

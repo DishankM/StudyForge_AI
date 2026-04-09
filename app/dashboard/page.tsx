@@ -123,12 +123,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:p-8">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.16),_transparent_32%)]" />
         <div className="absolute -right-16 top-0 h-44 w-44 rounded-full bg-pink-500/10 blur-3xl" />
         <div className="absolute bottom-0 left-20 h-40 w-40 rounded-full bg-cyan-500/10 blur-3xl" />
 
-        <div className="relative flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
+        <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-1.5 text-sm font-medium text-pink-200">
               <Sparkles className="h-4 w-4" />
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2 xl:min-w-[420px]">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Study Assets</p>
               <p className="mt-2 text-3xl font-semibold text-white">{totalStudyAssets}</p>

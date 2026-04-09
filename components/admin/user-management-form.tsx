@@ -137,7 +137,7 @@ export function AdminUserManagementForm({
 
         <div>
           <Label>Account Status</Label>
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-3 flex flex-wrap items-center gap-3">
             <Button
               type="button"
               variant={isActive ? "default" : "outline"}
@@ -153,8 +153,8 @@ export function AdminUserManagementForm({
         </div>
       </div>
 
-      <div className="mt-6 flex justify-end">
-        <Button onClick={handleSave} disabled={isSaving} className="bg-gradient-to-r from-pink-500 to-purple-600">
+      <div className="mt-6 flex justify-stretch sm:justify-end">
+        <Button onClick={handleSave} disabled={isSaving} className="w-full bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto">
           {isSaving ? "Saving..." : "Save Changes"}
         </Button>
       </div>

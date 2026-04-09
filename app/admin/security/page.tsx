@@ -201,7 +201,7 @@ export default async function AdminSecurityPage({
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.3fr_0.7fr]">
         <div className="rounded-3xl border border-white/10 bg-zinc-900 p-6">
-          <form className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_220px_180px_auto]">
+          <form className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_220px_180px_auto]">
             <input
               type="text"
               name="q"
@@ -238,13 +238,58 @@ export default async function AdminSecurityPage({
             </select>
             <button
               type="submit"
-              className="h-11 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 px-5 text-sm font-semibold text-white"
+              className="h-11 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 px-5 text-sm font-semibold text-white sm:col-span-2 xl:col-span-1"
             >
               Filter
             </button>
           </form>
 
-          <div className="mt-6 overflow-hidden rounded-2xl border border-white/10">
+          <div className="mt-6 space-y-4 lg:hidden">
+            {logs.length === 0 && (
+              <div className="rounded-2xl border border-white/10 px-6 py-12 text-center text-sm text-gray-400">
+                No audit events match the current filters.
+              </div>
+            )}
+            {logs.map((log) => (
+              <article key={log.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Badge tone={eventTone(log.eventType)}>{log.eventType}</Badge>
+                  <Badge tone={severityTone(log.severity)}>{log.severity}</Badge>
+                </div>
+                <div className="mt-4 space-y-3 text-sm">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-gray-500">Actor</p>
+                    <p className="mt-1 font-medium text-white">{log.user?.name || log.email || "Anonymous"}</p>
+                    <p className="mt-1 break-all text-xs text-gray-400">{log.user?.email || log.email || "No email captured"}</p>
+                    {log.user?.id && (
+                      <Link href={`/admin/users/${log.user.id}`} className="mt-2 inline-flex items-center gap-1 text-xs text-pink-400 hover:text-pink-300">
+                        <UserRound className="h-3.5 w-3.5" />
+                        Open user
+                      </Link>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-gray-500">Route / Query</p>
+                    <p className="mt-1 break-all text-xs text-gray-400">{log.route || "-"}</p>
+                    {log.searchQuery && <p className="mt-2 break-all text-sm text-white">&ldquo;{log.searchQuery}&rdquo;</p>}
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-gray-500">IP</p>
+                      <p className="mt-1 break-all text-xs text-gray-400">{log.ipAddress || "-"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-gray-500">Time</p>
+                      <p className="mt-1 text-xs text-gray-400">{new Date(log.createdAt).toLocaleString()}</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-6 hidden overflow-hidden rounded-2xl border border-white/10 lg:block">
+            <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-white/10 text-sm">
               <thead className="bg-white/5 text-left text-gray-400">
                 <tr>
@@ -286,6 +331,7 @@ export default async function AdminSecurityPage({
                 ))}
               </tbody>
             </table>
+            </div>
             {logs.length === 0 && (
               <div className="px-6 py-12 text-center text-sm text-gray-400">No audit events match the current filters.</div>
             )}
