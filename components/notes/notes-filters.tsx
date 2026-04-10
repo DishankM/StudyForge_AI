@@ -56,7 +56,7 @@ export function NotesFilters() {
   };
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row">
+    <div className="flex flex-col gap-3 sm:gap-4 md:flex-row">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <Input
@@ -68,7 +68,7 @@ export function NotesFilters() {
       </div>
 
       <Select defaultValue={searchParams.get("format") || "all"} onValueChange={handleFormatChange}>
-        <SelectTrigger className="w-full sm:w-48">
+        <SelectTrigger className="w-full md:w-48">
           <SelectValue placeholder="Format" />
         </SelectTrigger>
         <SelectContent>
@@ -80,7 +80,7 @@ export function NotesFilters() {
       </Select>
 
       <Select defaultValue={searchParams.get("sort") || "newest"} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-full sm:w-48">
+        <SelectTrigger className="w-full md:w-48">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>

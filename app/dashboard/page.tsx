@@ -134,7 +134,7 @@ export default async function DashboardPage() {
               <Sparkles className="h-4 w-4" />
               StudyForge workspace
             </div>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            <h1 className="mt-5 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
               Welcome back, {session!.user.name || "Student"}.
             </h1>
             <p className="mt-3 max-w-2xl text-base text-gray-300">
@@ -145,7 +145,7 @@ export default async function DashboardPage() {
           <div className="grid gap-3 lg:grid-cols-2 xl:min-w-[420px]">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Study Assets</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{totalStudyAssets}</p>
+              <p className="mt-2 text-2xl font-semibold text-white sm:text-3xl">{totalStudyAssets}</p>
               <p className="mt-1 text-sm text-gray-400">Across uploads, notes, MCQs, and exam papers</p>
             </div>
             <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 backdrop-blur-sm">
@@ -153,7 +153,7 @@ export default async function DashboardPage() {
                 <TrendingUp className="h-4 w-4" />
                 <span className="text-xs uppercase tracking-[0.24em]">Momentum</span>
               </div>
-              <p className="mt-2 text-3xl font-semibold text-white">{usageData.reduce((sum, point) => sum + point.total, 0)}</p>
+              <p className="mt-2 text-2xl font-semibold text-white sm:text-3xl">{usageData.reduce((sum, point) => sum + point.total, 0)}</p>
               <p className="mt-1 text-sm text-emerald-100/80">Items created in the last 4 weeks, strongest week starting {mostActiveLabel}</p>
             </div>
           </div>

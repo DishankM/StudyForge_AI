@@ -47,7 +47,7 @@ export function FileUploadZone({
       <div
         {...getRootProps()}
         className={cn(
-          "relative overflow-hidden cursor-pointer rounded-[28px] border-2 border-dashed p-12 text-center transition-all",
+          "relative overflow-hidden cursor-pointer rounded-[28px] border-2 border-dashed p-6 text-center transition-all sm:p-10 lg:p-12",
           isDragActive
             ? "border-pink-500 bg-pink-500/5"
             : "border-white/20 bg-zinc-950/70 hover:border-pink-500/50 hover:bg-white/5"
@@ -57,12 +57,12 @@ export function FileUploadZone({
         <input {...getInputProps()} />
 
         <div className="relative mx-auto max-w-md space-y-5">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-gradient-to-br from-pink-500 to-purple-600 shadow-[0_20px_40px_rgba(168,85,247,0.35)]">
-            <Upload className="h-8 w-8 text-white" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[24px] bg-gradient-to-br from-pink-500 to-purple-600 shadow-[0_20px_40px_rgba(168,85,247,0.35)] sm:h-20 sm:w-20">
+            <Upload className="h-7 w-7 text-white sm:h-8 sm:w-8" />
           </div>
 
           <div>
-            <p className="text-lg font-semibold text-white">{isDragActive ? "Drop files here..." : "Drag and drop your files here"}</p>
+            <p className="text-base font-semibold text-white sm:text-lg">{isDragActive ? "Drop files here..." : "Drag and drop your files here"}</p>
             <p className="mt-2 text-sm text-gray-400">or click to browse from your computer</p>
           </div>
 
@@ -92,7 +92,7 @@ export function FileUploadZone({
       )}
 
       {files.length > 0 && (
-        <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+        <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-6">
           <div className="mb-4 flex items-end justify-between gap-4">
             <div>
               <h3 className="font-semibold text-white">Selected Files ({files.length})</h3>
@@ -116,7 +116,7 @@ export function FileUploadZone({
                   variant="ghost"
                   size="icon"
                   onClick={() => removeFile(index)}
-                  className="opacity-0 transition-opacity group-hover:opacity-100"
+                  className="opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
                 >
                   <X className="h-4 w-4" />
                 </Button>

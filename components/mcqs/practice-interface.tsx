@@ -170,7 +170,7 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2">
                 <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-zinc-900 px-3 py-2 sm:px-4">
                   <Clock className="h-4 w-4 text-blue-400" />
                   <span className="font-mono text-sm font-semibold sm:text-lg">{formatTime(timeElapsed)}</span>
@@ -236,7 +236,7 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
                       {currentQuestion.topic}
                     </span>
                   </div>
-                  <h2 className="text-xl font-semibold leading-relaxed text-white sm:text-2xl">
+                  <h2 className="text-lg font-semibold leading-relaxed text-white sm:text-2xl">
                     {currentQuestion.question}
                   </h2>
                 </div>
@@ -265,7 +265,7 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
                       onClick={() => handleAnswerSelect(index)}
                       disabled={showExplanation}
                       className={cn(
-                        "w-full rounded-2xl border-2 p-4 text-left transition-all sm:p-5",
+                        "w-full rounded-2xl border-2 p-3.5 text-left transition-all sm:p-5",
                         "hover:border-pink-500/50 hover:bg-pink-500/5",
                         isSelected && !showExplanation && "border-pink-500 bg-pink-500/10",
                         showCorrectAnswer && isCorrect && "border-green-500 bg-green-500/10",
@@ -308,7 +308,7 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
               )}
 
               <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <Button
                     variant="outline"
                     onClick={handlePreviousQuestion}

@@ -20,9 +20,9 @@ export default async function VivaPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Viva Questions</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Viva Questions</h1>
           <p className="mt-2 text-gray-400">
             Practice oral examination questions with model answers
           </p>
@@ -38,17 +38,17 @@ export default async function VivaPage() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
           <p className="text-sm text-gray-400">Total Sets</p>
-          <p className="mt-2 text-3xl font-bold">{vivaDocuments.length}</p>
+          <p className="mt-2 text-2xl font-bold sm:text-3xl">{vivaDocuments.length}</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
           <p className="text-sm text-gray-400">Questions Ready</p>
-          <p className="mt-2 text-3xl font-bold">
+          <p className="mt-2 text-2xl font-bold sm:text-3xl">
             {vivaDocuments.reduce((sum, doc: any) => sum + (doc.vivaQuestions?.length || 0), 0)}
           </p>
         </div>
         <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
           <p className="text-sm text-gray-400">Practice Sessions</p>
-          <p className="mt-2 text-3xl font-bold">0</p>
+          <p className="mt-2 text-2xl font-bold sm:text-3xl">0</p>
         </div>
       </div>
 

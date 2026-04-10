@@ -14,10 +14,10 @@ type RecentDocument = {
 
 export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
   return (
-    <div className="h-full rounded-[26px] border border-white/10 bg-zinc-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+    <div className="h-full rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015)),rgba(9,9,11,0.86)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">Recent Uploads</h2>
+          <h2 className="text-lg font-semibold text-white sm:text-xl">Recent Uploads</h2>
           <p className="mt-1 text-sm text-gray-400">Your newest source materials and where to jump back in.</p>
         </div>
         <Link href="/dashboard/documents">
@@ -29,20 +29,20 @@ export function RecentActivity({ documents }: { documents: RecentDocument[] }) {
 
       <div className="space-y-4">
         {documents.length === 0 ? (
-          <div className="py-12 text-center">
-            <FileText className="mx-auto mb-4 h-12 w-12 text-gray-600" />
-            <p className="text-gray-400">No documents uploaded yet</p>
-            <Link href="/dashboard/upload">
-              <Button className="mt-4 bg-gradient-to-r from-pink-500 to-purple-600">
+            <div className="py-12 text-center">
+              <FileText className="mx-auto mb-4 h-12 w-12 text-gray-600" />
+              <p className="text-gray-400">No documents uploaded yet</p>
+              <Link href="/dashboard/upload">
+              <Button className="mt-4 w-full bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto">
                 Upload your first document
               </Button>
             </Link>
-          </div>
+            </div>
         ) : (
           documents.map((doc) => (
             <div
               key={doc.id}
-              className="group flex items-center gap-4 rounded-2xl border border-white/5 bg-zinc-900/80 p-4 transition hover:border-white/10 hover:bg-zinc-900"
+              className="group flex items-center gap-4 rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition hover:border-white/10 hover:bg-white/[0.05]"
             >
               <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-purple-500 shadow-lg shadow-black/20">
                 <FileText className="h-5 w-5 text-white" />

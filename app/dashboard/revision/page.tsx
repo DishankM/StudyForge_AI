@@ -7,7 +7,7 @@ export default async function RevisionPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Revision Planner</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Revision Planner</h1>
         <p className="mt-2 text-gray-400">
           Create personalized study schedules based on your exam dates
         </p>

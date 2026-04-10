@@ -61,7 +61,7 @@ export function DashboardShell({
           onMenuClick={() => setMobileOpen(true)}
           onDesktopSidebarToggle={handleDesktopToggle}
         />
-        <main className="scrollbar-hidden px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+        <main className="scrollbar-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">{children}</main>
       </div>
     </div>
   );

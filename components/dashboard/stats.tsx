@@ -47,7 +47,7 @@ export function DashboardStats({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="relative flex h-full min-h-[170px] flex-col justify-between overflow-hidden rounded-[24px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_16px_40px_rgba(0,0,0,0.24)] transition-all hover:-translate-y-1 hover:border-white/20"
+          className="relative flex h-full min-h-[170px] flex-col justify-between overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.015)),rgba(9,9,11,0.9)] p-6 shadow-[0_18px_44px_rgba(0,0,0,0.26)] transition-all hover:-translate-y-1 hover:border-white/20"
         >
           <div className={`absolute right-0 top-0 h-24 w-24 bg-gradient-to-br ${stat.color} opacity-15 blur-3xl`} />
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),transparent_55%)]" />
@@ -58,14 +58,14 @@ export function DashboardStats({
                 <stat.icon className="h-6 w-6 text-white" />
               </div>
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] text-gray-400">
-                Live
+                Workspace
               </span>
             </div>
 
             <div className="mt-4">
               <p className="text-sm uppercase tracking-[0.24em] text-gray-400">{stat.name}</p>
-              <p className="mt-3 text-4xl font-semibold tracking-tight text-white">{values[index]}</p>
-              <p className="mt-2 text-sm text-gray-500">Available in your workspace right now</p>
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">{values[index]}</p>
+              <p className="mt-2 text-sm text-gray-500">Available across your current dashboard activity</p>
             </div>
           </div>
         </motion.div>

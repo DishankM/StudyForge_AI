@@ -30,7 +30,7 @@ export default async function DocumentDetailPage({
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:p-8">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.14),_transparent_32%)]" />
         <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-3xl">
@@ -38,7 +38,7 @@ export default async function DocumentDetailPage({
               <FileText className="h-4 w-4 text-pink-300" />
               Source document
             </div>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-4xl">{document.fileName}</h1>
+            <h1 className="mt-5 break-words text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">{document.fileName}</h1>
             <p className="mt-3 text-base text-gray-300">
               Uploaded {new Date(document.uploadedAt).toLocaleDateString()} and ready for generation, practice, and review.
             </p>
@@ -47,7 +47,7 @@ export default async function DocumentDetailPage({
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Generated Outputs</p>
-              <p className="mt-2 text-3xl font-semibold text-white">
+              <p className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
                 {document.notes.length + document.mcqSets.length + (Array.isArray(document.vivaQuestions) ? 1 : 0)}
               </p>
               <p className="mt-1 text-sm text-gray-400">Assets already created from this file</p>

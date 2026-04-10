@@ -53,7 +53,7 @@ export default async function NotesPage({
     <div className="mx-auto max-w-7xl space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Study Notes</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Study Notes</h1>
           <p className="mt-2 text-gray-400">All your AI-generated notes in one place</p>
         </div>
       </div>
@@ -61,15 +61,15 @@ export default async function NotesPage({
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
           <p className="text-sm text-gray-400">Total Notes</p>
-          <p className="mt-2 text-3xl font-bold">{stats.total}</p>
+          <p className="mt-2 text-2xl font-bold sm:text-3xl">{stats.total}</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
           <p className="text-sm text-gray-400">Total Words</p>
-          <p className="mt-2 text-3xl font-bold">{stats.totalWords.toLocaleString()}</p>
+          <p className="mt-2 text-2xl font-bold sm:text-3xl">{stats.totalWords.toLocaleString()}</p>
         </div>
         <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
           <p className="text-sm text-gray-400">Avg Words/Note</p>
-          <p className="mt-2 text-3xl font-bold">{stats.avgWords.toLocaleString()}</p>
+          <p className="mt-2 text-2xl font-bold sm:text-3xl">{stats.avgWords.toLocaleString()}</p>
         </div>
       </div>
 

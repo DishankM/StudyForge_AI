@@ -60,7 +60,56 @@ export function DocumentsList({ documents }: { documents: DocumentItem[] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-zinc-900">
+    <>
+      <div className="space-y-4 md:hidden">
+        {documents.map((doc) => (
+          <article key={doc.id} className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015)),rgba(24,24,27,0.9)] p-5 shadow-[0_16px_36px_rgba(0,0,0,0.2)]">
+            <p className="font-medium text-white">{doc.fileName}</p>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-gray-300">
+                {doc.subject || "No subject"}
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-gray-300">
+                {doc.documentType || "No type"}
+              </span>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3 text-sm text-gray-400">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                <p className="text-xs uppercase tracking-[0.16em] text-gray-500">Generated</p>
+                <p className="mt-1">{doc.notes.length} notes</p>
+                <p className="mt-1 flex items-center gap-1">
+                  <HelpCircle className="h-3.5 w-3.5" />
+                  {doc.mcqSets.length} mcq sets
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                <p className="text-xs uppercase tracking-[0.16em] text-gray-500">Uploaded</p>
+                <p className="mt-1">{formatDistanceToNow(new Date(doc.uploadedAt), { addSuffix: true })}</p>
+              </div>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href={`/dashboard/documents/${doc.id}`} className="flex-1 sm:flex-none">
+                <Button variant="ghost" size="sm" className="w-full gap-2 sm:w-auto">
+                  <Eye className="h-4 w-4" />
+                  View
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1 gap-2 text-red-400 hover:text-red-300 sm:flex-none"
+                onClick={() => handleDelete(doc.id)}
+                disabled={deletingId === doc.id}
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete
+              </Button>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.025),rgba(255,255,255,0.01)),rgba(24,24,27,0.92)] md:block">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-white/10">
           <thead className="bg-zinc-800/50">
@@ -116,6 +165,7 @@ export function DocumentsList({ documents }: { documents: DocumentItem[] }) {
           </tbody>
         </table>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

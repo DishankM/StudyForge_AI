@@ -23,7 +23,7 @@ export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
 
   return (
     <div className="space-y-6">
-      <Card className="rounded-[28px] border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+      <Card className="rounded-[28px] border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:p-8">
         <div className="space-y-4 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-gray-300">
             <GraduationCap className="h-4 w-4 text-emerald-300" />
@@ -50,7 +50,7 @@ export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
             </div>
           </div>
           <div className="flex justify-center">
-            <Button variant="outline" onClick={downloadExamPaper}>
+            <Button variant="outline" onClick={downloadExamPaper} className="w-full sm:w-auto">
               <Download className="mr-2 h-4 w-4" />
               Download PDF
             </Button>
@@ -58,8 +58,8 @@ export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
         </div>
       </Card>
 
-      <Card className="rounded-[26px] border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-        <h2 className="mb-4 text-lg font-semibold text-white">Instructions</h2>
+      <Card className="rounded-[26px] border-white/10 bg-zinc-950/80 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-6">
+        <h2 className="mb-4 text-base font-semibold text-white sm:text-lg">Instructions</h2>
         <ul className="list-inside list-disc space-y-1 text-gray-300">
           {(data?.header?.instructions || []).map((instruction: string, index: number) => (
             <li key={index}>{instruction}</li>
@@ -70,10 +70,10 @@ export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
       {(data?.sections || []).map((section: any, idx: number) => (
         <Card
           key={idx}
-          className="rounded-[26px] border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]"
+          className="rounded-[26px] border-white/10 bg-zinc-950/80 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-6"
         >
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h3 className="text-lg font-semibold text-white">{section.name}</h3>
+            <h3 className="text-base font-semibold text-white sm:text-lg">{section.name}</h3>
             <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-gray-400">
               {section.instructions}
             </span>
@@ -83,7 +83,7 @@ export function ExamPaperViewer({ examPaper }: { examPaper: any }) {
             {(section.questions || []).map((question: any, index: number) => (
               <div key={index} className="rounded-2xl border border-white/5 bg-white/[0.03] p-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <p className="text-gray-200">
+                  <p className="text-sm text-gray-200 sm:text-base">
                     <span className="font-semibold">{question.number}.</span> {question.text}
                   </p>
                   <span className="text-sm text-gray-400">{question.marks} marks</span>

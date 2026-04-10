@@ -36,7 +36,7 @@ export function NoteViewer({ note }: { note: any }) {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:p-8">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.14),_transparent_32%)]" />
         <div className="relative flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
           <div className="max-w-3xl">
@@ -44,7 +44,7 @@ export function NoteViewer({ note }: { note: any }) {
               <FileText className="h-4 w-4 text-pink-300" />
               Generated note
             </div>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-4xl">{note.title}</h1>
+            <h1 className="mt-5 break-words text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">{note.title}</h1>
             <p className="mt-3 text-base text-gray-300">
               {note.wordCount} words in {note.format} format, ready to revise, export, or share.
             </p>
@@ -52,7 +52,7 @@ export function NoteViewer({ note }: { note: any }) {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Study density</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{note.wordCount}</p>
+              <p className="mt-2 text-2xl font-semibold text-white sm:text-3xl">{note.wordCount}</p>
               <p className="mt-1 text-sm text-gray-400">Words of generated study material</p>
             </div>
             <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 backdrop-blur-sm">
@@ -66,20 +66,20 @@ export function NoteViewer({ note }: { note: any }) {
             </div>
           </div>
         </div>
-        <div className="relative mt-6 flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadAsPdf}>
+        <div className="relative mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          <Button variant="outline" size="sm" onClick={downloadAsPdf} className="w-full sm:w-auto">
             <Download className="mr-2 h-4 w-4" />
             Download PDF
           </Button>
-          <Button variant="outline" size="sm" onClick={shareNote}>
+          <Button variant="outline" size="sm" onClick={shareNote} className="w-full sm:w-auto">
             <Share2 className="mr-2 h-4 w-4" />
             Share
           </Button>
         </div>
       </div>
 
-      <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-        <div className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-gray-300">
+      <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-6">
+        <div className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-gray-300 prose-p:leading-7 prose-li:leading-7 sm:prose-lg">
           <ReactMarkdown>{note.content}</ReactMarkdown>
         </div>
       </div>

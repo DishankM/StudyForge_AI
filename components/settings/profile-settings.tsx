@@ -205,19 +205,19 @@ export function ProfileSettings({ user }: { user: any }) {
   return (
     <>
       <Card className="overflow-hidden rounded-[26px] border-white/10 bg-zinc-950/80 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-        <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_35%)] p-6">
+        <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_35%)] p-5 sm:p-6">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-5">
-              <Avatar className="h-24 w-24 border border-white/10">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
+              <Avatar className="h-20 w-20 border border-white/10 sm:h-24 sm:w-24">
                 <AvatarImage src={avatarUrl || ""} className="object-cover object-center" />
-                <AvatarFallback className="bg-gradient-to-r from-pink-500 to-purple-600 text-2xl">
+                <AvatarFallback className="bg-gradient-to-r from-pink-500 to-purple-600 text-xl sm:text-2xl">
                   {user.name?.[0] || user.email?.[0]}
                 </AvatarFallback>
               </Avatar>
 
-              <div>
-                <h2 className="text-2xl font-semibold text-white">{user.name || "Your profile"}</h2>
-                <p className="mt-1 text-sm text-gray-400">{user.email}</p>
+              <div className="min-w-0">
+                <h2 className="text-xl font-semibold text-white sm:text-2xl">{user.name || "Your profile"}</h2>
+                <p className="mt-1 break-all text-sm text-gray-400">{user.email}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-300">
                     Profile
@@ -229,7 +229,7 @@ export function ProfileSettings({ user }: { user: any }) {
               </div>
             </div>
 
-            <div>
+            <div className="w-full lg:w-auto">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -243,6 +243,7 @@ export function ProfileSettings({ user }: { user: any }) {
                 size="sm"
                 onClick={handleAvatarSelect}
                 disabled={isUploading}
+                className="w-full sm:w-auto"
               >
                 <Upload className="mr-2 h-4 w-4" />
                 {isUploading ? "Uploading..." : "Upload Photo"}
@@ -252,7 +253,7 @@ export function ProfileSettings({ user }: { user: any }) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 p-6">
+        <form onSubmit={handleSubmit} className="space-y-6 p-5 sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
             <div className="space-y-6">
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
@@ -297,7 +298,7 @@ export function ProfileSettings({ user }: { user: any }) {
                   <Crown className="h-4 w-4 text-amber-300" />
                   <h3 className="font-semibold">Plan Snapshot</h3>
                 </div>
-                <p className="mt-4 text-3xl font-semibold text-white">{user.plan || "FREE"}</p>
+                <p className="mt-4 text-2xl font-semibold text-white sm:text-3xl">{user.plan || "FREE"}</p>
                 <p className="mt-2 text-sm text-gray-400">
                   Upgrade to unlock more generation capacity and premium study workflows.
                 </p>
@@ -318,7 +319,7 @@ export function ProfileSettings({ user }: { user: any }) {
             </div>
           </div>
 
-          <Button type="submit" disabled={isLoading} className="bg-gradient-to-r from-pink-500 to-purple-600">
+          <Button type="submit" disabled={isLoading} className="w-full bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto">
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -333,11 +334,11 @@ export function ProfileSettings({ user }: { user: any }) {
 
       {cropDraft && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-4xl rounded-[28px] border border-white/10 bg-zinc-950/95 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+          <div className="w-full max-w-4xl rounded-[28px] border border-white/10 bg-zinc-950/95 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.45)] sm:p-6">
             <div className="flex flex-col gap-6 lg:flex-row">
               <div className="flex-1">
                 <p className="text-sm uppercase tracking-[0.24em] text-gray-400">Crop profile photo</p>
-                <h3 className="mt-2 text-2xl font-semibold text-white">Adjust your avatar framing</h3>
+                <h3 className="mt-2 text-xl font-semibold text-white sm:text-2xl">Adjust your avatar framing</h3>
                 <p className="mt-2 text-sm text-gray-400">
                   Use the controls to zoom and reposition your photo before upload.
                 </p>

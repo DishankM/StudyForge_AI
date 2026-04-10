@@ -18,7 +18,7 @@ export default async function CreateExamPaperPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Create Exam Paper</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Create Exam Paper</h1>
         <p className="mt-2 text-gray-400">
           Generate university-style exam papers from a document or just a title
         </p>

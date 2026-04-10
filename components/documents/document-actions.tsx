@@ -224,15 +224,15 @@ export function DocumentActions({ documentId }: { documentId: string }) {
   };
 
   return (
-    <div className="rounded-xl border border-white/10 bg-zinc-900 p-6">
+    <div className="rounded-xl border border-white/10 bg-zinc-900 p-5 sm:p-6">
       <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h2 className="text-xl font-semibold">Generate Content</h2>
+          <h2 className="text-lg font-semibold sm:text-xl">Generate Content</h2>
           <p className="mt-1 text-sm text-gray-400">
             Pick a generation mode, then create notes, MCQs, or viva questions.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-zinc-800/60 p-1">
+        <div className="grid grid-cols-1 gap-2 rounded-xl border border-white/10 bg-zinc-800/60 p-1 sm:grid-cols-2">
           {(["fast", "full"] as GenerationMode[]).map((option) => (
             <button
               key={option}
@@ -268,7 +268,7 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         <Button
           onClick={generateNotes}
           disabled={loadingAction !== null}
-          className="h-auto flex-col gap-2 border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 py-6 hover:from-blue-500/20 hover:to-cyan-500/20"
+          className="h-auto flex-col gap-2 border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 py-5 hover:from-blue-500/20 hover:to-cyan-500/20 sm:py-6"
         >
           {loadingAction === "notes" ? (
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -282,7 +282,7 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         <Button
           onClick={generateMCQs}
           disabled={loadingAction !== null}
-          className="h-auto flex-col gap-2 border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-pink-500/10 py-6 hover:from-purple-500/20 hover:to-pink-500/20"
+          className="h-auto flex-col gap-2 border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-pink-500/10 py-5 hover:from-purple-500/20 hover:to-pink-500/20 sm:py-6"
         >
           {loadingAction === "mcqs" ? (
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -296,7 +296,7 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         <Button
           onClick={generateViva}
           disabled={loadingAction !== null}
-          className="h-auto flex-col gap-2 border border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-red-500/10 py-6 hover:from-orange-500/20 hover:to-red-500/20"
+          className="h-auto flex-col gap-2 border border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-red-500/10 py-5 hover:from-orange-500/20 hover:to-red-500/20 sm:py-6"
         >
           {loadingAction === "viva" ? (
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -308,7 +308,7 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         </Button>
       </div>
 
-      <div className="mt-6 flex items-center justify-between rounded-lg border border-red-500/20 bg-red-500/5 p-4">
+      <div className="mt-6 flex flex-col gap-4 rounded-lg border border-red-500/20 bg-red-500/5 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-semibold text-red-400">Delete document</p>
           <p className="text-xs text-red-300/80">Removes the file and all generated content.</p>
@@ -316,7 +316,7 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         <Button
           onClick={deleteDocument}
           disabled={loadingAction !== null}
-          className="border border-red-500/30 bg-red-500/10 text-red-200 hover:bg-red-500/20"
+          className="w-full border border-red-500/30 bg-red-500/10 text-red-200 hover:bg-red-500/20 sm:w-auto"
         >
           {loadingAction === "delete" ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

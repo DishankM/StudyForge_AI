@@ -76,7 +76,7 @@ export function DashboardHeader({
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur-sm">
-      <div className="flex h-16 items-center gap-x-4 px-4 sm:gap-x-6 sm:px-6 lg:px-8">
+      <div className="flex h-14 items-center gap-x-3 px-4 sm:h-16 sm:gap-x-6 sm:px-6 lg:px-8">
         <button
           type="button"
           onClick={onMenuClick}
@@ -109,7 +109,7 @@ export function DashboardHeader({
                 placeholder="Search documents or notes..."
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                className="h-11 w-full rounded-full border-white/10 bg-gradient-to-r from-zinc-900 to-zinc-950 pl-16 pr-28 text-sm text-gray-200 placeholder:text-gray-500 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] transition-all focus:border-pink-500/50 focus:shadow-[0_0_0_1px_rgba(236,72,153,0.3),0_0_30px_rgba(236,72,153,0.15)]"
+                className="h-10 w-full rounded-full border-white/10 bg-gradient-to-r from-zinc-900 to-zinc-950 pl-11 pr-4 text-sm text-gray-200 placeholder:text-gray-500 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] transition-all focus:border-pink-500/50 focus:shadow-[0_0_0_1px_rgba(236,72,153,0.3),0_0_30px_rgba(236,72,153,0.15)] sm:h-11 sm:pl-16 sm:pr-28"
               />
               <div className="pointer-events-none absolute inset-y-0 right-3 hidden items-center gap-2 text-xs text-gray-500 md:flex">
                 <Sparkles className="h-3.5 w-3.5 text-pink-400" />
@@ -126,7 +126,7 @@ export function DashboardHeader({
         </div>
 
         <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <button type="button" className="relative -m-2.5 p-2.5 text-gray-400 hover:text-white">
+          <button type="button" className="relative -m-2 p-2 text-gray-400 hover:text-white sm:-m-2.5 sm:p-2.5">
             <Bell className="h-6 w-6" />
             <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-pink-500" />
           </button>

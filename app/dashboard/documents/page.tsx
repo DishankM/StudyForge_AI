@@ -32,7 +32,7 @@ export default async function DocumentsPage({
     <div className="mx-auto max-w-7xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">My Documents</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">My Documents</h1>
           <p className="mt-2 text-gray-400">Manage all your uploaded files and generated content</p>
         </div>
       </div>

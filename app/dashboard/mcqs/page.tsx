@@ -18,7 +18,7 @@ export default async function MCQSetsPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">MCQ Practice Sets</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">MCQ Practice Sets</h1>
         <p className="mt-2 text-gray-400">Practice your generated MCQ sets</p>
       </div>
 
@@ -46,7 +46,7 @@ export default async function MCQSetsPage() {
                   )}
                 </div>
               </div>
-              <div className="mt-4 flex gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <Link href={`/dashboard/mcqs/${set.id}`}>
                   <Button variant="outline" size="sm">
                     View

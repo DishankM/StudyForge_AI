@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 export function GeneratedContent({ document }: { document: any }) {
   return (
     <div className="space-y-4">
-      <div className="flex items-end justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">Generated Content</h2>
+          <h2 className="text-lg font-semibold text-white sm:text-xl">Generated Content</h2>
           <p className="mt-1 text-sm text-gray-400">
             Everything built from this document, ready for practice or review.
           </p>
@@ -20,7 +20,7 @@ export function GeneratedContent({ document }: { document: any }) {
 
       {document.notes.length > 0 && (
         <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-2xl bg-blue-500/10 p-3">
                 <FileText className="h-5 w-5 text-blue-400" />
@@ -35,14 +35,14 @@ export function GeneratedContent({ document }: { document: any }) {
             {document.notes.map((note: any) => (
               <div
                 key={note.id}
-                className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4"
+                className="flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
                   <p className="font-medium text-white">{note.title}</p>
                   <p className="text-sm text-gray-400">{note.wordCount} words - {note.format}</p>
                 </div>
                 <Link href={`/dashboard/notes/${note.id}`}>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="w-full sm:w-auto">
                     View <ExternalLink className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -54,7 +54,7 @@ export function GeneratedContent({ document }: { document: any }) {
 
       {document.mcqSets.length > 0 && (
         <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-2xl bg-purple-500/10 p-3">
                 <HelpCircle className="h-5 w-5 text-purple-400" />
@@ -69,7 +69,7 @@ export function GeneratedContent({ document }: { document: any }) {
             {document.mcqSets.map((set: any) => (
               <div
                 key={set.id}
-                className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4"
+                className="flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
                   <p className="font-medium text-white">{set.title}</p>
@@ -78,7 +78,7 @@ export function GeneratedContent({ document }: { document: any }) {
                   </p>
                 </div>
                 <Link href={`/dashboard/mcqs/${set.id}`}>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="w-full sm:w-auto">
                     Practice <ExternalLink className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -90,7 +90,7 @@ export function GeneratedContent({ document }: { document: any }) {
 
       {Array.isArray(document.vivaQuestions) && document.vivaQuestions.length > 0 && (
         <div className="rounded-[26px] border border-white/10 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-2xl bg-orange-500/10 p-3">
                 <Sparkles className="h-5 w-5 text-orange-400" />
@@ -101,13 +101,13 @@ export function GeneratedContent({ document }: { document: any }) {
               {document.vivaQuestions.length} questions
             </span>
           </div>
-          <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4">
+          <div className="flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="font-medium text-white">Practice set</p>
               <p className="text-sm text-gray-400">Oral exam prep</p>
             </div>
             <Link href={`/dashboard/viva/${document.id}/practice`}>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="w-full sm:w-auto">
                 Practice <ExternalLink className="ml-2 h-4 w-4" />
               </Button>
             </Link>

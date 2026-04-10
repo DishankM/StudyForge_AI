@@ -20,7 +20,7 @@ export function UsageChart({ data }: UsageChartProps) {
     <div className="h-full rounded-[26px] border border-white/10 bg-zinc-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">Last 4 Weeks</h2>
+          <h2 className="text-lg font-semibold text-white sm:text-xl">Last 4 Weeks</h2>
           <p className="text-sm text-gray-400">Activity based on your real data</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
@@ -30,7 +30,7 @@ export function UsageChart({ data }: UsageChartProps) {
 
       <div className="mb-5 rounded-2xl border border-pink-500/15 bg-gradient-to-br from-pink-500/10 to-purple-500/10 p-4">
         <p className="text-xs uppercase tracking-[0.24em] text-pink-200/80">Tracked output</p>
-        <p className="mt-2 text-3xl font-semibold text-white">{totalItems}</p>
+        <p className="mt-2 text-2xl font-semibold text-white sm:text-3xl">{totalItems}</p>
         <p className="mt-1 text-sm text-gray-300">Documents and generated assets created in the recent month.</p>
       </div>
 

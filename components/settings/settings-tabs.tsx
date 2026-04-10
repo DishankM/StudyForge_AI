@@ -25,18 +25,20 @@ export function SettingsTabs({ user }: { user: any }) {
 
   return (
     <Tabs defaultValue={defaultTab} className="space-y-6">
-      <TabsList className="grid h-auto grid-cols-2 gap-2 rounded-[24px] border border-white/10 bg-zinc-950/80 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.24)] md:grid-cols-5">
+      <div className="overflow-x-auto pb-2">
+      <TabsList className="inline-grid h-auto min-w-max grid-flow-col gap-2 rounded-[24px] border border-white/10 bg-zinc-950/80 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.24)] md:grid-cols-5 md:min-w-0 md:w-full">
         {tabs.map((tab) => (
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            className="flex h-auto items-center gap-2 rounded-2xl px-4 py-3 text-sm data-[state=active]:bg-white data-[state=active]:text-zinc-950"
+            className="flex h-auto min-w-[140px] items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm data-[state=active]:bg-white data-[state=active]:text-zinc-950 md:min-w-0"
           >
             <tab.icon className="h-4 w-4" />
             <span>{tab.label}</span>
           </TabsTrigger>
         ))}
       </TabsList>
+      </div>
 
       <TabsContent value="profile">
         <ProfileSettings user={user} />

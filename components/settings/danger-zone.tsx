@@ -44,7 +44,7 @@ export function DangerZone({ user }: { user: any }) {
 
   return (
     <div className="space-y-6">
-      <Card className="rounded-[26px] border-yellow-500/20 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+      <Card className="rounded-[26px] border-yellow-500/20 bg-zinc-950/80 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-6">
         <div className="mb-4 flex items-start gap-3">
           <AlertTriangle className="mt-1 h-5 w-5 flex-shrink-0 text-yellow-500" />
           <div className="flex-1">
@@ -54,7 +54,7 @@ export function DangerZone({ user }: { user: any }) {
             </p>
           </div>
         </div>
-        <Button variant="outline" onClick={handleExport} disabled={isExporting}>
+        <Button variant="outline" onClick={handleExport} disabled={isExporting} className="w-full sm:w-auto">
           {isExporting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -69,7 +69,7 @@ export function DangerZone({ user }: { user: any }) {
         </Button>
       </Card>
 
-      <Card className="rounded-[26px] border-red-500/20 bg-zinc-950/80 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
+      <Card className="rounded-[26px] border-red-500/20 bg-zinc-950/80 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-6">
         <div className="mb-4 flex items-start gap-3">
           <Trash2 className="mt-1 h-5 w-5 flex-shrink-0 text-red-500" />
           <div className="flex-1">
@@ -89,7 +89,7 @@ export function DangerZone({ user }: { user: any }) {
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
               placeholder="DELETE"
-              className="max-w-xs"
+              className="w-full sm:max-w-xs"
             />
           </div>
 
@@ -97,6 +97,7 @@ export function DangerZone({ user }: { user: any }) {
             variant="destructive"
             onClick={handleDelete}
             disabled={confirmText !== "DELETE" || isDeleting}
+            className="w-full sm:w-auto"
           >
             {isDeleting ? (
               <>

@@ -78,13 +78,13 @@ export function NotesGrid({ notes }: { notes: any[] }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {notes.map((note) => (
         <Card
           key={note.id}
-          className="group border-white/10 bg-zinc-900 p-6 transition-all hover:border-pink-500/30"
+          className="group border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.012)),rgba(24,24,27,0.9)] p-6 transition-all hover:border-pink-500/30"
         >
-          <div className="mb-4 flex items-start justify-between">
+          <div className="mb-4 flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-1 items-start gap-3">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500">
                 <FileText className="h-5 w-5 text-white" />
@@ -102,7 +102,7 @@ export function NotesGrid({ notes }: { notes: any[] }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="opacity-0 transition-opacity group-hover:opacity-100"
+                  className="opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
@@ -138,7 +138,7 @@ export function NotesGrid({ notes }: { notes: any[] }) {
 
           <div className="mb-4 flex items-center justify-between text-xs text-gray-500">
             <span>{note.wordCount} words</span>
-            <span className="rounded bg-zinc-800 px-2 py-1 capitalize">{note.format}</span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 capitalize">{note.format}</span>
           </div>
 
           {note.document && (

@@ -161,7 +161,7 @@ export default function UploadPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:p-8">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.14),_transparent_32%)]" />
         <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-3xl">
@@ -169,7 +169,7 @@ export default function UploadPage() {
               <UploadCloud className="h-4 w-4" />
               Upload workspace
             </div>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-4xl">Upload Documents</h1>
+            <h1 className="mt-5 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">Upload Documents</h1>
             <p className="mt-3 text-base text-gray-300">
               Bring in your PDFs, lecture notes, syllabi, or study material and turn them into usable revision assets.
             </p>
@@ -178,7 +178,7 @@ export default function UploadPage() {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Accepted formats</p>
-              <p className="mt-2 text-2xl font-semibold text-white">PDF, DOCX, PPTX</p>
+              <p className="mt-2 text-xl font-semibold text-white sm:text-2xl">PDF, DOCX, PPTX</p>
               <p className="mt-1 text-sm text-gray-400">Also supports TXT and image-based study sources.</p>
             </div>
             <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 backdrop-blur-sm">

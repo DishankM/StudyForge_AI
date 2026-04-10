@@ -67,10 +67,10 @@ export function UploadMetadata({
 
   return (
     <div className="overflow-hidden rounded-[26px] border border-white/10 bg-zinc-950/80 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_35%)] p-6">
-        <div className="flex items-start justify-between gap-4">
+      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_35%)] p-5 sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-white">Document Details</h2>
+            <h2 className="text-lg font-semibold text-white sm:text-xl">Document Details</h2>
             <p className="mt-1 text-sm text-gray-400">Add a little context so your generated content feels more targeted.</p>
           </div>
           <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.24em] text-gray-400">
@@ -79,7 +79,7 @@ export function UploadMetadata({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-5 sm:p-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <Label htmlFor="subject">Subject / Topic</Label>
@@ -115,7 +115,7 @@ export function UploadMetadata({
           <Label>Target Exam Date (Optional)</Label>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" className="mt-2 w-full justify-start text-left font-normal md:w-auto">
+              <Button variant="outline" className="mt-2 w-full justify-start text-left font-normal">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, "PPP") : "Pick a date"}
               </Button>
@@ -152,11 +152,11 @@ export function UploadMetadata({
           />
         </div>
 
-        <div className="flex flex-wrap gap-3">
-          <Button type="submit" disabled={isLoading} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button type="submit" disabled={isLoading} className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 sm:w-auto">
             {isLoading ? "Uploading..." : "Upload & Process"}
           </Button>
-          <Button type="button" variant="outline" onClick={onClearFiles} disabled={isLoading}>
+          <Button type="button" variant="outline" onClick={onClearFiles} disabled={isLoading} className="w-full sm:w-auto">
             Clear Files
           </Button>
         </div>

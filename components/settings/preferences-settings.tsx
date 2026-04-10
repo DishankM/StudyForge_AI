@@ -15,15 +15,15 @@ import {
 export function PreferencesSettings({ user }: { user: any }) {
   return (
     <Card className="overflow-hidden rounded-[26px] border-white/10 bg-zinc-950/80 shadow-[0_20px_60px_rgba(0,0,0,0.24)]">
-      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_35%)] p-6">
+      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_35%)] p-5 sm:p-6">
         <div className="flex items-center gap-2 text-white">
           <Settings2 className="h-4 w-4 text-cyan-300" />
-          <h2 className="text-xl font-semibold">Preferences</h2>
+          <h2 className="text-lg font-semibold sm:text-xl">Preferences</h2>
         </div>
         <p className="mt-2 text-sm text-gray-400">Tune the default behavior of your study workspace.</p>
       </div>
 
-      <div className="space-y-6 p-6">
+      <div className="space-y-5 p-5 sm:space-y-6 sm:p-6">
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
             <div className="mb-4 flex items-center gap-2 text-white">

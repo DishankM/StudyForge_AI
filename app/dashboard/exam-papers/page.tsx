@@ -15,9 +15,9 @@ export default async function ExamPapersPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Exam Papers</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">Exam Papers</h1>
           <p className="mt-2 text-gray-400">Create and manage your generated exam papers</p>
         </div>
         <Link href="/dashboard/exam-papers/create">

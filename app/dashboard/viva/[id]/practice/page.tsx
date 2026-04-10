@@ -24,7 +24,7 @@ export default async function VivaPracticePage({
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:p-8">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(236,72,153,0.14),_transparent_32%)]" />
         <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-3xl">
@@ -32,7 +32,7 @@ export default async function VivaPracticePage({
               <MessageSquareQuote className="h-4 w-4 text-orange-300" />
               Viva practice
             </div>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-4xl">Viva Practice</h1>
+            <h1 className="mt-5 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">Viva Practice</h1>
             <p className="mt-3 text-base text-gray-300">
               {questions.length} oral-exam questions generated from {document.fileName}.
             </p>
@@ -41,7 +41,7 @@ export default async function VivaPracticePage({
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Question set</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{questions.length}</p>
+              <p className="mt-2 text-2xl font-semibold text-white sm:text-3xl">{questions.length}</p>
               <p className="mt-1 text-sm text-gray-400">Practice prompts ready to review</p>
             </div>
             <div className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4 backdrop-blur-sm">
@@ -74,7 +74,7 @@ export default async function VivaPracticePage({
                 <div className="rounded-2xl bg-orange-500/10 p-3">
                   <FileText className="h-5 w-5 text-orange-400" />
                 </div>
-                <h2 className="text-lg font-semibold text-white">Q{index + 1}</h2>
+                <h2 className="text-base font-semibold text-white sm:text-lg">Q{index + 1}</h2>
               </div>
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-400">
                 {item.difficulty || "general"}
