@@ -26,11 +26,12 @@ model User {
 
   accounts   Account[]
   sessions   Session[]
-  documents  Document[]
-  notes      Note[]
-  mcqSets    McqSet[]
-  examPapers ExamPaper[]
-  auditLogs  AuditLog[]
+  documents         Document[]
+  notes             Note[]
+  mcqSets           McqSet[]
+  examPapers        ExamPaper[]
+  revisionRoadmaps  RevisionRoadmap[]
+  auditLogs         AuditLog[]
 
   verificationTokens  VerificationToken[]
   passwordResetTokens PasswordResetToken[]
@@ -107,8 +108,9 @@ model Document {
   vivaQuestions  Json?
   vivaGeneratedAt DateTime?
 
-  notes   Note[]
-  mcqSets McqSet[]
+  notes             Note[]
+  mcqSets           McqSet[]
+  revisionRoadmaps  RevisionRoadmap[]
 
   @@index([userId])
   @@index([userId, uploadedAt])
@@ -150,6 +152,30 @@ model McqSet {
   @@index([userId])
   @@index([userId, createdAt])
   @@index([documentId])
+}
+
+model RevisionRoadmap {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  documentId String?
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+
+  title              String
+  subjectName        String
+  examDate           DateTime
+  studyHoursPerDay   Int
+  preparationLevel   String
+  daysUntilExam      Int
+
+  roadmap Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, createdAt])
 }
 
 model ExamPaper {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Upload, FileText, HelpCircle, GraduationCap } from "lucide-react";
+import { Upload, FileText, HelpCircle, GraduationCap, Map } from "lucide-react";
 import { motion } from "framer-motion";
 
 const actions = [
@@ -33,6 +33,13 @@ const actions = [
     href: "/dashboard/exam-papers/create",
     color: "from-green-500 to-emerald-500",
   },
+  {
+    title: "Exam Roadmap",
+    description: "AI plan with phases and daily tasks",
+    icon: Map,
+    href: "/dashboard/revision/new",
+    color: "from-violet-500 to-fuchsia-500",
+  },
 ];
 
 export function QuickActions() {
@@ -47,7 +54,7 @@ export function QuickActions() {
           Start Here
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {actions.map((action, index) => (
           <motion.div
             key={action.title}

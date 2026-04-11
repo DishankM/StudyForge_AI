@@ -35,7 +35,7 @@ const navigation = [
   { name: "MCQs", href: "/dashboard/mcqs", icon: HelpCircle },
   { name: "Exam Papers", href: "/dashboard/exam-papers", icon: GraduationCap },
   { name: "Viva Questions", href: "/dashboard/viva", icon: Sparkles },
-  { name: "Revision Plans", href: "/dashboard/revision", icon: Calendar },
+  { name: "Exam Roadmap", href: "/dashboard/revision", icon: Calendar },
 ];
 
 export function DashboardSidebar({
