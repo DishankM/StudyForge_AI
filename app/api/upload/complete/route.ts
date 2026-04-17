@@ -7,6 +7,7 @@ import {
   isTrustedDocumentUrl,
   sanitizeUploadFileName,
 } from "@/lib/uploads";
+import { enforceFeatureQuota } from "@/lib/plan-enforcement";
 
 type UploadCompletionBody = {
   fileName?: string;
@@ -25,6 +26,12 @@ export async function POST(request: Request) {
 
     if (!session) {
       return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    try {
+      await enforceFeatureQuota(session.user.id, "uploads");
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 403 });
     }
 
     const body = (await request.json()) as UploadCompletionBody;

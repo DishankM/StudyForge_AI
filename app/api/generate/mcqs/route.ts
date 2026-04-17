@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
 import { generateMCQs } from "@/lib/services/mcq-generator";
 import { createAuditLog } from "@/lib/audit-log";
+import { enforceFeatureQuota } from "@/lib/plan-enforcement";
 
 export const runtime = "nodejs";
 
@@ -17,6 +18,12 @@ export async function POST(request: Request) {
 
     if (!session) {
       return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    try {
+      await enforceFeatureQuota(session.user.id, "mcqs");
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 403 });
     }
 
     const [userLimit, ipLimit] = await Promise.all([

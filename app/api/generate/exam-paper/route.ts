@@ -3,6 +3,7 @@ import { generateExamPaper } from "@/lib/services/exam-paper-generator";
 import { NextResponse } from "next/server";
 import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
 import { createAuditLog } from "@/lib/audit-log";
+import { enforceFeatureQuota } from "@/lib/plan-enforcement";
 
 export async function POST(request: Request) {
   try {
@@ -11,6 +12,12 @@ export async function POST(request: Request) {
 
     if (!session) {
       return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    try {
+      await enforceFeatureQuota(session.user.id, "examPapers");
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 403 });
     }
 
     const [userLimit, ipLimit] = await Promise.all([

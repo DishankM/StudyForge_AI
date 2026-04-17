@@ -9,7 +9,25 @@ import { PreferencesSettings } from "./preferences-settings";
 import { ProfileSettings } from "./profile-settings";
 import { useSearchParams } from "next/navigation";
 
-export function SettingsTabs({ user }: { user: any }) {
+export function SettingsTabs({
+  user,
+  usage,
+  razorpayStatus,
+}: {
+  user: any;
+  usage: {
+    uploads: number;
+    notes: number;
+    mcqs: number;
+    viva: number;
+    examPapers: number;
+    roadmaps: number;
+  };
+  razorpayStatus: {
+    configured: boolean;
+    missing: readonly string[];
+  };
+}) {
   const tabs = [
     { value: "profile", label: "Profile", icon: UserCircle2 },
     { value: "preferences", label: "Preferences", icon: SlidersHorizontal },
@@ -53,7 +71,7 @@ export function SettingsTabs({ user }: { user: any }) {
       </TabsContent>
 
       <TabsContent value="billing">
-        <BillingSettings user={user} />
+        <BillingSettings user={user} usage={usage} razorpayStatus={razorpayStatus} />
       </TabsContent>
 
       <TabsContent value="danger">

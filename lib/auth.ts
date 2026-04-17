@@ -8,17 +8,20 @@ import { loginSchema } from "@/lib/validations/auth";
 import { consumeRateLimit, getClientIp, normalizeRateLimitKey } from "@/lib/rate-limit";
 import { createAuditLog } from "@/lib/audit-log";
 
+const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+const SESSION_UPDATE_AGE_SECONDS = 24 * 60 * 60;
+
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   trustHost: true,
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
-    maxAge: 12 * 60 * 60,
-    updateAge: 60 * 60,
+    maxAge: SESSION_MAX_AGE_SECONDS,
+    updateAge: SESSION_UPDATE_AGE_SECONDS,
   },
   jwt: {
-    maxAge: 12 * 60 * 60,
+    maxAge: SESSION_MAX_AGE_SECONDS,
   },
   pages: {
     signIn: "/auth/login",

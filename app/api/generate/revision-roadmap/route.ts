@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
 import { createAuditLog } from "@/lib/audit-log";
 import { generateRevisionRoadmap } from "@/lib/services/revision-roadmap-generator";
+import { enforceFeatureQuota } from "@/lib/plan-enforcement";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,12 @@ export async function POST(request: Request) {
 
     if (!session) {
       return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    try {
+      await enforceFeatureQuota(session.user.id, "roadmaps");
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 403 });
     }
 
     const [userLimit, ipLimit] = await Promise.all([

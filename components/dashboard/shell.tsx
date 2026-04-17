@@ -11,6 +11,15 @@ type ShellUser = {
   email?: string | null;
   image?: string | null;
   role?: "USER" | "ADMIN" | "SUPER_ADMIN";
+  plan?: "FREE" | "STUDENT_PRO" | "INSTITUTE";
+  usage?: {
+    uploads: number;
+    notes: number;
+    mcqs: number;
+    viva: number;
+    examPapers: number;
+    roadmaps: number;
+  };
 };
 
 export function DashboardShell({
@@ -52,7 +61,7 @@ export function DashboardShell({
       <div
         className={cn(
           "transition-[padding] duration-300 ease-out",
-          desktopOpen ? "lg:pl-[17rem]" : "lg:pl-0"
+          desktopOpen ? "lg:pl-[18.5rem]" : "lg:pl-0"
         )}
       >
         <DashboardHeader

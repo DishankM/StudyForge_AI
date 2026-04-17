@@ -6,62 +6,12 @@ import { Check } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const plans = [
-  {
-    name: "Free",
-    price: "Rs 0",
-    period: "/month",
-    badge: "Good for getting started",
-    popular: false,
-    features: [
-      "Upload documents and explore the workflow",
-      "Generate study notes",
-      "Create MCQ practice sets",
-      "Access dashboard and revision tools",
-    ],
-    cta: "Start Free",
-    variant: "outline" as const,
-    href: "/auth/signup",
-  },
-  {
-    name: "Student Pro",
-    price: "Rs 149",
-    period: "/month",
-    badge: "Most practical for regular use",
-    popular: true,
-    features: [
-      "Higher usage for uploads and generation",
-      "Notes, MCQs, viva, and exam paper workflows",
-      "Faster day-to-day revision support",
-      "Priority access to growing features",
-    ],
-    cta: "Start Free Trial",
-    variant: "default" as const,
-    note: "7-day free trial, cancel anytime",
-    href: "/auth/signup",
-  },
-  {
-    name: "Institute",
-    price: "Custom",
-    period: " pricing",
-    badge: "For teams and institutions",
-    popular: false,
-    features: [
-      "Everything in Pro",
-      "Shared access for multiple users",
-      "Custom templates and workflows",
-      "Operational support for larger usage",
-    ],
-    cta: "Contact Sales",
-    variant: "outline" as const,
-    href: "#contact",
-  },
-];
+import { PLAN_ORDER, getPlanDetails } from "@/lib/plans";
 
 export function PricingPreview() {
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user;
+  const plans = PLAN_ORDER.map((planId) => getPlanDetails(planId));
 
   const getLoggedInPlanHref = (planName: string) =>
     `/dashboard/settings?tab=billing&plan=${encodeURIComponent(planName)}`;
@@ -101,10 +51,16 @@ export function PricingPreview() {
               key={plan.name}
               whileHover={{ y: -4 }}
               className={cn(
-                "glass-card relative flex flex-col p-5 sm:p-6 lg:p-8",
+                "glass-card relative flex flex-col overflow-hidden p-5 sm:p-6 lg:p-8",
                 plan.popular && "border-2 border-primary-purple shadow-glow-purple"
               )}
             >
+              <div
+                className={cn(
+                  "pointer-events-none absolute inset-x-0 top-0 h-32 opacity-30 blur-3xl",
+                  `bg-gradient-to-r ${plan.accentClass}`
+                )}
+              />
               {plan.popular ? (
                 <div className="absolute -top-3 left-1/2 max-w-[90%] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-pink to-primary-purple px-3 py-1 text-center text-[11px] font-medium text-white sm:text-xs">
                   {plan.badge}
@@ -113,6 +69,7 @@ export function PricingPreview() {
                 <span className="mb-2 block text-sm font-medium text-text-muted">{plan.badge}</span>
               )}
               <h3 className="mb-1 font-heading text-xl font-bold text-text-primary">{plan.name}</h3>
+              <p className="mb-4 text-sm leading-6 text-text-secondary">{plan.summary}</p>
               <div className="mb-6 flex items-baseline gap-1">
                 <span className="text-3xl font-bold text-text-primary">{plan.price}</span>
                 <span className="text-text-muted">{plan.period}</span>
@@ -126,7 +83,15 @@ export function PricingPreview() {
                 ))}
               </ul>
               {plan.note && <p className="mb-4 text-xs text-text-muted">{plan.note}</p>}
-              <Button variant={plan.variant} size="lg" className="w-full" asChild>
+              <Button
+                variant={plan.popular ? "default" : "outline"}
+                size="lg"
+                className={cn(
+                  "w-full",
+                  plan.popular && "bg-gradient-to-r from-pink-500 to-violet-600 hover:from-pink-400 hover:to-violet-500"
+                )}
+                asChild
+              >
                 <Link
                   href={
                     isLoggedIn && plan.href.startsWith("/auth")

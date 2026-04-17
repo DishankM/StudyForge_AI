@@ -1,14 +1,21 @@
 import { Settings2, ShieldCheck } from "lucide-react";
 import { SettingsTabs } from "@/components/settings/settings-tabs";
 import { auth } from "@/lib/auth";
+import { getUserUsageSnapshot } from "@/lib/plan-enforcement";
 import { prisma } from "@/lib/prisma";
+import { getPlanDisplayName } from "@/lib/plans";
+import { getRazorpayStatus } from "@/lib/razorpay";
 
 export default async function SettingsPage() {
   const session = await auth();
 
-  const user = await prisma.user.findUnique({
-    where: { id: session!.user.id },
-  });
+  const [user, usageSnapshot] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: session!.user.id },
+    }),
+    getUserUsageSnapshot(session!.user.id),
+  ]);
+  const razorpayStatus = getRazorpayStatus();
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -29,7 +36,9 @@ export default async function SettingsPage() {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Current plan</p>
-              <p className="mt-2 text-xl font-semibold text-white sm:text-2xl">{user?.plan || "FREE"}</p>
+              <p className="mt-2 text-xl font-semibold text-white sm:text-2xl">
+                {getPlanDisplayName(user?.plan)}
+              </p>
               <p className="mt-1 text-sm text-gray-400">Upgrade anytime as your study usage grows.</p>
             </div>
             <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 backdrop-blur-sm">
@@ -45,7 +54,7 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      <SettingsTabs user={user!} />
+      <SettingsTabs user={user!} usage={usageSnapshot.usage} razorpayStatus={razorpayStatus} />
     </div>
   );
 }
