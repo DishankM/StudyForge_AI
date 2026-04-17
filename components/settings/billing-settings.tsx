@@ -226,7 +226,7 @@ export function BillingSettings({ user, usage, razorpayStatus }: BillingSettings
 
                   <div className="mt-6">
                     {plan.id === "FREE" ? (
-                      <Button variant={isCurrent ? "secondary" : "outline"} className="w-full" asChild>
+                      <Button variant="outline" className="w-full" asChild>
                         <Link href="/plans">
                           {isCurrent ? "Current Free Plan" : "See Plan Details"}
                         </Link>
