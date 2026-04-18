@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
+  AlertCircle,
   ArrowRight,
   CheckCircle2,
   CreditCard,
   ExternalLink,
   Gauge,
   Layers3,
+  Loader2,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -20,12 +24,13 @@ import {
   getPlanDetails,
   getUsageProgress,
   normalizePlan,
-  type PlanId,
 } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
 type BillingSettingsProps = {
   user: {
+    name?: string | null;
+    email?: string | null;
     plan?: string | null;
   };
   usage: {
@@ -39,6 +44,25 @@ type BillingSettingsProps = {
   razorpayStatus: {
     configured: boolean;
     missing: readonly string[];
+    missingOptional?: readonly string[];
+    keyId?: string;
+    planId?: string;
+    webhookConfigured?: boolean;
+  };
+  latestSubscription: {
+    providerSubscriptionId: string;
+    status: string;
+    verifiedAt: string | null;
+    currentEnd: string | null;
+    lastPaymentId: string | null;
+    shortUrl: string | null;
+    createdAt: string;
+  } | null;
+};
+
+type RazorpayWindow = Window & {
+  Razorpay?: new (options: Record<string, unknown>) => {
+    open: () => void;
   };
 };
 
@@ -51,10 +75,127 @@ const usageLabels = {
   roadmaps: "Roadmaps",
 } as const;
 
-export function BillingSettings({ user, usage, razorpayStatus }: BillingSettingsProps) {
+function formatSubscriptionStatus(status?: string | null) {
+  if (!status) return "No subscription";
+  return status.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function getSubscriptionTone(status?: string | null) {
+  switch (status) {
+    case "ACTIVE":
+    case "AUTHENTICATED":
+      return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
+    case "PENDING":
+    case "CREATED":
+    case "PAUSED":
+      return "border-amber-500/20 bg-amber-500/10 text-amber-200";
+    case "CANCELLED":
+    case "EXPIRED":
+    case "HALTED":
+    case "COMPLETED":
+      return "border-red-500/20 bg-red-500/10 text-red-200";
+    default:
+      return "border-white/10 bg-white/5 text-gray-200";
+  }
+}
+
+async function loadRazorpayScript() {
+  if (typeof window === "undefined") return false;
+  const razorpayWindow = window as RazorpayWindow;
+  if (razorpayWindow.Razorpay) return true;
+
+  return new Promise<boolean>((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
+export function BillingSettings({
+  user,
+  usage,
+  razorpayStatus,
+  latestSubscription,
+}: BillingSettingsProps) {
+  const router = useRouter();
   const currentPlan = normalizePlan(user.plan);
   const currentPlanDetails = getPlanDetails(currentPlan);
   const plans = PLAN_ORDER.map((planId) => getPlanDetails(planId));
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
+
+  const handleStudentProCheckout = async () => {
+    try {
+      setCheckoutLoading(true);
+      setCheckoutMessage(null);
+
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        throw new Error("Could not load Razorpay checkout.");
+      }
+
+      const createResponse = await fetch("/api/billing/razorpay/create-subscription", {
+        method: "POST",
+      });
+
+      const createData = await createResponse.json();
+      if (!createResponse.ok) {
+        throw new Error(createData.error || "Could not start checkout.");
+      }
+
+      const razorpayWindow = window as RazorpayWindow;
+      if (!razorpayWindow.Razorpay) {
+        throw new Error("Razorpay checkout is unavailable.");
+      }
+
+      const checkout = new razorpayWindow.Razorpay({
+        key: createData.keyId,
+        subscription_id: createData.checkout.subscription_id,
+        name: createData.checkout.name,
+        description: createData.checkout.description,
+        prefill: createData.checkout.prefill,
+        notes: createData.checkout.notes,
+        theme: createData.checkout.theme,
+        modal: {
+          ondismiss: () => {
+            setCheckoutLoading(false);
+          },
+        },
+        handler: async (response: Record<string, string>) => {
+          try {
+            setCheckoutMessage("Verifying your subscription...");
+
+            const verifyResponse = await fetch("/api/billing/razorpay/verify-subscription", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(response),
+            });
+
+            const verifyData = await verifyResponse.json();
+            if (!verifyResponse.ok) {
+              throw new Error(verifyData.error || "Verification failed.");
+            }
+
+            setCheckoutMessage("Subscription verified. Student Pro is active.");
+            router.refresh();
+          } catch (error: any) {
+            setCheckoutMessage(error.message || "Verification failed.");
+          }
+        },
+      });
+
+      checkout.open();
+    } catch (error: any) {
+      setCheckoutMessage(error.message || "Checkout failed.");
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -67,8 +208,23 @@ export function BillingSettings({ user, usage, razorpayStatus }: BillingSettings
                 <CreditCard className="h-4 w-4" />
                 Plan and billing
               </div>
-              <h2 className="mt-5 text-2xl font-semibold text-white sm:text-3xl">{currentPlanDetails.name}</h2>
-              <p className="mt-2 max-w-xl text-sm leading-7 text-gray-300 sm:text-base">
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <h2 className="text-2xl font-semibold text-white sm:text-3xl">{currentPlanDetails.name}</h2>
+                <span
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]",
+                    getSubscriptionTone(latestSubscription?.status ?? (currentPlan === "FREE" ? null : "ACTIVE"))
+                  )}
+                >
+                  {latestSubscription ? formatSubscriptionStatus(latestSubscription.status) : currentPlan === "FREE" ? "Free Plan" : "Plan Active"}
+                </span>
+                {latestSubscription?.verifiedAt ? (
+                  <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
+                    Verified
+                  </span>
+                ) : null}
+              </div>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-gray-300 sm:text-base">
                 {currentPlanDetails.summary}
               </p>
             </div>
@@ -80,7 +236,13 @@ export function BillingSettings({ user, usage, razorpayStatus }: BillingSettings
                 <span className="ml-1 text-base font-normal text-gray-400">{currentPlanDetails.period}</span>
               </p>
               <p className="mt-2 text-sm text-gray-400">
-                {currentPlan === "FREE"
+                {latestSubscription?.currentEnd
+                  ? `Next renewal around ${new Date(latestSubscription.currentEnd).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}.`
+                  : currentPlan === "FREE"
                   ? "Upgrade when you need more study capacity."
                   : currentPlan === "INSTITUTE"
                   ? "Institutional billing is handled as a custom contract."
@@ -129,47 +291,87 @@ export function BillingSettings({ user, usage, razorpayStatus }: BillingSettings
         <Card className="rounded-[28px] border-white/10 bg-zinc-950/85 p-5 shadow-[0_25px_80px_rgba(0,0,0,0.24)] sm:p-6">
           <div className="mb-5 flex items-center gap-2 text-white">
             <Layers3 className="h-4 w-4 text-emerald-300" />
-            <h3 className="font-semibold">Razorpay integration status</h3>
+            <h3 className="font-semibold">Payment verification</h3>
           </div>
 
-          <div
-            className={cn(
-              "rounded-3xl border p-4",
-              razorpayStatus.configured
-                ? "border-emerald-500/20 bg-emerald-500/10"
-                : "border-amber-500/20 bg-amber-500/10"
-            )}
-          >
-            <div className="flex items-start gap-3">
-              <ShieldCheck
-                className={cn("mt-0.5 h-5 w-5", razorpayStatus.configured ? "text-emerald-300" : "text-amber-300")}
-              />
-              <div>
-                <p className="font-medium text-white">
-                  {razorpayStatus.configured ? "Environment ready" : "Environment still pending"}
-                </p>
-                <p className="mt-1 text-sm leading-6 text-gray-300">
-                  {razorpayStatus.configured
-                    ? "The app has the Razorpay keys needed for secure server-side billing flows."
-                    : "Add your Razorpay keys before wiring live checkout, signature verification, and renewals."}
-                </p>
-                {!razorpayStatus.configured && (
-                  <p className="mt-2 text-xs text-amber-100/80">
-                    Missing: {razorpayStatus.missing.join(", ")}
+          <div className="space-y-4">
+            <div
+              className={cn(
+                "rounded-3xl border p-4",
+                razorpayStatus.configured
+                  ? "border-emerald-500/20 bg-emerald-500/10"
+                  : "border-amber-500/20 bg-amber-500/10"
+              )}
+            >
+              <div className="flex items-start gap-3">
+                <ShieldCheck
+                  className={cn("mt-0.5 h-5 w-5", razorpayStatus.configured ? "text-emerald-300" : "text-amber-300")}
+                />
+                <div>
+                  <p className="font-medium text-white">
+                    {razorpayStatus.configured ? "Checkout ready" : "Checkout not configured"}
                   </p>
-                )}
+                  <p className="mt-1 text-sm leading-6 text-gray-300">
+                    {razorpayStatus.configured
+                      ? "Server-side subscription creation and checkout signature verification are available."
+                      : "Add the missing Razorpay environment variables before accepting live payments."}
+                  </p>
+                  {!razorpayStatus.configured && (
+                    <p className="mt-2 text-xs text-amber-100/80">Missing: {razorpayStatus.missing.join(", ")}</p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 space-y-3 rounded-3xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="text-sm font-medium text-white">Recommended rollout</p>
-            <div className="space-y-3 text-sm leading-6 text-gray-400">
-              <p>1. Create a Student Pro plan in Razorpay Subscriptions and store the plan id in env.</p>
-              <p>2. Build a server route that creates a subscription for the signed-in user and returns checkout data.</p>
-              <p>3. Add a webhook route to verify signatures and update `user.plan` only after payment events succeed.</p>
-              <p>4. Store subscription id, payment id, status, next billing date, and invoices in new billing tables.</p>
+            <div
+              className={cn(
+                "rounded-3xl border p-4",
+                razorpayStatus.webhookConfigured
+                  ? "border-emerald-500/20 bg-emerald-500/10"
+                  : "border-amber-500/20 bg-amber-500/10"
+              )}
+            >
+              <div className="flex items-start gap-3">
+                {razorpayStatus.webhookConfigured ? (
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 text-emerald-300" />
+                ) : (
+                  <AlertCircle className="mt-0.5 h-5 w-5 text-amber-300" />
+                )}
+                <div>
+                  <p className="font-medium text-white">
+                    {razorpayStatus.webhookConfigured ? "Webhook verification ready" : "Webhook secret missing"}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-gray-300">
+                    {razorpayStatus.webhookConfigured
+                      ? "Subscription events can now reconcile renewals, cancellations, and payment status automatically."
+                      : "Set `RAZORPAY_WEBHOOK_SECRET` and point Razorpay to `/api/webhooks/razorpay`."}
+                  </p>
+                </div>
+              </div>
             </div>
+
+            {latestSubscription ? (
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-sm font-medium text-white">Latest subscription</p>
+                <div className="mt-3 space-y-2 text-sm text-gray-400">
+                  <p>Status: <span className="font-medium text-white">{formatSubscriptionStatus(latestSubscription.status)}</span></p>
+                  <p>Subscription ID: <span className="font-medium text-white">{latestSubscription.providerSubscriptionId}</span></p>
+                  {latestSubscription.lastPaymentId ? (
+                    <p>Last payment ID: <span className="font-medium text-white">{latestSubscription.lastPaymentId}</span></p>
+                  ) : null}
+                </div>
+                {latestSubscription.shortUrl ? (
+                  <Button variant="outline" className="mt-4 w-full" asChild>
+                    <Link href={latestSubscription.shortUrl} target="_blank">
+                      Open hosted subscription
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                ) : null}
+              </div>
+            ) : null}
+
+            {checkoutMessage ? <p className="text-sm text-gray-300">{checkoutMessage}</p> : null}
           </div>
         </Card>
       </div>
@@ -201,11 +403,11 @@ export function BillingSettings({ user, usage, razorpayStatus }: BillingSettings
                       <p className="text-sm font-medium text-gray-400">{plan.badge}</p>
                       <h4 className="mt-2 text-xl font-semibold text-white">{plan.name}</h4>
                     </div>
-                    {isCurrent && (
+                    {isCurrent ? (
                       <span className="rounded-full border border-pink-400/20 bg-pink-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-pink-200">
                         Active
                       </span>
-                    )}
+                    ) : null}
                   </div>
 
                   <div className="mt-4 flex items-end gap-1">
@@ -227,25 +429,28 @@ export function BillingSettings({ user, usage, razorpayStatus }: BillingSettings
                   <div className="mt-6">
                     {plan.id === "FREE" ? (
                       <Button variant="outline" className="w-full" asChild>
-                        <Link href="/plans">
-                          {isCurrent ? "Current Free Plan" : "See Plan Details"}
-                        </Link>
+                        <Link href="/plans">{isCurrent ? "Current Free Plan" : "See Plan Details"}</Link>
                       </Button>
                     ) : plan.id === "STUDENT_PRO" ? (
                       <Button
                         className="w-full bg-gradient-to-r from-pink-500 to-violet-600 hover:from-pink-400 hover:to-violet-500"
-                        asChild={!isCurrent}
-                        disabled={!razorpayStatus.configured}
+                        onClick={handleStudentProCheckout}
+                        disabled={!razorpayStatus.configured || checkoutLoading || isCurrent}
                       >
-                        {isCurrent ? (
-                          <span>Student Pro Active</span>
+                        {checkoutLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Starting checkout
+                          </>
+                        ) : isCurrent ? (
+                          "Student Pro Active"
                         ) : razorpayStatus.configured ? (
-                          <Link href="/plans">
-                            Continue to checkout
+                          <>
+                            Start secure checkout
                             <ArrowRight className="ml-2 h-4 w-4" />
-                          </Link>
+                          </>
                         ) : (
-                          <span>Checkout setup pending</span>
+                          "Checkout setup pending"
                         )}
                       </Button>
                     ) : (
@@ -258,7 +463,7 @@ export function BillingSettings({ user, usage, razorpayStatus }: BillingSettings
                     )}
                   </div>
 
-                  {plan.note && <p className="mt-3 text-xs text-gray-500">{plan.note}</p>}
+                  {plan.note ? <p className="mt-3 text-xs text-gray-500">{plan.note}</p> : null}
                 </div>
               </div>
             );

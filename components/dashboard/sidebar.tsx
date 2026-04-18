@@ -212,7 +212,7 @@ export function DashboardSidebar({
             className="fixed inset-0 bg-black/60"
             aria-label="Close sidebar"
           />
-          <div className="relative z-50 w-[18rem] max-w-[88vw]">
+          <div className="relative z-50 flex h-[100dvh] w-[18rem] max-w-[88vw] flex-col overflow-hidden">
             <button
               type="button"
               onClick={onClose}

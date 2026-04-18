@@ -32,6 +32,8 @@ model User {
   examPapers        ExamPaper[]
   revisionRoadmaps  RevisionRoadmap[]
   auditLogs         AuditLog[]
+  billingSubscriptions BillingSubscription[]
+  billingEvents        BillingEvent[]
 
   verificationTokens  VerificationToken[]
   passwordResetTokens PasswordResetToken[]
@@ -233,4 +235,75 @@ model AuditLog {
   @@index([severity, createdAt])
   @@index([userId, createdAt])
   @@index([ipAddress, createdAt])
+}
+
+model BillingSubscription {
+  id                    String   @id @default(cuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider              BillingProvider @default(RAZORPAY)
+  providerSubscriptionId String  @unique
+  providerPlanId        String?
+  providerCustomerId    String?
+  status                BillingSubscriptionStatus @default(CREATED)
+  verifiedAt            DateTime?
+  verifiedBy            BillingVerificationSource?
+  lastPaymentId         String?
+  currentStart          DateTime?
+  currentEnd            DateTime?
+  chargeAt              DateTime?
+  startAt               DateTime?
+  endAt                 DateTime?
+  cancelAtCycleEnd      Boolean  @default(false)
+  totalCount            Int?
+  paidCount             Int?
+  remainingCount        Int?
+  authAttempts          Int?
+  quantity              Int?
+  shortUrl              String?
+  rawPayload            Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([userId, status])
+}
+
+model BillingEvent {
+  id               String   @id @default(cuid())
+  userId           String?
+  user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  provider         BillingProvider @default(RAZORPAY)
+  providerEventId  String?
+  eventType        String
+  providerEntityId String?
+  signatureValid   Boolean?
+  payload          Json
+  createdAt        DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([eventType, createdAt])
+  @@index([providerEntityId, createdAt])
+}
+
+enum BillingProvider {
+  RAZORPAY
+}
+
+enum BillingSubscriptionStatus {
+  CREATED
+  AUTHENTICATED
+  ACTIVE
+  PENDING
+  HALTED
+  PAUSED
+  CANCELLED
+  COMPLETED
+  EXPIRED
+}
+
+enum BillingVerificationSource {
+  CHECKOUT
+  WEBHOOK
+  MANUAL_SYNC
 }

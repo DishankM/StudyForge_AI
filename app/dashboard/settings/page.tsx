@@ -16,6 +16,21 @@ export default async function SettingsPage() {
     getUserUsageSnapshot(session!.user.id),
   ]);
   const razorpayStatus = getRazorpayStatus();
+  const latestSubscriptionRecord = await prisma.billingSubscription.findFirst({
+    where: { userId: session!.user.id },
+    orderBy: { createdAt: "desc" },
+  });
+  const latestSubscription = latestSubscriptionRecord
+    ? {
+        providerSubscriptionId: latestSubscriptionRecord.providerSubscriptionId,
+        status: latestSubscriptionRecord.status,
+        verifiedAt: latestSubscriptionRecord.verifiedAt?.toISOString() ?? null,
+        currentEnd: latestSubscriptionRecord.currentEnd?.toISOString() ?? null,
+        lastPaymentId: latestSubscriptionRecord.lastPaymentId,
+        shortUrl: latestSubscriptionRecord.shortUrl,
+        createdAt: latestSubscriptionRecord.createdAt.toISOString(),
+      }
+    : null;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -54,7 +69,12 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      <SettingsTabs user={user!} usage={usageSnapshot.usage} razorpayStatus={razorpayStatus} />
+      <SettingsTabs
+        user={user!}
+        usage={usageSnapshot.usage}
+        razorpayStatus={razorpayStatus}
+        latestSubscription={latestSubscription}
+      />
     </div>
   );
 }

@@ -13,6 +13,7 @@ export function SettingsTabs({
   user,
   usage,
   razorpayStatus,
+  latestSubscription,
 }: {
   user: any;
   usage: {
@@ -26,7 +27,12 @@ export function SettingsTabs({
   razorpayStatus: {
     configured: boolean;
     missing: readonly string[];
+    missingOptional?: readonly string[];
+    keyId?: string;
+    planId?: string;
+    webhookConfigured?: boolean;
   };
+  latestSubscription: any;
 }) {
   const tabs = [
     { value: "profile", label: "Profile", icon: UserCircle2 },
@@ -71,7 +77,12 @@ export function SettingsTabs({
       </TabsContent>
 
       <TabsContent value="billing">
-        <BillingSettings user={user} usage={usage} razorpayStatus={razorpayStatus} />
+        <BillingSettings
+          user={user}
+          usage={usage}
+          razorpayStatus={razorpayStatus}
+          latestSubscription={latestSubscription}
+        />
       </TabsContent>
 
       <TabsContent value="danger">
