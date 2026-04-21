@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, FileCheck2, ListChecks, Sparkles } from "lucide-react";
+import { ArrowRight, FileCheck2, LayoutDashboard, ListChecks, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 
@@ -20,8 +20,8 @@ const outputs = [
 export function Hero() {
   const { status } = useSession();
   const isLoggedIn = status === "authenticated";
-  const startTrialHref = isLoggedIn ? "/dashboard/settings?tab=billing" : "/auth/signup";
-  const startTrialLabel = isLoggedIn ? "Manage Subscription" : "Start Free Trial";
+  const primaryCtaHref = isLoggedIn ? "/dashboard" : "/auth/signup";
+  const primaryCtaLabel = isLoggedIn ? "Go to Dashboard" : "Start Free Trial";
 
   return (
     <section className="relative overflow-hidden border-b border-white/10">
@@ -45,14 +45,26 @@ export function Hero() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button size="xl" className="sm:w-auto" asChild>
-              <Link href={startTrialHref}>{startTrialLabel}</Link>
-            </Button>
-            <Button variant="outline" size="xl" className="gap-2 sm:w-auto" asChild>
-              <Link href="#demo">
-                Preview Outputs
-                <ArrowRight className="h-4.5 w-4.5" />
+              <Link href={primaryCtaHref} className="gap-2">
+                {primaryCtaLabel}
+                {isLoggedIn && <LayoutDashboard className="h-4.5 w-4.5" />}
               </Link>
             </Button>
+            {isLoggedIn ? (
+              <Button variant="outline" size="xl" className="gap-2 sm:w-auto" asChild>
+                <Link href="/dashboard/settings?tab=billing">
+                  Manage Subscription
+                  <ArrowRight className="h-4.5 w-4.5" />
+                </Link>
+              </Button>
+            ) : (
+              <Button variant="outline" size="xl" className="gap-2 sm:w-auto" asChild>
+                <Link href="#demo">
+                  Preview Outputs
+                  <ArrowRight className="h-4.5 w-4.5" />
+                </Link>
+              </Button>
+            )}
           </div>
 
           <ul className="mt-8 grid gap-3 text-sm text-text-secondary sm:grid-cols-3 sm:text-[15px]">

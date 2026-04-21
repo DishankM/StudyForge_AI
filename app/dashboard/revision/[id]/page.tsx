@@ -57,6 +57,7 @@ export default async function RevisionRoadmapDetailPage({
         <RoadmapDeleteButton roadmapId={record.id} />
       </div>
       <RoadmapViewer
+        roadmapId={record.id}
         roadmap={roadmap}
         subjectName={record.subjectName}
         examDate={record.examDate}
