@@ -1,4 +1,5 @@
 import { CalendarDays, FileText, FolderOpen, Tag, HardDrive } from "lucide-react";
+import { estimateDocumentSections } from "@/lib/ai-trust";
 
 function formatFileSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -11,6 +12,13 @@ function formatFileSize(bytes: number) {
 }
 
 export function DocumentInfo({ document }: { document: any }) {
+  const estimatedSections = estimateDocumentSections({
+    fileName: document.fileName,
+    fileSize: document.fileSize,
+    mimeType: document.mimeType,
+    documentType: document.documentType,
+  });
+
   const items = [
     {
       label: "File name",
@@ -33,6 +41,11 @@ export function DocumentInfo({ document }: { document: any }) {
       icon: FolderOpen,
     },
     {
+      label: "Estimated source sections",
+      value: `${estimatedSections}`,
+      icon: FileText,
+    },
+    {
       label: "Uploaded",
       value: new Date(document.uploadedAt).toLocaleDateString(),
       icon: CalendarDays,
@@ -49,10 +62,10 @@ export function DocumentInfo({ document }: { document: any }) {
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-2.5 rounded-2xl border border-white/5 bg-white/[0.03] p-3.5 sm:flex-row sm:items-center sm:justify-between sm:p-4"
           >
             <div className="flex items-center gap-3 text-gray-400">
-              <div className="rounded-xl border border-white/10 bg-white/5 p-2">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-1.5 sm:p-2">
                 <item.icon className="h-4 w-4" />
               </div>
               <span>{item.label}</span>

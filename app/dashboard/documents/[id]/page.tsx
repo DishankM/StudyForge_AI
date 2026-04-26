@@ -118,7 +118,7 @@ export default async function DocumentDetailPage({
             </div>
             <h1 className="mt-5 break-words text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">{document.fileName}</h1>
             <p className="mt-3 text-base text-gray-300">
-              Uploaded {new Date(document.uploadedAt).toLocaleDateString()} and ready for generation, practice, and review.
+              Uploaded {new Date(document.uploadedAt).toLocaleDateString()}.
             </p>
           </div>
 
@@ -136,12 +136,12 @@ export default async function DocumentDetailPage({
             <div className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4 backdrop-blur-sm">
               <div className="flex items-center gap-2 text-orange-200">
                 <Sparkles className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-[0.24em]">Ready to Generate</span>
+                <span className="text-xs uppercase tracking-[0.24em]">Current Focus</span>
               </div>
               <p className="mt-2 text-sm text-orange-100/90">
                 {nextJourneyStep
                   ? `Next study step: ${nextJourneyStep.title}.`
-                  : "Study journey complete for this document. Revisit any output to keep practicing."}
+                  : "Core study flow complete. Reopen any output when you want another round."}
               </p>
             </div>
           </div>
@@ -159,6 +159,12 @@ export default async function DocumentDetailPage({
             <DocumentActions
               documentId={document.id}
               recommendedAction={recommendedAction}
+              document={{
+                fileName: document.fileName,
+                fileSize: document.fileSize,
+                mimeType: document.mimeType,
+                documentType: document.documentType,
+              }}
             />
           </div>
           <GeneratedContent document={document} />
