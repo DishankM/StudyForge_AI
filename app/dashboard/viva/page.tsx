@@ -25,10 +25,12 @@ export default async function VivaPage() {
     (doc: any) => Array.isArray(doc.vivaQuestions) && doc.vivaQuestions.length > 0
   );
   const totalQuestions = vivaDocuments.reduce(
-    (sum, doc: any) => sum + (doc.vivaQuestions?.length || 0),
+    (sum, doc: any) => sum + (Array.isArray(doc.vivaQuestions) ? doc.vivaQuestions.length : 0),
     0
   );
   const latestSet = vivaDocuments[0];
+  const latestSetQuestionCount =
+    latestSet && Array.isArray(latestSet.vivaQuestions) ? latestSet.vivaQuestions.length : 0;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -67,7 +69,7 @@ export default async function VivaPage() {
               </p>
               <p className="mt-1 text-sm text-gray-400">
                 {latestSet
-                  ? `${latestSet.vivaQuestions?.length || 0} oral questions ready for practice`
+                  ? `${latestSetQuestionCount} oral questions ready for practice`
                   : "Generate viva questions from any document to start oral revision."}
               </p>
             </div>
