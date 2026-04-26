@@ -4,12 +4,18 @@ import { notFound } from "next/navigation";
 import { DocumentActions } from "@/components/documents/document-actions";
 import { DocumentInfo } from "@/components/documents/document-info";
 import { GeneratedContent } from "@/components/documents/generated-content";
+import { StudyJourney } from "@/components/documents/study-journey";
 import { FileText, Sparkles } from "lucide-react";
+
+type JourneyAction = "notes" | "mcqs" | "viva" | "revision-roadmap";
+type RecommendedAction = "notes" | "mcqs" | "viva" | "revision-pack" | null;
 
 export default async function DocumentDetailPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams?: { action?: string };
 }) {
   const session = await auth();
 
@@ -21,12 +27,84 @@ export default async function DocumentDetailPage({
     include: {
       notes: true,
       mcqSets: true,
+      revisionRoadmaps: {
+        select: {
+          id: true,
+          title: true,
+          examDate: true,
+        },
+        orderBy: { createdAt: "desc" },
+      },
     },
   });
 
   if (!document) {
     notFound();
   }
+
+  const explicitRecommendedAction =
+    searchParams?.action === "notes" ||
+    searchParams?.action === "mcqs" ||
+    searchParams?.action === "viva" ||
+    searchParams?.action === "revision-pack"
+      ? searchParams.action
+      : null;
+  const documentJourney: Array<{
+    id: JourneyAction;
+    title: string;
+    completed: boolean;
+    href: string;
+    actionLabel: string;
+  }> = [
+    {
+      id: "notes",
+      title: "Read notes",
+      completed: document.notes.length > 0,
+      href: document.notes[0]
+        ? `/dashboard/notes/${document.notes[0].id}`
+        : `/dashboard/documents/${document.id}?action=notes#document-actions`,
+      actionLabel: document.notes.length > 0 ? "Open notes" : "Generate notes",
+    },
+    {
+      id: "mcqs",
+      title: "Practice MCQs",
+      completed: document.mcqSets.length > 0,
+      href: document.mcqSets[0]
+        ? `/dashboard/mcqs/${document.mcqSets[0].id}/practice`
+        : `/dashboard/documents/${document.id}?action=mcqs#document-actions`,
+      actionLabel: document.mcqSets.length > 0 ? "Start practice" : "Generate MCQs",
+    },
+    {
+      id: "viva",
+      title: "Review viva questions",
+      completed: Array.isArray(document.vivaQuestions) && document.vivaQuestions.length > 0,
+      href:
+        Array.isArray(document.vivaQuestions) && document.vivaQuestions.length > 0
+          ? `/dashboard/viva/${document.id}/practice`
+          : `/dashboard/documents/${document.id}?action=viva#document-actions`,
+      actionLabel:
+        Array.isArray(document.vivaQuestions) && document.vivaQuestions.length > 0
+          ? "Open viva set"
+          : "Generate viva",
+    },
+    {
+      id: "revision-roadmap",
+      title: "Create revision roadmap",
+      completed: document.revisionRoadmaps.length > 0,
+      href: document.revisionRoadmaps[0]
+        ? `/dashboard/revision/${document.revisionRoadmaps[0].id}`
+        : `/dashboard/revision/new?documentId=${document.id}`,
+      actionLabel: document.revisionRoadmaps.length > 0 ? "Open roadmap" : "Create roadmap",
+    },
+  ];
+  const nextJourneyStep = documentJourney.find((step) => !step.completed);
+  const journeyRecommendedAction: RecommendedAction =
+    nextJourneyStep?.id === "revision-roadmap"
+      ? null
+      : nextJourneyStep?.id === "notes" || nextJourneyStep?.id === "mcqs" || nextJourneyStep?.id === "viva"
+        ? nextJourneyStep.id
+        : null;
+  const recommendedAction = explicitRecommendedAction ?? journeyRecommendedAction;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -48,7 +126,10 @@ export default async function DocumentDetailPage({
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
               <p className="text-xs uppercase tracking-[0.24em] text-gray-400">Generated Outputs</p>
               <p className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-                {document.notes.length + document.mcqSets.length + (Array.isArray(document.vivaQuestions) ? 1 : 0)}
+                {document.notes.length +
+                  document.mcqSets.length +
+                  (Array.isArray(document.vivaQuestions) ? 1 : 0) +
+                  document.revisionRoadmaps.length}
               </p>
               <p className="mt-1 text-sm text-gray-400">Assets already created from this file</p>
             </div>
@@ -58,7 +139,9 @@ export default async function DocumentDetailPage({
                 <span className="text-xs uppercase tracking-[0.24em]">Ready to Generate</span>
               </div>
               <p className="mt-2 text-sm text-orange-100/90">
-                Use Fast mode for quick drafts or Full mode for deeper document coverage.
+                {nextJourneyStep
+                  ? `Next study step: ${nextJourneyStep.title}.`
+                  : "Study journey complete for this document. Revisit any output to keep practicing."}
               </p>
             </div>
           </div>
@@ -71,8 +154,12 @@ export default async function DocumentDetailPage({
         </div>
 
         <div className="space-y-6 lg:col-span-2">
+          <StudyJourney steps={documentJourney} nextStep={nextJourneyStep} />
           <div id="document-actions">
-            <DocumentActions documentId={document.id} />
+            <DocumentActions
+              documentId={document.id}
+              recommendedAction={recommendedAction}
+            />
           </div>
           <GeneratedContent document={document} />
         </div>

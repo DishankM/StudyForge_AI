@@ -62,8 +62,10 @@ export function FileUploadZone({
           </div>
 
           <div>
-            <p className="text-base font-semibold text-white sm:text-lg">{isDragActive ? "Drop files here..." : "Drag and drop your files here"}</p>
-            <p className="mt-2 text-sm text-gray-400">or click to browse from your computer</p>
+            <p className="text-base font-semibold text-white sm:text-lg">
+              {isDragActive ? "Drop files here..." : "Drag and drop your files here"}
+            </p>
+            <p className="mt-2 text-sm text-gray-400">or tap to browse from your phone/computer</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-2 text-xs text-gray-500">
@@ -116,7 +118,7 @@ export function FileUploadZone({
                   variant="ghost"
                   size="icon"
                   onClick={() => removeFile(index)}
-                  className="opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
+                  className="h-11 w-11 opacity-100 transition-opacity sm:h-10 sm:w-10 sm:opacity-0 sm:group-hover:opacity-100"
                 >
                   <X className="h-4 w-4" />
                 </Button>

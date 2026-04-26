@@ -5,7 +5,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-export default async function NewRevisionRoadmapPage() {
+export default async function NewRevisionRoadmapPage({
+  searchParams,
+}: {
+  searchParams?: { documentId?: string };
+}) {
   const session = await auth();
 
   const documents = await prisma.document.findMany({
@@ -18,6 +22,10 @@ export default async function NewRevisionRoadmapPage() {
       documentType: true,
     },
   });
+
+  const initialDocumentId = documents.some((doc) => doc.id === searchParams?.documentId)
+    ? searchParams?.documentId
+    : undefined;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -36,7 +44,7 @@ export default async function NewRevisionRoadmapPage() {
         </div>
       </div>
 
-      <RoadmapCreateForm userId={session!.user.id} documents={documents} />
+      <RoadmapCreateForm userId={session!.user.id} documents={documents} initialDocumentId={initialDocumentId} />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,14 +18,16 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, BookOpen, Sparkles } from "lucide-react";
+import { CalendarIcon, BookOpen, CheckCircle2, HelpCircle, Layers3, Sparkles, FileText } from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const metadataSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   documentType: z.string().min(1, "Document type is required"),
   examDate: z.date().optional(),
   additionalNotes: z.string().optional(),
+  preferredOutcome: z.enum(["notes", "mcqs", "viva", "revision-pack"]),
 });
 
 type MetadataFormValues = z.infer<typeof metadataSchema>;
@@ -38,6 +41,33 @@ const DOCUMENT_TYPES = [
   "Other",
 ];
 
+const OUTCOME_OPTIONS = [
+  {
+    value: "notes",
+    title: "Notes first",
+    description: "Best when you want a fast summary before deeper practice.",
+    icon: FileText,
+  },
+  {
+    value: "mcqs",
+    title: "MCQ practice",
+    description: "Best when you already know the topic and want active recall.",
+    icon: HelpCircle,
+  },
+  {
+    value: "viva",
+    title: "Viva prep",
+    description: "Best for oral exams, lab checks, and interview-style review.",
+    icon: Sparkles,
+  },
+  {
+    value: "revision-pack",
+    title: "Revision pack",
+    description: "Best when you want notes, MCQs, and viva flow from one document.",
+    icon: Layers3,
+  },
+] as const;
+
 export function UploadMetadata({
   files,
   onUpload,
@@ -47,6 +77,11 @@ export function UploadMetadata({
   onUpload: (data: MetadataFormValues & { files: File[] }) => Promise<void> | void;
   onClearFiles: () => void;
 }) {
+  const searchParams = useSearchParams();
+  const initialOutcome = searchParams.get("action");
+  const defaultOutcome = initialOutcome && OUTCOME_OPTIONS.some((option) => option.value === initialOutcome)
+    ? (initialOutcome as MetadataFormValues["preferredOutcome"])
+    : "notes";
   const [date, setDate] = useState<Date>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,9 +90,14 @@ export function UploadMetadata({
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<MetadataFormValues>({
     resolver: zodResolver(metadataSchema),
+    defaultValues: {
+      preferredOutcome: defaultOutcome,
+    },
   });
+  const preferredOutcome = watch("preferredOutcome");
 
   const onSubmit = async (data: MetadataFormValues) => {
     setIsLoading(true);
@@ -80,6 +120,54 @@ export function UploadMetadata({
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-5 sm:p-6">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <Label>What do you want from this upload?</Label>
+              <p className="mt-1 text-sm text-gray-400">
+                Pick the outcome you want so StudyForge can guide you to the right next step after upload.
+              </p>
+            </div>
+            <div className="rounded-full border border-pink-500/20 bg-pink-500/10 px-3 py-1 text-xs uppercase tracking-[0.24em] text-pink-200">
+              Start here
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {OUTCOME_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setValue("preferredOutcome", option.value, { shouldValidate: true })}
+                className={cn(
+                  "rounded-2xl border p-4 text-left transition-all",
+                  preferredOutcome === option.value
+                    ? "border-pink-500/40 bg-pink-500/10"
+                    : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]"
+                )}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="rounded-2xl bg-white/5 p-3">
+                      <option.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white">{option.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-gray-400">{option.description}</p>
+                    </div>
+                  </div>
+                  {preferredOutcome === option.value && (
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-pink-300" />
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+          {errors.preferredOutcome && (
+            <p className="text-sm text-red-500">{errors.preferredOutcome.message}</p>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <Label htmlFor="subject">Subject / Topic</Label>
@@ -152,13 +240,25 @@ export function UploadMetadata({
           />
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button type="submit" disabled={isLoading} className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 sm:w-auto">
-            {isLoading ? "Uploading..." : "Upload & Process"}
-          </Button>
-          <Button type="button" variant="outline" onClick={onClearFiles} disabled={isLoading} className="w-full sm:w-auto">
-            Clear Files
-          </Button>
+        <div className="sticky bottom-3 z-10 -mx-2 rounded-2xl border border-white/10 bg-zinc-950/95 p-3 backdrop-blur-sm sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="min-h-11 w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 sm:w-auto"
+            >
+            {isLoading ? "Uploading..." : "Upload & Continue"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClearFiles}
+              disabled={isLoading}
+              className="min-h-11 w-full sm:w-auto"
+            >
+              Clear Files
+            </Button>
+          </div>
         </div>
       </form>
     </div>

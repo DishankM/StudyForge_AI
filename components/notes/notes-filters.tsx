@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 export function NotesFilters() {
   const router = useRouter();
@@ -56,40 +56,48 @@ export function NotesFilters() {
   };
 
   return (
-    <div className="flex flex-col gap-3 sm:gap-4 md:flex-row">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <Input
-          placeholder="Search notes..."
-          defaultValue={searchParams.get("search") || ""}
-          onChange={(e) => handleSearch(e.target.value)}
-          className="pl-10"
-        />
+    <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015)),rgba(24,24,27,0.92)] p-3.5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] sm:rounded-[24px] sm:p-4">
+      <div className="mb-4 flex items-center gap-2 text-sm text-gray-300">
+        <SlidersHorizontal className="h-4 w-4 text-cyan-300" />
+        Refine your notes library
       </div>
+      <div className="flex flex-col gap-3 sm:gap-4 md:flex-row">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder="Search notes, topics, or keywords..."
+            defaultValue={searchParams.get("search") || ""}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="h-11 border-white/10 bg-zinc-950/70 pl-10 sm:h-12"
+          />
+        </div>
 
-      <Select defaultValue={searchParams.get("format") || "all"} onValueChange={handleFormatChange}>
-        <SelectTrigger className="w-full md:w-48">
-          <SelectValue placeholder="Format" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Formats</SelectItem>
-          <SelectItem value="concise">Concise</SelectItem>
-          <SelectItem value="detailed">Detailed</SelectItem>
-          <SelectItem value="bullet-points">Bullet Points</SelectItem>
-        </SelectContent>
-      </Select>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:flex md:w-auto md:gap-4">
+        <Select defaultValue={searchParams.get("format") || "all"} onValueChange={handleFormatChange}>
+          <SelectTrigger className="h-11 w-full border-white/10 bg-zinc-950/70 sm:h-12 md:w-48">
+            <SelectValue placeholder="Format" />
+          </SelectTrigger>
+          <SelectContent className="border-white/10 bg-zinc-900">
+            <SelectItem value="all">All Formats</SelectItem>
+            <SelectItem value="concise">Concise</SelectItem>
+            <SelectItem value="detailed">Detailed</SelectItem>
+            <SelectItem value="bullet-points">Bullet Points</SelectItem>
+          </SelectContent>
+        </Select>
 
-      <Select defaultValue={searchParams.get("sort") || "newest"} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-full md:w-48">
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="newest">Newest First</SelectItem>
-          <SelectItem value="oldest">Oldest First</SelectItem>
-          <SelectItem value="title">Title A-Z</SelectItem>
-          <SelectItem value="words">Most Words</SelectItem>
-        </SelectContent>
-      </Select>
+        <Select defaultValue={searchParams.get("sort") || "newest"} onValueChange={handleSortChange}>
+          <SelectTrigger className="h-11 w-full border-white/10 bg-zinc-950/70 sm:h-12 md:w-48">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent className="border-white/10 bg-zinc-900">
+            <SelectItem value="newest">Newest First</SelectItem>
+            <SelectItem value="oldest">Oldest First</SelectItem>
+            <SelectItem value="title">Title A-Z</SelectItem>
+            <SelectItem value="words">Most Words</SelectItem>
+          </SelectContent>
+        </Select>
+        </div>
+      </div>
     </div>
   );
 }

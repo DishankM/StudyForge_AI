@@ -52,7 +52,9 @@ export function DocumentsList({ documents }: { documents: DocumentItem[] }) {
       <EmptyState
         icon={FileText}
         title="No documents yet"
-        description="Upload your first PDF, DOCX, or notes file to start generating notes, MCQs, viva questions, and exam papers."
+        description="Upload your first study file to start generating notes, MCQs, viva questions, and exam-ready content from one place."
+        examples={["Lecture PDF", "Class notes", "Syllabus unit", "Past paper"]}
+        helperText="Lecture slides and chapter notes usually give the fastest results. After upload, start with notes if you want quick revision or MCQs if you want practice first."
         actionLabel="Upload your first file"
         actionHref="/dashboard/upload"
       />
@@ -61,6 +63,10 @@ export function DocumentsList({ documents }: { documents: DocumentItem[] }) {
 
   return (
     <>
+      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-sm text-gray-300">
+        Tip: open a document and use the action buttons to generate new notes or MCQ practice sets.
+      </div>
+
       <div className="space-y-4 md:hidden">
         {documents.map((doc) => (
           <article key={doc.id} className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015)),rgba(24,24,27,0.9)] p-5 shadow-[0_16px_36px_rgba(0,0,0,0.2)]">
@@ -87,17 +93,17 @@ export function DocumentsList({ documents }: { documents: DocumentItem[] }) {
                 <p className="mt-1">{formatDistanceToNow(new Date(doc.uploadedAt), { addSuffix: true })}</p>
               </div>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
               <Link href={`/dashboard/documents/${doc.id}`} className="flex-1 sm:flex-none">
-                <Button variant="ghost" size="sm" className="w-full gap-2 sm:w-auto">
+                <Button size="sm" className="min-h-11 w-full gap-2 bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto">
                   <Eye className="h-4 w-4" />
-                  View
+                  Open document
                 </Button>
               </Link>
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex-1 gap-2 text-red-400 hover:text-red-300 sm:flex-none"
+                className="min-h-11 flex-1 gap-2 text-red-400 hover:text-red-300 sm:flex-none"
                 onClick={() => handleDelete(doc.id)}
                 disabled={deletingId === doc.id}
               >
@@ -143,9 +149,9 @@ export function DocumentsList({ documents }: { documents: DocumentItem[] }) {
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2">
                     <Link href={`/dashboard/documents/${doc.id}`}>
-                      <Button variant="ghost" size="sm" className="gap-2">
+                      <Button size="sm" className="min-h-11 gap-2 bg-gradient-to-r from-pink-500 to-purple-600">
                         <Eye className="h-4 w-4" />
-                        View
+                        Open
                       </Button>
                     </Link>
                     <Button

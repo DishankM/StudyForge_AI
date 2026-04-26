@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileText, HelpCircle, Sparkles, Loader2, Trash2 } from "lucide-react";
+import { FileText, HelpCircle, Sparkles, Loader2, Trash2, CheckCircle2, Layers3 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { GenerationProgress } from "@/components/generation/generation-progress";
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 type GenerationMode = "fast" | "full";
 type GenerationAction = "notes" | "mcqs" | "viva" | null;
+type RecommendedAction = "notes" | "mcqs" | "viva" | "revision-pack" | null;
 
 const MODE_COPY: Record<GenerationMode, { title: string; description: string }> = {
   fast: {
@@ -52,7 +53,32 @@ const ACTION_COPY: Record<Exclude<GenerationAction, null>, { title: string; desc
   },
 };
 
-export function DocumentActions({ documentId }: { documentId: string }) {
+const RECOMMENDATION_COPY: Record<Exclude<RecommendedAction, null>, { title: string; description: string }> = {
+  notes: {
+    title: "Recommended next step: Generate notes",
+    description: "Start with notes to get a quick, structured summary before moving into practice.",
+  },
+  mcqs: {
+    title: "Recommended next step: Generate MCQs",
+    description: "You chose practice-first, so MCQs are the fastest way to start active recall from this file.",
+  },
+  viva: {
+    title: "Recommended next step: Generate viva questions",
+    description: "Build oral-exam prompts and model answers first, then branch into notes or MCQs if needed.",
+  },
+  "revision-pack": {
+    title: "Recommended next step: Build your revision pack",
+    description: "Best flow for this upload: generate notes first, then MCQs, then viva questions from the same document.",
+  },
+};
+
+export function DocumentActions({
+  documentId,
+  recommendedAction = null,
+}: {
+  documentId: string;
+  recommendedAction?: RecommendedAction;
+}) {
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
   const [mode, setMode] = useState<GenerationMode>("full");
   const [activeGeneration, setActiveGeneration] = useState<{
@@ -222,6 +248,11 @@ export function DocumentActions({ documentId }: { documentId: string }) {
       setLoadingAction(null);
     }
   };
+  const highlightClasses = {
+    notes: recommendedAction === "notes" || recommendedAction === "revision-pack",
+    mcqs: recommendedAction === "mcqs",
+    viva: recommendedAction === "viva" || recommendedAction === "revision-pack",
+  };
 
   return (
     <div className="rounded-xl border border-white/10 bg-zinc-900 p-5 sm:p-6">
@@ -253,6 +284,24 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         </div>
       </div>
 
+      {recommendedAction && (
+        <div className="mb-4 rounded-2xl border border-pink-500/20 bg-pink-500/10 p-4">
+          <div className="flex items-start gap-3">
+            {recommendedAction === "revision-pack" ? (
+              <Layers3 className="mt-0.5 h-5 w-5 shrink-0 text-pink-200" />
+            ) : (
+              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-pink-200" />
+            )}
+            <div>
+              <p className="font-semibold text-white">{RECOMMENDATION_COPY[recommendedAction].title}</p>
+              <p className="mt-1 text-sm text-pink-100/80">
+                {RECOMMENDATION_COPY[recommendedAction].description}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {progressDisplay && (
         <div className="mb-4">
           <GenerationProgress
@@ -268,7 +317,10 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         <Button
           onClick={generateNotes}
           disabled={loadingAction !== null}
-          className="h-auto flex-col gap-2 border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 py-5 hover:from-blue-500/20 hover:to-cyan-500/20 sm:py-6"
+          className={cn(
+            "h-auto flex-col gap-2 border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 py-5 hover:from-blue-500/20 hover:to-cyan-500/20 sm:py-6",
+            highlightClasses.notes && "ring-2 ring-blue-400/70 ring-offset-2 ring-offset-zinc-900"
+          )}
         >
           {loadingAction === "notes" ? (
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -276,13 +328,18 @@ export function DocumentActions({ documentId }: { documentId: string }) {
             <FileText className="h-8 w-8 text-blue-400" />
           )}
           <span className="font-semibold">Generate Notes</span>
-          <span className="text-xs text-gray-400">Study-ready summaries</span>
+          <span className="text-xs text-gray-400">
+            {recommendedAction === "revision-pack" ? "Step 1 of your revision pack" : "Study-ready summaries"}
+          </span>
         </Button>
 
         <Button
           onClick={generateMCQs}
           disabled={loadingAction !== null}
-          className="h-auto flex-col gap-2 border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-pink-500/10 py-5 hover:from-purple-500/20 hover:to-pink-500/20 sm:py-6"
+          className={cn(
+            "h-auto flex-col gap-2 border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-pink-500/10 py-5 hover:from-purple-500/20 hover:to-pink-500/20 sm:py-6",
+            highlightClasses.mcqs && "ring-2 ring-purple-400/70 ring-offset-2 ring-offset-zinc-900"
+          )}
         >
           {loadingAction === "mcqs" ? (
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -296,7 +353,10 @@ export function DocumentActions({ documentId }: { documentId: string }) {
         <Button
           onClick={generateViva}
           disabled={loadingAction !== null}
-          className="h-auto flex-col gap-2 border border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-red-500/10 py-5 hover:from-orange-500/20 hover:to-red-500/20 sm:py-6"
+          className={cn(
+            "h-auto flex-col gap-2 border border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-red-500/10 py-5 hover:from-orange-500/20 hover:to-red-500/20 sm:py-6",
+            highlightClasses.viva && "ring-2 ring-orange-400/70 ring-offset-2 ring-offset-zinc-900"
+          )}
         >
           {loadingAction === "viva" ? (
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -304,7 +364,9 @@ export function DocumentActions({ documentId }: { documentId: string }) {
             <Sparkles className="h-8 w-8 text-orange-400" />
           )}
           <span className="font-semibold">Viva Questions</span>
-          <span className="text-xs text-gray-400">Oral exam prep</span>
+          <span className="text-xs text-gray-400">
+            {recommendedAction === "revision-pack" ? "Step 3 of your revision pack" : "Oral exam prep"}
+          </span>
         </Button>
       </div>
 

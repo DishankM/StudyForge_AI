@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 const actions = [
   {
     title: "Upload Document",
-    description: "Upload PDFs, notes, or lectures",
+    description: "Start here: upload PDFs, notes, or lecture slides",
     icon: Upload,
     href: "/dashboard/upload",
     color: "from-pink-500 to-purple-500",
@@ -71,6 +71,11 @@ export function QuickActions() {
               <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.04),transparent_55%)]" />
 
               <div className="relative">
+                {index === 0 && (
+                  <span className="mb-3 inline-flex rounded-full border border-pink-500/30 bg-pink-500/20 px-2.5 py-1 text-xs font-medium text-pink-100">
+                    Recommended
+                  </span>
+                )}
                 <div className={`mb-4 inline-flex rounded-2xl bg-gradient-to-br ${action.color} p-3 shadow-lg shadow-black/20`}>
                   <action.icon className="h-6 w-6 text-white" />
                 </div>

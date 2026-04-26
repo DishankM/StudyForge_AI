@@ -9,6 +9,8 @@ import { upload } from "@vercel/blob/client";
 import { MAX_DOCUMENT_UPLOAD_SIZE, sanitizeUploadFileName } from "@/lib/uploads";
 import { Sparkles, UploadCloud } from "lucide-react";
 
+type PreferredOutcome = "notes" | "mcqs" | "viva" | "revision-pack";
+
 export default function UploadPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [processing, setProcessing] = useState<
@@ -19,6 +21,7 @@ export default function UploadPage() {
       progress: number;
       documentId?: string;
       message?: string;
+      preferredOutcome: PreferredOutcome;
     }>
   >([]);
 
@@ -31,6 +34,7 @@ export default function UploadPage() {
     documentType: string;
     examDate?: Date;
     additionalNotes?: string;
+    preferredOutcome: PreferredOutcome;
     files: File[];
   }) => {
     if (metadata.files.length === 0) {
@@ -44,6 +48,7 @@ export default function UploadPage() {
       status: "uploading" as const,
       progress: 10,
       message: "Uploading file",
+      preferredOutcome: metadata.preferredOutcome,
     }));
 
     setProcessing((prev) => [...nextItems, ...prev]);
@@ -76,9 +81,9 @@ export default function UploadPage() {
               prev.map((item) =>
                 item.id === itemId
                   ? {
-                      ...item,
-                      status: "uploading",
-                      progress: Math.max(30, Math.min(65, Math.round(percentage * 0.35 + 30))),
+                  ...item,
+                  status: "uploading",
+                  progress: Math.max(30, Math.min(65, Math.round(percentage * 0.35 + 30))),
                       message: "Uploading file",
                     }
                   : item
@@ -117,7 +122,10 @@ export default function UploadPage() {
                   status: "processing",
                   progress: 70,
                   documentId: data.document?.id,
-                  message: "Processing document",
+                  message:
+                    metadata.preferredOutcome === "revision-pack"
+                      ? "Preparing your revision pack handoff"
+                      : "Preparing your next recommended step",
                 }
               : item
           )
@@ -134,7 +142,10 @@ export default function UploadPage() {
                   status: "completed",
                   progress: 100,
                   documentId: data.document?.id,
-                  message: "Ready for generation",
+                  message:
+                    metadata.preferredOutcome === "revision-pack"
+                      ? "Ready for notes, MCQs, and viva generation"
+                      : "Upload complete. Continue with your selected goal.",
                 }
               : item
           )
@@ -155,7 +166,15 @@ export default function UploadPage() {
 
     setFiles([]);
     if (successfulUploads > 0) {
-      toast.success(`Uploaded ${successfulUploads} file${successfulUploads === 1 ? "" : "s"}`);
+      const outcomeLabels: Record<PreferredOutcome, string> = {
+        notes: "notes",
+        mcqs: "MCQs",
+        viva: "viva prep",
+        "revision-pack": "a revision pack",
+      };
+      toast.success(
+        `Uploaded ${successfulUploads} file${successfulUploads === 1 ? "" : "s"} for ${outcomeLabels[metadata.preferredOutcome]}`
+      );
     }
   };
 
@@ -164,13 +183,13 @@ export default function UploadPage() {
       <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-zinc-950/80 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:p-8">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.14),_transparent_32%)]" />
         <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-          <div className="max-w-3xl">
+          <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-pink-500/20 bg-pink-500/10 px-4 py-1.5 text-sm font-medium text-pink-200">
               <UploadCloud className="h-4 w-4" />
               Upload workspace
             </div>
             <h1 className="mt-5 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">Upload Documents</h1>
-            <p className="mt-3 text-base text-gray-300">
+            <p className="mt-3 max-w-xl text-base leading-7 text-gray-300">
               Bring in your PDFs, lecture notes, syllabi, or study material and turn them into usable revision assets.
             </p>
           </div>
@@ -192,6 +211,14 @@ export default function UploadPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <p className="text-sm font-medium text-white">How it works</p>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-gray-300">
+          1) Add files  2) Fill subject + type  3) Click <span className="font-semibold text-white">Upload &amp; Process</span>.
+          Your generated notes and practice content will appear in Documents.
+        </p>
       </div>
 
       <FileUploadZone onFilesAdded={handleFilesUpdate} files={files} />

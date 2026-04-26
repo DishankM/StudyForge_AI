@@ -12,7 +12,27 @@ type ProcessingItem = {
   progress: number;
   documentId?: string;
   message?: string;
+  preferredOutcome: "notes" | "mcqs" | "viva" | "revision-pack";
 };
+
+const OUTCOME_CTA = {
+  notes: {
+    label: "Continue to Notes",
+    href: (documentId: string) => `/dashboard/documents/${documentId}?action=notes`,
+  },
+  mcqs: {
+    label: "Continue to MCQs",
+    href: (documentId: string) => `/dashboard/documents/${documentId}?action=mcqs`,
+  },
+  viva: {
+    label: "Continue to Viva",
+    href: (documentId: string) => `/dashboard/documents/${documentId}?action=viva`,
+  },
+  "revision-pack": {
+    label: "Open Revision Pack",
+    href: (documentId: string) => `/dashboard/documents/${documentId}?action=revision-pack`,
+  },
+} as const;
 
 export function ProcessingQueue({ items }: { items: ProcessingItem[] }) {
   return (
@@ -53,16 +73,16 @@ export function ProcessingQueue({ items }: { items: ProcessingItem[] }) {
               <div className="mt-4 flex flex-wrap gap-2">
                 {item.documentId ? (
                   <>
-                    <Link href={`/dashboard/documents/${item.documentId}`}>
-                      <Button size="sm" className="gap-2 bg-gradient-to-r from-pink-500 to-purple-600">
-                        <FileText className="h-4 w-4" />
-                        View Document
+                    <Link href={OUTCOME_CTA[item.preferredOutcome].href(item.documentId)}>
+                      <Button size="sm" className="min-h-11 w-full gap-2 bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto">
+                        <Sparkles className="h-4 w-4" />
+                        {OUTCOME_CTA[item.preferredOutcome].label}
                       </Button>
                     </Link>
                     <Link href={`/dashboard/documents/${item.documentId}`}>
-                      <Button size="sm" variant="outline" className="gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        Generate Content
+                      <Button size="sm" variant="outline" className="min-h-11 w-full gap-2 sm:w-auto">
+                        <FileText className="h-4 w-4" />
+                        View Document
                       </Button>
                     </Link>
                   </>

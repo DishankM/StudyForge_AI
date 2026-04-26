@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell, Search, Menu, PanelLeft, PanelLeftClose, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,10 +37,36 @@ export function DashboardHeader({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
   }, [searchParams]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable;
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+        return;
+      }
+
+      if (!isTypingTarget && event.key === "/") {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const resolveSearchPath = () => {
     if (pathname.startsWith("/dashboard/notes")) return "/dashboard/notes";
@@ -105,6 +131,7 @@ export function DashboardHeader({
                 <Search className="h-4 w-4 text-gray-400" />
               </div>
               <Input
+                ref={searchInputRef}
                 type="search"
                 placeholder="Search documents or notes..."
                 value={search}
@@ -113,7 +140,10 @@ export function DashboardHeader({
               />
               <div className="pointer-events-none absolute inset-y-0 right-3 hidden items-center gap-2 text-xs text-gray-500 md:flex">
                 <Sparkles className="h-3.5 w-3.5 text-pink-400" />
-                Ask StudyForge
+                <span>Search</span>
+                <span className="rounded border border-white/20 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-gray-400">
+                  Ctrl/Cmd + K
+                </span>
               </div>
             </div>
             <Button

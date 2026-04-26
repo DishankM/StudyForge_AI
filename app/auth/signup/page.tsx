@@ -76,6 +76,9 @@ export default function SignupPage() {
             <p className="mt-2 text-text-secondary">
               Start your 7-day free trial. No credit card required.
             </p>
+            <p className="mt-1 text-sm text-text-muted">
+              Takes under 2 minutes. You can upload your first study file right after signup.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -119,6 +122,7 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <Icons.eyeOff className="h-5 w-5" />
@@ -200,6 +204,9 @@ export default function SignupPage() {
                 "Create account"
               )}
             </Button>
+            <p className="text-center text-xs text-text-muted">
+              After signup, we will send a verification email to activate your account.
+            </p>
           </form>
 
           <div className="relative">

@@ -41,7 +41,7 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        toast.error("Invalid credentials or account access is restricted.");
+        toast.error("Sign in failed. Check your email/password or reset your password.");
         return;
       }
 
@@ -77,7 +77,10 @@ export default function LoginPage() {
               Welcome back
             </h2>
             <p className="mt-2 text-text-secondary">
-              Sign in to your account to continue
+              Sign in to continue your study workflow.
+            </p>
+            <p className="mt-1 text-sm text-text-muted">
+              Next step after login: go to Upload and add one document to generate notes and MCQs.
             </p>
           </div>
 
@@ -111,6 +114,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
                     <Icons.eyeOff className="h-5 w-5" />

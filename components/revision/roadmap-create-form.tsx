@@ -74,9 +74,11 @@ const PREP_LABELS: Record<PreparationLevel, string> = {
 export function RoadmapCreateForm({
   userId,
   documents,
+  initialDocumentId,
 }: {
   userId: string;
   documents: DocumentOption[];
+  initialDocumentId?: string;
 }) {
   void userId;
   const router = useRouter();
@@ -99,7 +101,7 @@ export function RoadmapCreateForm({
       syllabusText: "",
       examPattern: "",
       focusAreas: "",
-      documentId: "",
+      documentId: initialDocumentId || "",
     },
   });
 

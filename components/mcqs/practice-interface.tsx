@@ -144,6 +144,7 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
   const answeredCount = answers.filter((a) => a.selectedAnswer !== null).length;
   const markedCount = answers.filter((a) => a.marked).length;
   const progressPercentage = (answeredCount / questions.length) * 100;
+  const hasNextQuestion = currentQuestionIndex < questions.length - 1;
 
   if (showResults) {
     return (
@@ -157,8 +158,33 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
     );
   }
 
+  const primaryActionButton = !showExplanation ? (
+    <Button
+      onClick={handleSubmitAnswer}
+      disabled={currentAnswer.selectedAnswer === null}
+      className="min-h-11 w-full bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto"
+    >
+      Submit Answer
+    </Button>
+  ) : hasNextQuestion ? (
+    <Button
+      onClick={handleNextQuestion}
+      className="min-h-11 w-full bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto"
+    >
+      Next Question
+      <ChevronRight className="ml-2 h-4 w-4" />
+    </Button>
+  ) : (
+    <Button
+      onClick={handleFinishQuiz}
+      className="min-h-11 w-full bg-gradient-to-r from-green-500 to-emerald-600 sm:w-auto"
+    >
+      Finish Quiz
+    </Button>
+  );
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] pb-8">
+    <div className="min-h-screen bg-[#0a0a0a] pb-28 sm:pb-8">
       <div className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4">
@@ -207,17 +233,20 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
                 <p className="text-[11px] uppercase tracking-[0.22em] text-gray-500">Marked</p>
                 <p className="mt-1 text-lg font-semibold text-white">{markedCount}</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2">
+              <div className="hidden rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 sm:block">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-gray-500">Difficulty</p>
                 <p className="mt-1 truncate text-sm font-semibold text-white">{currentQuestion.difficulty}</p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2">
+              <div className="hidden rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 sm:block">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-gray-500">Topic</p>
                 <p className="mt-1 truncate text-sm font-semibold text-white">{currentQuestion.topic}</p>
               </div>
             </div>
 
             <Progress value={progressPercentage} className="h-2" />
+            <p className="text-xs text-gray-400 sm:hidden">
+              {currentQuestion.difficulty} • {currentQuestion.topic}
+            </p>
           </div>
         </div>
       </div>
@@ -236,7 +265,7 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
                       {currentQuestion.topic}
                     </span>
                   </div>
-                  <h2 className="text-lg font-semibold leading-relaxed text-white sm:text-2xl">
+                  <h2 className="text-[1.05rem] font-semibold leading-8 text-white sm:text-2xl sm:leading-relaxed">
                     {currentQuestion.question}
                   </h2>
                 </div>
@@ -286,7 +315,7 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
                           {String.fromCharCode(65 + index)}
                         </div>
                         <div className="flex min-w-0 flex-1 items-start gap-2">
-                          <span className="flex-1 text-sm leading-6 text-white sm:text-base">{option}</span>
+                          <span className="flex-1 text-[15px] leading-7 text-white sm:text-base">{option}</span>
                           {showCorrectAnswer && isCorrect && (
                             <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-500" />
                           )}
@@ -313,45 +342,21 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
                     variant="outline"
                     onClick={handlePreviousQuestion}
                     disabled={currentQuestionIndex === 0}
-                    className="flex-1 sm:flex-none"
+                    className="min-h-11 flex-1 sm:flex-none"
                   >
                     <ChevronLeft className="mr-2 h-4 w-4" />
                     Previous
                   </Button>
                   <Button
                     variant="outline"
-                    className="flex-1 sm:hidden"
+                    className="min-h-11 flex-1 sm:hidden"
                     onClick={() => router.push(`/dashboard/mcqs/${mcqSet.id}`)}
                   >
                     <Home className="mr-2 h-4 w-4" />
                     Exit
                   </Button>
                 </div>
-
-                {!showExplanation ? (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    disabled={currentAnswer.selectedAnswer === null}
-                    className="w-full bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto"
-                  >
-                    Submit Answer
-                  </Button>
-                ) : currentQuestionIndex < questions.length - 1 ? (
-                  <Button
-                    onClick={handleNextQuestion}
-                    className="w-full bg-gradient-to-r from-pink-500 to-purple-600 sm:w-auto"
-                  >
-                    Next Question
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={handleFinishQuiz}
-                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600 sm:w-auto"
-                  >
-                    Finish Quiz
-                  </Button>
-                )}
+                <div className="hidden sm:block">{primaryActionButton}</div>
               </div>
             </Card>
           </div>
@@ -416,6 +421,21 @@ export function MCQPracticeInterface({ mcqSet }: { mcqSet: any }) {
               </Button>
             </Card>
           </div>
+        </div>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0a0a]/95 p-3 backdrop-blur-sm sm:hidden">
+        <div className="mx-auto flex max-w-7xl gap-2">
+          <Button
+            variant="outline"
+            onClick={handlePreviousQuestion}
+            disabled={currentQuestionIndex === 0}
+            className="min-h-11 flex-1"
+          >
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Previous
+          </Button>
+          <div className="flex-[1.35]">{primaryActionButton}</div>
         </div>
       </div>
     </div>
